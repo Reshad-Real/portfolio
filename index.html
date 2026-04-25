@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Md. Reshad Al Muttaki - Electronics & Biosensors Engineer</title>
+    <title>Md. Reshad Al Muttaki - Electronics Engineer & Researcher</title>
     <style>
         * {
             margin: 0;
@@ -12,17 +12,20 @@
         }
 
         :root {
-            --primary: #0a0e27;
-            --secondary: #141829;
-            --tertiary: #1a2847;
-            --accent: #00ff88;
-            --accent-alt: #00d4ff;
-            --accent-warm: #ff6b35;
-            --circuit: #00ff88;
-            --glow: rgba(0, 255, 136, 0.3);
-            --text-primary: #f0f4f8;
-            --text-secondary: #a0aec0;
-            --border: #2d3a5a;
+            --primary-dark: #0d1117;
+            --primary: #161b22;
+            --secondary: #21262d;
+            --tertiary: #30363d;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #79c0ff;
+            --accent-tertiary: #1f6feb;
+            --electron-blue: #3b82f6;
+            --circuit-green: #10b981;
+            --warning: #d29922;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-tertiary: #6e7681;
+            --border: #30363d;
         }
 
         html {
@@ -30,26 +33,60 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, var(--primary) 0%, #0f1633 50%, var(--secondary) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--secondary) 100%);
             color: var(--text-primary);
             line-height: 1.6;
-            overflow-x: hidden;
             position: relative;
+            overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
+        /* Animated background lines */
+        .bg-lines {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                repeating-linear-gradient(0deg, rgba(0, 255, 136, 0.03) 0px, transparent 1px, transparent 2px, rgba(0, 255, 136, 0.03) 3px),
-                repeating-linear-gradient(90deg, rgba(0, 255, 136, 0.03) 0px, transparent 1px, transparent 2px, rgba(0, 255, 136, 0.03) 3px);
             pointer-events: none;
             z-index: 0;
+            opacity: 0.15;
+        }
+
+        .bg-line {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+            animation: slideAcross 8s infinite ease-in-out;
+        }
+
+        .line-1 {
+            width: 100%;
+            height: 2px;
+            top: 25%;
+            left: -100%;
+            animation-delay: 0s;
+        }
+
+        .line-2 {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            left: 100%;
+            animation-delay: 2s;
+            direction: rtl;
+        }
+
+        .line-3 {
+            width: 100%;
+            height: 2px;
+            top: 75%;
+            left: -100%;
+            animation-delay: 4s;
+        }
+
+        @keyframes slideAcross {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         /* Navigation */
@@ -57,34 +94,57 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background: rgba(10, 14, 39, 0.95);
+            background: rgba(13, 17, 23, 0.95);
             backdrop-filter: blur(10px);
-            padding: 1.2rem 2rem;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 1000;
             border-bottom: 1px solid var(--border);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            animation: navSlideDown 0.6s ease-out;
+        }
+
+        @keyframes navSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo {
             font-size: 1.3rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--glow);
-            animation: pulse 2s infinite;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        @keyframes pulse {
-            0%, 100% { text-shadow: 0 0 10px var(--glow); }
-            50% { text-shadow: 0 0 20px var(--glow), 0 0 30px var(--glow); }
+        .logo::before {
+            content: '⚛';
+            font-size: 1.5rem;
+            -webkit-text-fill-color: var(--electron-blue);
+            animation: spinAtom 3s linear infinite;
+        }
+
+        @keyframes spinAtom {
+            0% { transform: rotateZ(0deg); }
+            100% { transform: rotateZ(360deg); }
         }
 
         nav ul {
             display: flex;
-            gap: 2.5rem;
+            gap: 3rem;
             list-style: none;
         }
 
@@ -92,8 +152,8 @@
             color: var(--text-secondary);
             text-decoration: none;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+            font-size: 0.95rem;
+            font-weight: 500;
             position: relative;
         }
 
@@ -104,14 +164,12 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+            background: linear-gradient(90deg, var(--accent-primary), var(--electron-blue));
             transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--glow);
         }
 
         nav a:hover {
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--glow);
+            color: var(--accent-primary);
         }
 
         nav a:hover::after {
@@ -120,186 +178,168 @@
 
         .nav-right {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .download-btn {
-            background: linear-gradient(135deg, var(--accent), var(--accent-alt));
-            color: var(--primary);
+            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
+            color: white;
             border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 2px;
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px var(--glow);
-            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+            animation: slideInRight 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px var(--glow), 0 5px 20px rgba(0, 255, 136, 0.4);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
         }
 
         /* Main Container */
         main {
-            margin-top: 70px;
+            margin-top: 60px;
             position: relative;
             z-index: 1;
         }
 
         section {
-            padding: 5rem 2rem;
+            padding: 4rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
             position: relative;
         }
 
-        /* Hero Section */
+        /* Hero Section with Startup Animation */
         .hero {
-            min-height: 100vh;
+            min-height: calc(100vh - 60px);
             display: flex;
             align-items: center;
             padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.9) 0%, rgba(20, 24, 41, 0.9) 50%, rgba(26, 40, 71, 0.9) 100%),
-                        radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.1), transparent 50%);
+            background: linear-gradient(135deg, rgba(13, 17, 23, 0.8), rgba(22, 27, 34, 0.8)),
+                        radial-gradient(circle at 20% 50%, rgba(58, 130, 255, 0.1), transparent 50%);
             position: relative;
             overflow: hidden;
         }
 
+        /* Flowing gradient mesh */
         .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(0deg, transparent 24%, rgba(0, 255, 136, 0.05) 25%, rgba(0, 255, 136, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 136, 0.05) 75%, rgba(0, 255, 136, 0.05) 76%, transparent 77%, transparent),
-                linear-gradient(90deg, transparent 24%, rgba(0, 255, 136, 0.05) 25%, rgba(0, 255, 136, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 136, 0.05) 75%, rgba(0, 255, 136, 0.05) 76%, transparent 77%, transparent);
-            background-size: 50px 50px;
-            pointer-events: none;
-            animation: circuit-flow 20s linear infinite;
+            top: 50%;
+            right: -30%;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(58, 130, 255, 0.2), transparent);
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: meshFlow 10s ease-in-out infinite;
+            z-index: 0;
         }
 
-        @keyframes circuit-flow {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+        @keyframes meshFlow {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(100px, -50px);
+                opacity: 1;
+            }
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: 10%;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: meshFlow2 12s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes meshFlow2 {
+            0%, 100% {
+                transform: translate(0, 0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(-50px, 50px);
+                opacity: 0.8;
+            }
         }
 
         .hero-content {
-            max-width: 900px;
+            max-width: 800px;
             position: relative;
             z-index: 2;
-            animation: fadeInUp 1s ease-out;
         }
 
+        /* Startup sequence animations */
         .hero h1 {
-            font-size: 4rem;
-            font-weight: bold;
+            font-size: 3.5rem;
+            font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 1rem;
-            color: var(--accent);
-            text-shadow: 0 0 20px var(--glow), 0 0 40px rgba(0, 255, 136, 0.2);
-            letter-spacing: 2px;
-            animation: glitch 3s ease-in-out infinite;
+            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleReveal 0.8s ease-out, textShadowGlow 3s ease-in-out 0.8s infinite;
         }
 
-        @keyframes glitch {
-            0%, 100% { text-shadow: 0 0 20px var(--glow), 0 0 40px rgba(0, 255, 136, 0.2); }
-            50% { text-shadow: 0 0 30px var(--glow), 0 0 60px rgba(0, 255, 136, 0.3); }
+        @keyframes titleReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes textShadowGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(88, 166, 255, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(88, 166, 255, 0.6));
+            }
         }
 
         .hero .title {
-            font-size: 1.4rem;
-            color: var(--accent-alt);
+            font-size: 1.3rem;
+            color: var(--accent-primary);
             margin-bottom: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px var(--glow);
+            font-weight: 600;
+            animation: fadeInDown 0.8s ease-out 0.2s both;
         }
 
-        .hero p {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            margin-bottom: 2.5rem;
-            line-height: 1.8;
-            max-width: 600px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-alt));
-            color: var(--primary);
-            padding: 1rem 2.5rem;
-            border: 2px solid var(--accent);
-            border-radius: 0;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            letter-spacing: 1px;
-            box-shadow: 0 0 20px var(--glow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 40px var(--glow), inset 0 0 20px rgba(0, 255, 136, 0.2);
-        }
-
-        .btn-primary:hover::before {
-            left: 100%;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--accent);
-            padding: 1rem 2.5rem;
-            border: 2px solid var(--accent);
-            border-radius: 0;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            letter-spacing: 1px;
-            box-shadow: 0 0 15px var(--glow);
-        }
-
-        .btn-secondary:hover {
-            background: var(--accent);
-            color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 0 30px var(--glow);
-        }
-
-        @keyframes fadeInUp {
+        @keyframes fadeInDown {
             from {
                 opacity: 0;
-                transform: translateY(40px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -307,112 +347,217 @@
             }
         }
 
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            max-width: 700px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease-out 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
+            color: white;
+            padding: 0.9rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(88, 166, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-primary);
+            padding: 0.9rem 2rem;
+            border: 1.5px solid var(--accent-primary);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(88, 166, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .contact-info {
+            margin-top: 2rem;
+            font-size: 0.95rem;
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            animation: fadeIn 0.8s ease-out 0.8s both;
+        }
+
+        .contact-info > span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-info a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .contact-info a:hover {
+            color: var(--accent-secondary);
+            text-decoration: underline;
+        }
+
         /* Section Styling */
         .section-header {
-            margin-bottom: 4rem;
+            margin-bottom: 3.5rem;
             position: relative;
+            animation: slideInUp 0.6s ease-out;
         }
 
         .section-header h2 {
-            font-size: 3rem;
+            font-size: 2.8rem;
+            font-weight: 700;
             margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-            color: var(--accent);
-            text-shadow: 0 0 20px var(--glow);
-            letter-spacing: 2px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .section-header h2::before {
-            content: '> ';
-            color: var(--accent-alt);
+            content: '';
+            width: 4px;
+            height: 35px;
+            background: linear-gradient(180deg, var(--accent-primary), var(--electron-blue));
+            border-radius: 2px;
+            animation: expandHeight 0.6s ease-out;
         }
 
-        .section-header h2::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 0;
-            width: 100px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), transparent);
-            box-shadow: 0 0 10px var(--glow);
+        @keyframes expandHeight {
+            from { height: 0; }
+            to { height: 35px; }
         }
 
         .section-header p {
             color: var(--text-secondary);
-            font-size: 1.05rem;
-            margin-top: 2rem;
-            letter-spacing: 0.5px;
+            font-size: 1rem;
+            margin-top: 0.5rem;
         }
 
         /* Card Styles */
         .card {
-            background: linear-gradient(135deg, rgba(20, 24, 41, 0.8), rgba(26, 40, 71, 0.6));
+            background: linear-gradient(135deg, var(--secondary) 0%, rgba(33, 38, 45, 0.5) 100%);
             border: 1px solid var(--border);
-            border-radius: 0;
-            padding: 2.5rem;
+            border-radius: 8px;
+            padding: 2rem;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
         }
+
+        .grid .card:nth-child(1) { animation-delay: 0.1s; }
+        .grid .card:nth-child(2) { animation-delay: 0.2s; }
+        .grid .card:nth-child(3) { animation-delay: 0.3s; }
 
         .card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
-            transition: left 0.5s ease;
-            pointer-events: none;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--electron-blue), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
         }
 
         .card:hover::before {
-            left: 100%;
+            transform: scaleX(1);
         }
 
         .card:hover {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(20, 24, 41, 1), rgba(26, 40, 71, 0.8));
-            transform: translateY(-8px);
-            box-shadow: 0 0 40px var(--glow), inset 0 0 20px rgba(0, 255, 136, 0.05);
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--secondary) 0%, rgba(58, 130, 255, 0.05) 100%);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px rgba(58, 130, 255, 0.15);
         }
 
         .card h3 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 0.8rem;
-            color: var(--accent);
-            text-shadow: 0 0 10px var(--glow);
-            letter-spacing: 1px;
+            color: var(--accent-secondary);
+            font-weight: 700;
         }
 
         .card-meta {
             display: flex;
-            gap: 1rem;
+            gap: 0.8rem;
             flex-wrap: wrap;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
             font-size: 0.9rem;
-            color: var(--text-secondary);
+            color: var(--text-tertiary);
         }
 
         .badge {
-            background: rgba(0, 255, 136, 0.15);
-            color: var(--accent);
-            padding: 0.4rem 1rem;
-            border-radius: 0;
+            background: rgba(88, 166, 255, 0.15);
+            color: var(--accent-secondary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
             font-size: 0.85rem;
-            font-weight: bold;
-            border: 1px solid var(--accent);
-            letter-spacing: 0.5px;
-            box-shadow: 0 0 8px var(--glow);
+            font-weight: 600;
+            border: 1px solid rgba(88, 166, 255, 0.3);
         }
 
         .card p {
             color: var(--text-secondary);
-            line-height: 1.8;
+            line-height: 1.7;
             margin-bottom: 1rem;
         }
 
@@ -424,28 +569,26 @@
         }
 
         .card-link {
-            color: var(--accent);
+            color: var(--accent-primary);
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: bold;
+            font-size: 0.95rem;
+            font-weight: 600;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            letter-spacing: 0.5px;
         }
 
         .card-link:hover {
-            color: var(--accent-alt);
-            text-shadow: 0 0 10px var(--glow);
-            transform: translateX(5px);
+            color: var(--accent-secondary);
+            transform: translateX(4px);
         }
 
         /* Grid */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
             margin-bottom: 2rem;
         }
 
@@ -453,24 +596,33 @@
             grid-template-columns: 1fr;
         }
 
-        /* Skills */
+        /* Skills Grid */
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-top: 2rem;
         }
 
         .skill-item {
-            background: linear-gradient(135deg, rgba(26, 40, 71, 0.8), rgba(20, 24, 41, 0.6));
-            padding: 1.8rem;
-            border-radius: 0;
+            background: linear-gradient(135deg, var(--secondary), rgba(33, 38, 45, 0.5));
+            padding: 1.5rem;
+            border-radius: 8px;
             border: 1px solid var(--border);
             transition: all 0.3s ease;
             position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
         }
+
+        .skills-grid .skill-item:nth-child(1) { animation-delay: 0.1s; }
+        .skills-grid .skill-item:nth-child(2) { animation-delay: 0.15s; }
+        .skills-grid .skill-item:nth-child(3) { animation-delay: 0.2s; }
+        .skills-grid .skill-item:nth-child(4) { animation-delay: 0.25s; }
+        .skills-grid .skill-item:nth-child(5) { animation-delay: 0.3s; }
+        .skills-grid .skill-item:nth-child(6) { animation-delay: 0.35s; }
+        .skills-grid .skill-item:nth-child(7) { animation-delay: 0.4s; }
+        .skills-grid .skill-item:nth-child(8) { animation-delay: 0.45s; }
 
         .skill-item::after {
             content: '';
@@ -479,16 +631,14 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: linear-gradient(90deg, var(--accent), var(--accent-alt));
+            background: linear-gradient(90deg, var(--accent-primary), var(--electron-blue));
             transition: width 0.3s ease;
-            box-shadow: 0 0 10px var(--glow);
         }
 
         .skill-item:hover {
-            border-color: var(--accent);
-            background: linear-gradient(135deg, rgba(26, 40, 71, 1), rgba(20, 24, 41, 0.8));
+            border-color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--secondary), rgba(58, 130, 255, 0.05));
             transform: translateY(-4px);
-            box-shadow: 0 0 20px var(--glow);
         }
 
         .skill-item:hover::after {
@@ -496,69 +646,63 @@
         }
 
         .skill-item strong {
-            color: var(--accent);
+            color: var(--accent-secondary);
             display: block;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px var(--glow);
+            margin-bottom: 0.6rem;
+            font-weight: 700;
+            font-size: 1rem;
         }
 
         .skill-item p {
             font-size: 0.9rem;
             color: var(--text-secondary);
+            line-height: 1.5;
         }
 
         /* Publications */
         .pub-item {
-            padding: 2rem;
-            border-left: 4px solid var(--accent);
-            background: linear-gradient(135deg, rgba(26, 40, 71, 0.8), rgba(20, 24, 41, 0.6));
-            border-radius: 0;
-            margin-bottom: 2rem;
+            padding: 1.8rem;
+            border-left: 4px solid var(--accent-primary);
+            background: linear-gradient(135deg, var(--secondary) 0%, rgba(58, 130, 255, 0.05) 100%);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
             transition: all 0.3s ease;
-            position: relative;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
         }
 
         .pub-item:hover {
-            background: linear-gradient(135deg, rgba(26, 40, 71, 1), rgba(20, 24, 41, 0.8));
-            border-left-color: var(--accent-alt);
-            box-shadow: 0 0 30px var(--glow);
-            transform: translateX(8px);
+            border-left-color: var(--accent-secondary);
+            transform: translateX(6px);
+            box-shadow: 0 8px 16px rgba(58, 130, 255, 0.15);
         }
 
         .pub-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 0.8rem;
-            letter-spacing: 0.5px;
-            text-shadow: 0 0 8px var(--glow);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+            margin-bottom: 0.6rem;
         }
 
         .pub-meta {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
+            font-size: 0.9rem;
+            color: var(--text-tertiary);
             margin-bottom: 0.8rem;
-            letter-spacing: 0.5px;
         }
 
         .pub-link {
             display: inline-block;
-            margin-top: 1rem;
-            color: var(--accent);
+            margin-top: 0.8rem;
+            color: var(--accent-primary);
             text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: bold;
+            font-size: 0.95rem;
+            font-weight: 600;
             transition: all 0.3s ease;
-            letter-spacing: 0.5px;
         }
 
         .pub-link:hover {
-            color: var(--accent-alt);
-            text-shadow: 0 0 10px var(--glow);
-            transform: translateX(5px);
-            display: inline-block;
+            color: var(--accent-secondary);
+            transform: translateX(4px);
         }
 
         /* Timeline */
@@ -568,59 +712,79 @@
         }
 
         .timeline-item {
-            padding: 2rem;
-            padding-left: 2.5rem;
-            border-left: 3px solid var(--accent);
+            padding: 1.8rem;
+            padding-left: 3rem;
+            border-left: 2px solid var(--border);
             margin-bottom: 2.5rem;
-            background: linear-gradient(135deg, rgba(26, 40, 71, 0.8), rgba(20, 24, 41, 0.6));
-            border-radius: 0;
+            background: linear-gradient(135deg, var(--secondary), rgba(33, 38, 45, 0.3));
+            border-radius: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
             position: relative;
+            animation: slideInUp 0.6s ease-out;
+            animation-fill-mode: both;
         }
+
+        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
 
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -8.5px;
-            top: 30px;
-            width: 16px;
-            height: 16px;
-            background: var(--accent);
-            border-radius: 0;
+            left: -9px;
+            top: 28px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent-primary);
+            border-radius: 50%;
             border: 3px solid var(--primary);
-            box-shadow: 0 0 15px var(--glow);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0 3px rgba(58, 130, 255, 0.2);
+            animation: pulseNode 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseNode {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(58, 130, 255, 0.2); }
+            50% { box-shadow: 0 0 0 8px rgba(58, 130, 255, 0.1); }
         }
 
         .timeline-item:hover {
-            background: linear-gradient(135deg, rgba(26, 40, 71, 1), rgba(20, 24, 41, 0.8));
-            border-left-color: var(--accent-alt);
+            border-left-color: var(--accent-primary);
+            background: linear-gradient(135deg, var(--secondary), rgba(58, 130, 255, 0.08));
             transform: translateX(8px);
         }
 
+        .timeline-item:hover::before {
+            box-shadow: 0 0 0 8px rgba(58, 130, 255, 0.4);
+        }
+
         .timeline-date {
-            color: var(--accent-alt);
-            font-weight: bold;
+            color: var(--accent-primary);
+            font-weight: 700;
             font-size: 0.95rem;
-            letter-spacing: 1px;
+            margin-bottom: 0.4rem;
         }
 
         .timeline-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--text-primary);
-            margin: 0.8rem 0;
-            letter-spacing: 1px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+            margin-bottom: 0.6rem;
+        }
+
+        .timeline-item p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
         }
 
         /* Footer */
         footer {
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.9), rgba(20, 24, 41, 0.7));
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
             border-top: 1px solid var(--border);
             padding: 3rem 2rem;
             text-align: center;
             color: var(--text-secondary);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
         }
 
         .footer-content {
@@ -636,16 +800,14 @@
         }
 
         .social-links a {
-            color: var(--accent);
+            color: var(--accent-primary);
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 600;
             transition: all 0.3s ease;
-            letter-spacing: 1px;
         }
 
         .social-links a:hover {
-            color: var(--accent-alt);
-            text-shadow: 0 0 10px var(--glow);
+            color: var(--accent-secondary);
             transform: translateY(-2px);
         }
 
@@ -658,9 +820,11 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.6);
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease-out;
         }
 
         .modal.active {
@@ -670,37 +834,35 @@
         .modal-content {
             background: linear-gradient(135deg, var(--secondary), var(--tertiary));
             padding: 2.5rem;
-            border-radius: 0;
-            border: 2px solid var(--accent);
-            max-width: 450px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            max-width: 400px;
             text-align: center;
-            animation: slideUp 0.3s ease-out;
-            box-shadow: 0 0 50px var(--glow);
+            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
         }
 
-        @keyframes slideUp {
-            from {
+        @keyframes popIn {
+            0% {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: scale(0.8);
             }
-            to {
+            100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
 
         .modal-content h3 {
             margin-bottom: 1rem;
-            color: var(--accent);
+            color: var(--accent-secondary);
             font-size: 1.5rem;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px var(--glow);
+            font-weight: 700;
         }
 
         .modal-content p {
             color: var(--text-secondary);
             margin-bottom: 2rem;
-            letter-spacing: 0.5px;
         }
 
         .modal-buttons {
@@ -710,47 +872,41 @@
 
         .modal-buttons button {
             flex: 1;
-            padding: 1rem;
-            border: 2px solid var(--accent);
-            border-radius: 0;
-            font-weight: bold;
+            padding: 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 1px;
             font-size: 0.95rem;
         }
 
         .modal-download {
-            background: linear-gradient(135deg, var(--accent), var(--accent-alt));
-            color: var(--primary);
-            box-shadow: 0 0 20px var(--glow);
+            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
         }
 
         .modal-download:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 40px var(--glow);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
         }
 
         .modal-cancel {
             background: transparent;
-            color: var(--accent);
-            box-shadow: 0 0 15px var(--glow);
+            color: var(--accent-primary);
         }
 
         .modal-cancel:hover {
-            background: var(--accent);
-            color: var(--primary);
-            transform: translateY(-2px);
+            background: rgba(88, 166, 255, 0.1);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             nav ul {
                 gap: 1.5rem;
-            }
-
-            nav a {
-                font-size: 0.85rem;
+                font-size: 0.9rem;
             }
 
             .hero h1 {
@@ -776,24 +932,22 @@
             .btn-primary,
             .btn-secondary {
                 width: 100%;
-                text-align: center;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 0.8rem;
             }
         }
 
         @media (max-width: 480px) {
             nav {
                 padding: 0.75rem 1rem;
-                flex-direction: column;
-                gap: 1rem;
             }
 
             nav ul {
                 gap: 1rem;
-                font-size: 0.8rem;
-            }
-
-            .logo {
-                font-size: 1.1rem;
+                font-size: 0.85rem;
             }
 
             .hero {
@@ -812,25 +966,44 @@
                 grid-template-columns: 1fr;
             }
 
-            .modal-content {
-                max-width: 90%;
-                padding: 1.5rem;
+            .contact-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 <body>
+    <!-- Animated background lines -->
+    <div class="bg-lines">
+        <div class="bg-line line-1"></div>
+        <div class="bg-line line-2"></div>
+        <div class="bg-line line-3"></div>
+    </div>
+
     <!-- Navigation -->
     <nav>
-        <div class="logo">⚡ RESHAD.EEE</div>
+        <div class="logo">RESHAD</div>
         <ul>
-            <li><a href="#about">ABOUT</a></li>
-            <li><a href="#projects">PROJECTS</a></li>
-            <li><a href="#publications">PUBS</a></li>
-            <li><a href="#education">EDU</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#education">Education</a></li>
         </ul>
         <div class="nav-right">
-            <button class="download-btn" onclick="openDownloadModal()">↓ CV</button>
+            <button class="download-btn" onclick="openDownloadModal()">Download CV</button>
         </div>
     </nav>
 
@@ -839,225 +1012,231 @@
         <!-- Hero Section -->
         <section class="hero" id="about">
             <div class="hero-content">
-                <h1>MD. RESHAD AL MUTTAKI</h1>
-                <p class="title">ELECTRONICS ENGINEER | BIOSENSOR SPECIALIST | RESEARCHER</p>
-                <p>Designing self-powered biosensors, embedded systems, and smart grid solutions. Published research in Q1 journals. Deep expertise in hardware design, machine learning, and digital systems.</p>
+                <h1>Md. Reshad Al Muttaki</h1>
+                <p class="title">Electronics Engineer & Biosensor Researcher</p>
+                <p>Specialized in self-powered biosensor design, embedded systems architecture, and smart grid innovation. Published researcher with expertise in hardware design, machine learning integration, and digital circuit optimization.</p>
                 <div class="hero-buttons">
-                    <a href="#projects" class="btn-primary">→ VIEW PROJECTS</a>
-                    <button class="btn-secondary" onclick="openDownloadModal()">DOWNLOAD CV</button>
+                    <a href="#projects" class="btn-primary">Explore Projects</a>
+                    <button class="btn-secondary" onclick="openDownloadModal()">Download CV</button>
                 </div>
-                <div style="margin-top: 2.5rem; font-size: 0.95rem; color: var(--text-secondary); letter-spacing: 1px;">
-                    📍 DHAKA, BD | 📧 realreshad@gmail.com | 💻 GITHUB.COM/RESHAD-REAL
+                <div class="contact-info">
+                    <span>📍 Dhaka, Bangladesh</span>
+                    <span>📧 <a href="mailto:realreshad@gmail.com">realreshad@gmail.com</a></span>
+                    <span>💻 <a href="https://github.com/Reshad-Real" target="_blank">github.com/Reshad-Real</a></span>
                 </div>
             </div>
         </section>
 
-        <!-- Experience -->
+        <!-- Experience Section -->
         <section id="experience">
             <div class="section-header">
-                <h2>EXPERIENCE</h2>
-                <p>Current positions in research and mentorship</p>
+                <h2>Professional Experience</h2>
+                <p>Current roles and responsibilities in research and mentorship</p>
             </div>
 
             <div class="grid">
                 <div class="card">
-                    <h3>RESEARCH ASSISTANT</h3>
+                    <h3>Research Assistant</h3>
                     <div class="card-meta">
-                        <span>BRAC UNIVERSITY</span>
-                        <span class="badge">MAR 2026 - PRESENT</span>
+                        <span>BRAC University</span>
+                        <span class="badge">Mar 2026 - Present</span>
                     </div>
-                    <p>Leading "Advancing Sustainable Biosensing: A Self-powered Biosensor for Real-time and Wireless Health Monitoring" - fully funded by BRAC University. Developing e-skin-type biosensors in simulation and hardware environments.</p>
+                    <p>Leading development of self-powered biosensors for wireless health monitoring. Managing full-cycle project from theoretical design to hardware implementation, with focus on flexible electronics and power harvesting technologies.</p>
                 </div>
 
                 <div class="card">
-                    <h3>STUDENT TUTOR</h3>
+                    <h3>Student Tutor</h3>
                     <div class="card-meta">
-                        <span>BRAC UNIVERSITY</span>
-                        <span class="badge">JAN 2024 - OCT 2025</span>
+                        <span>BRAC University</span>
+                        <span class="badge">Jan 2024 - Oct 2025</span>
                     </div>
-                    <p>Managed and mentored undergraduate students through comprehensive tutorial and consultation sessions across multiple EEE courses. Fostered strong leadership and instructional skills.</p>
+                    <p>Provided comprehensive tutorial sessions and consultation for undergraduate electrical engineering students. Developed instructional materials and fostered collaborative learning environments across multiple core EEE courses.</p>
                 </div>
 
                 <div class="card">
-                    <h3>STUDENT MENTOR</h3>
+                    <h3>Student Mentor</h3>
                     <div class="card-meta">
-                        <span>FYAT, BRAC UNIVERSITY</span>
-                        <span class="badge">JAN 2024 - JAN 2025</span>
+                        <span>First Year Advising Team</span>
+                        <span class="badge">Jan 2024 - Jan 2025</span>
                     </div>
-                    <p>Provided dedicated one-on-one mentorship as part of First Year Advising Team. Cultivated strong leadership, empathy, and student support practices.</p>
+                    <p>Delivered one-on-one mentorship to incoming students through the institutional advising program. Supported student development, academic planning, and professional growth during critical transition period.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Projects -->
+        <!-- Projects Section -->
         <section id="projects">
             <div class="section-header">
-                <h2>PROJECTS</h2>
-                <p>Current research initiatives and completed designs</p>
+                <h2>Research Projects</h2>
+                <p>Ongoing and completed research initiatives in electronics and biomedical engineering</p>
             </div>
 
             <div class="grid grid-wide">
                 <div class="card">
-                    <h3>SELF-POWERED BIOSENSOR FOR HEALTH MONITORING</h3>
+                    <h3>Self-Powered Biosensor for Real-Time Health Monitoring</h3>
                     <div class="card-meta">
-                        <span class="badge">BIOMEDICAL ENGINEERING</span>
-                        <span class="badge">MAR 2026 - PRESENT</span>
-                        <span class="badge">FUNDED</span>
+                        <span class="badge">Biomedical Electronics</span>
+                        <span class="badge">Flexible Sensors</span>
+                        <span class="badge">Mar 2026 - Present</span>
+                        <span class="badge">Funded Project</span>
                     </div>
-                    <p><strong>Focus:</strong> E-Skin technology, flexible sensor design, self-powered operation, real-time wireless health monitoring, flexible PCB integration</p>
-                    <p>Developing innovative e-skin-type biosensors operating without external power sources. Combines flexible electronics with biomedical engineering for next-generation wearable health monitoring.</p>
+                    <p><strong>Objective:</strong> Develop e-skin-type biosensors capable of autonomous operation without external power sources for continuous health monitoring.</p>
+                    <p><strong>Technologies:</strong> Flexible PCB design, energy harvesting circuits, wireless data transmission, biocompatible materials integration, real-time signal processing.</p>
+                    <p>Advancing the intersection of flexible electronics and biomedical engineering to create next-generation wearable monitoring systems with minimal infrastructure requirements.</p>
                 </div>
 
                 <div class="card">
-                    <h3>PUF-DRIVEN ADAPTIVE REDUNDANCY IN RNS-BASED DSP</h3>
+                    <h3>PUF-Driven Adaptive Redundancy in RNS-Based DSP Architectures</h3>
                     <div class="card-meta">
-                        <span class="badge">SECURITY & RELIABILITY</span>
-                        <span class="badge">ONGOING</span>
-                        <span class="badge">EDGE COMPUTING</span>
+                        <span class="badge">Hardware Security</span>
+                        <span class="badge">VLSI Design</span>
+                        <span class="badge">Ongoing</span>
                     </div>
-                    <p><strong>Objective:</strong> Security-reliability co-design framework for trustworthy edge computing. Design Ring Oscillator PUF with RRNS-based FIR filter implementation.</p>
-                    <p><strong>Key Deliverables:</strong> RO-PUF design in Cadence Virtuoso • RRNS 16-tap FIR filter • Adaptive Redundancy Controller FSM • PUF Health Monitor • Physical implementation with DRC/LVS • Security-Reliability Overhead Model</p>
+                    <p><strong>Objective:</strong> Develop security-reliability co-design framework coupling Physical Unclonable Functions (PUF) with Redundant Residue Number System (RRNS) arithmetic for trustworthy edge computing devices.</p>
+                    <p><strong>Key Components:</strong> Ring Oscillator PUF characterization in Cadence Virtuoso, 16-tap FIR filter implementation, Adaptive Redundancy Controller FSM design, health monitoring systems.</p>
+                    <p>Creating unified framework for device authentication and fault tolerance in safety-critical edge computing applications.</p>
                 </div>
 
                 <div class="card">
-                    <h3>AUTOENCODER-BASED BATTERY RUL PREDICTION (AE-HIDRUL)</h3>
+                    <h3>AutoEncoder-Based Health Index with Dynamic RUL Prediction</h3>
                     <div class="card-meta">
-                        <span class="badge">MACHINE LEARNING</span>
-                        <span class="badge">BATTERY PROGNOSTICS</span>
-                        <span class="badge">ONGOING</span>
+                        <span class="badge">Machine Learning</span>
+                        <span class="badge">Battery Systems</span>
+                        <span class="badge">Ongoing</span>
                     </div>
-                    <p><strong>Focus:</strong> Lithium-ion battery health monitoring and Remaining Useful Life prediction using deep learning</p>
-                    <p>Developing unified framework combining nonlinear Health Index construction with temporal degradation dynamics modeling. Deep autoencoder for feature extraction + explicit rate-of-change modeling for robust RUL prediction.</p>
+                    <p><strong>Objective:</strong> Develop data-driven framework for lithium-ion battery health monitoring and Remaining Useful Life (RUL) prediction using deep learning.</p>
+                    <p><strong>Approach:</strong> Nonlinear health index construction via deep autoencoders combined with explicit temporal degradation dynamics modeling for enhanced prediction accuracy.</p>
+                    <p>Addressing critical challenges in battery prognostics for electric vehicles, renewable energy storage, and grid-scale applications.</p>
                 </div>
 
                 <div class="card">
-                    <h3>IOT-BASED AIR POLLUTION MONITORING & FILTRATION CONTROL</h3>
+                    <h3>IoT-Based Air Quality Monitoring with Adaptive Filtration Control</h3>
                     <div class="card-meta">
-                        <span>FINAL YEAR DESIGN PROJECT</span>
-                        <span class="badge">JAN 2025 - JAN 2026</span>
+                        <span>Final Year Design Project</span>
+                        <span class="badge">Jan 2025 - Jan 2026</span>
                     </div>
-                    <p><strong>Technologies:</strong> IoT, embedded systems, WiFi mesh networking, multi-node sensing, two-stage filtration control</p>
-                    <p>Comprehensive air quality monitoring system with adaptive filtration. Leverages multiple IoT nodes with mesh networking for reliable real-time data transmission and intelligent control.</p>
+                    <p><strong>Technologies:</strong> Multi-node IoT architecture, WiFi mesh networking, distributed sensor arrays, intelligent filtration systems, real-time data processing.</p>
+                    <p>Designed and implemented comprehensive environmental monitoring system with autonomous control capabilities. Demonstrated integration of sensing, communication, and actuation subsystems in production-ready hardware.</p>
                     <div class="card-links">
-                        <a href="http://hdl.handle.net/10361/27479" class="card-link" target="_blank">→ REPOSITORY</a>
-                        <a href="https://github.com/Reshad-Real/IoT-Based-Monitoring-and-Industrial-Air-Purification-System.git" class="card-link" target="_blank">→ GITHUB</a>
+                        <a href="http://hdl.handle.net/10361/27479" class="card-link" target="_blank">Academic Repository →</a>
+                        <a href="https://github.com/Reshad-Real/IoT-Based-Monitoring-and-Industrial-Air-Purification-System.git" class="card-link" target="_blank">GitHub Repository →</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Skills -->
+        <!-- Skills Section -->
         <section id="skills">
             <div class="section-header">
-                <h2>SKILLS</h2>
-                <p>Technical expertise across hardware, embedded systems, and research</p>
+                <h2>Technical Expertise</h2>
+                <p>Core competencies across hardware design, embedded systems, and computational methods</p>
             </div>
 
             <div class="skills-grid">
                 <div class="skill-item">
-                    <strong>PYTHON</strong>
-                    <p>Data analysis, ML algorithms, automation, signal processing</p>
+                    <strong>VLSI Design</strong>
+                    <p>Circuit design and optimization, physical layout, Cadence Virtuoso, fabrication processes</p>
                 </div>
                 <div class="skill-item">
-                    <strong>VLSI DESIGN</strong>
-                    <p>Cadence Virtuoso, circuit design, layout, fabrication</p>
+                    <strong>Embedded Systems</strong>
+                    <p>Microcontroller programming, IoT platform integration, hardware abstraction layers</p>
                 </div>
                 <div class="skill-item">
-                    <strong>EMBEDDED SYSTEMS</strong>
-                    <p>Microcontrollers, IoT platforms, hardware integration</p>
+                    <strong>Python</strong>
+                    <p>Data analysis, signal processing, machine learning implementation, scientific computing</p>
                 </div>
                 <div class="skill-item">
-                    <strong>SMART GRIDS</strong>
-                    <p>Energy systems, monitoring, control, stability analysis</p>
+                    <strong>Digital Logic</strong>
+                    <p>FSM design, HDL programming, circuit optimization, formal verification</p>
                 </div>
                 <div class="skill-item">
-                    <strong>DIGITAL LOGIC</strong>
-                    <p>FSM design, HDL, circuit optimization, verification</p>
+                    <strong>Smart Grids</strong>
+                    <p>Grid architecture, monitoring systems, control strategies, sustainability analysis</p>
                 </div>
                 <div class="skill-item">
-                    <strong>MACHINE LEARNING</strong>
-                    <p>Deep learning, autoencoders, data-driven models</p>
+                    <strong>Machine Learning</strong>
+                    <p>Deep learning frameworks, data-driven modeling, prediction systems, optimization</p>
                 </div>
                 <div class="skill-item">
-                    <strong>LEADERSHIP</strong>
-                    <p>Team guidance, mentorship, student support</p>
+                    <strong>Flexible Electronics</strong>
+                    <p>PCB design for flexible substrates, biocompatible materials, sensor integration</p>
                 </div>
                 <div class="skill-item">
-                    <strong>PROJECT MANAGEMENT</strong>
-                    <p>Planning, execution, documentation, coordination</p>
+                    <strong>Project Leadership</strong>
+                    <p>Team coordination, stakeholder management, technical documentation, mentorship</p>
                 </div>
             </div>
         </section>
 
-        <!-- Publications -->
+        <!-- Publications Section -->
         <section id="publications">
             <div class="section-header">
-                <h2>PUBLICATIONS</h2>
-                <p>Q1 journal research contributions in energy and cybersecurity</p>
+                <h2>Publications</h2>
+                <p>Peer-reviewed research in Q1 energy and power systems journals</p>
             </div>
 
             <div class="pub-item">
-                <div class="pub-title">TOWARDS SMARTER GRIDS: A SYSTEMATIC REVIEW OF WIDE AREA MONITORING</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>Comprehensive systematic review examining wide area monitoring technologies in smart grids, focusing on system stability and environmental sustainability.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2025.101424" class="pub-link" target="_blank">→ VIEW PUBLICATION</a>
+                <div class="pub-title">Towards Smarter Grids: A Systematic Review of Wide Area Monitoring Enhancing Stability, Protection, and Environmental Sustainability</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <p>Comprehensive systematic review of wide area monitoring technologies in smart grids, analyzing their contribution to system stability, protection mechanisms, and environmental sustainability objectives.</p>
+                <a href="https://doi.org/10.1016/j.ecmx.2025.101424" class="pub-link" target="_blank">View Publication →</a>
             </div>
 
             <div class="pub-item">
-                <div class="pub-title">AI-POWERED CYBERSECURITY FOR SMART GRID COMMUNICATION</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>Systematic review of AI-driven cybersecurity approaches for smart grids, analyzing intrusion detection systems and threat mitigation strategies.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2025.101416" class="pub-link" target="_blank">→ VIEW PUBLICATION</a>
+                <div class="pub-title">AI-Powered Cybersecurity for Smart Grid Communication: A Systematic Review of Intrusion Detection and Threat Mitigation Systems</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <p>Systematic review examining artificial intelligence applications in smart grid cybersecurity, with focus on intrusion detection algorithms and threat mitigation strategies.</p>
+                <a href="https://doi.org/10.1016/j.ecmx.2025.101416" class="pub-link" target="_blank">View Publication →</a>
             </div>
 
             <div class="pub-item">
-                <div class="pub-title">STATE-OF-CHARGE-AWARE CHARGING FOR ELECTRIC VEHICLES</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>Research on EV charging optimization using machine learning and digital twin technology for intelligent charging management.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2026.101775" class="pub-link" target="_blank">→ VIEW PUBLICATION</a>
+                <div class="pub-title">State-of-Charge-Aware Charging Opportunity Detection for Electric Vehicles Using Data-Driven Learning and Digital Twin Simulation</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <p>Research on intelligent EV charging optimization utilizing machine learning algorithms and digital twin technology for predictive charging opportunity identification.</p>
+                <a href="https://doi.org/10.1016/j.ecmx.2026.101775" class="pub-link" target="_blank">View Publication →</a>
             </div>
 
             <div class="pub-item">
-                <div class="pub-title">THE NEXT GENERATION OF ENERGY STORAGE FOR SMART GRIDS</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>In-depth review of emerging energy storage technologies enabling sustainable and intelligent power grid operations.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2026.101771" class="pub-link" target="_blank">→ VIEW PUBLICATION</a>
+                <div class="pub-title">The Next Generation of Energy Storage for Smart and Sustainable Power Grids: A Systematic Review</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <p>In-depth review of emerging energy storage technologies and their enabling role in sustainable and intelligent power grid operations.</p>
+                <a href="https://doi.org/10.1016/j.ecmx.2026.101771" class="pub-link" target="_blank">View Publication →</a>
             </div>
         </section>
 
-        <!-- Education -->
+        <!-- Education Section -->
         <section id="education">
             <div class="section-header">
-                <h2>EDUCATION</h2>
-                <p>Academic achievements and qualifications</p>
+                <h2>Education</h2>
+                <p>Academic background and qualifications</p>
             </div>
 
             <div class="timeline">
                 <div class="timeline-item">
-                    <div class="timeline-date">JAN 2022 - JAN 2026</div>
-                    <div class="timeline-title">B.SC. ELECTRICAL & ELECTRONIC ENGINEERING</div>
-                    <p><strong>BRAC UNIVERSITY, DHAKA</strong></p>
-                    <p><strong>Major:</strong> Electronics | <strong>CGPA:</strong> 3.81 | <strong>Honors:</strong> 5x Dean's Lister, 3x VC's Lister</p>
-                    <p>Comprehensive coursework in EEE with specialization in electronics, covering VLSI design, embedded systems, digital logic, smart grids, and machine learning applications.</p>
+                    <div class="timeline-date">January 2022 - January 2026</div>
+                    <div class="timeline-title">B.Sc. Electrical and Electronic Engineering</div>
+                    <p><strong>BRAC University, Dhaka</strong></p>
+                    <p><strong>Major:</strong> Electronics | <strong>CGPA:</strong> 3.81 | <strong>Distinctions:</strong> 5× Dean's Lister, 3× Vice Chancellor's Lister</p>
+                    <p>Comprehensive curriculum in electrical and electronic engineering with specialization in electronics. Advanced coursework in VLSI design, embedded systems, digital logic, smart grids, and machine learning applications. Capstone project focused on IoT-based environmental monitoring systems.</p>
                 </div>
 
                 <div class="timeline-item">
                     <div class="timeline-date">2020</div>
-                    <div class="timeline-title">HIGHER SECONDARY CERTIFICATE (HSC)</div>
-                    <p><strong>SQUARE SCHOOL & COLLEGE, RAJSHAHI BOARD</strong></p>
-                    <p><strong>GPA:</strong> 5.00</p>
+                    <div class="timeline-title">Higher Secondary Certificate (HSC)</div>
+                    <p><strong>Square School and College, Rajshahi Board</strong></p>
+                    <p><strong>Grade:</strong> 5.00</p>
                 </div>
 
                 <div class="timeline-item">
                     <div class="timeline-date">2018</div>
-                    <div class="timeline-title">SECONDARY SCHOOL CERTIFICATE (SSC)</div>
-                    <p><strong>SQUARE SCHOOL & COLLEGE, RAJSHAHI BOARD</strong></p>
-                    <p><strong>GPA:</strong> 5.00</p>
+                    <div class="timeline-title">Secondary School Certificate (SSC)</div>
+                    <p><strong>Square School and College, Rajshahi Board</strong></p>
+                    <p><strong>Grade:</strong> 5.00</p>
                 </div>
             </div>
 
-            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(26, 40, 71, 0.8), rgba(20, 24, 41, 0.6)); border-left: 4px solid var(--accent); border-radius: 0; box-shadow: 0 0 20px var(--glow);">
-                <p><strong style="color: var(--accent);">LANGUAGES:</strong> <span style="color: var(--text-secondary);">English (Fluent) | Bangla (Native)</span></p>
+            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--secondary) 0%, rgba(58, 130, 255, 0.05) 100%); border-left: 4px solid var(--accent-primary); border-radius: 0 8px 8px 0;">
+                <p><strong style="color: var(--accent-secondary);">Languages:</strong> <span style="color: var(--text-secondary);">English (Professional Working Proficiency) • Bangla (Native Proficiency)</span></p>
             </div>
         </section>
     </main>
@@ -1065,11 +1244,11 @@
     <!-- Download CV Modal -->
     <div id="downloadModal" class="modal">
         <div class="modal-content">
-            <h3>DOWNLOAD CV</h3>
-            <p>Download Md. Reshad Al Muttaki's professional curriculum vitae in PDF format.</p>
+            <h3>Download CV</h3>
+            <p>Download your professional curriculum vitae in PDF format.</p>
             <div class="modal-buttons">
-                <button class="modal-download" onclick="downloadCV()">↓ DOWNLOAD</button>
-                <button class="modal-cancel" onclick="closeDownloadModal()">CANCEL</button>
+                <button class="modal-download" onclick="downloadCV()">Download PDF</button>
+                <button class="modal-cancel" onclick="closeDownloadModal()">Cancel</button>
             </div>
         </div>
     </div>
@@ -1078,12 +1257,12 @@
     <footer>
         <div class="footer-content">
             <div class="social-links">
-                <a href="mailto:realreshad@gmail.com">EMAIL</a>
-                <a href="https://github.com/Reshad-Real" target="_blank">GITHUB</a>
-                <a href="#publications">PUBLICATIONS</a>
-                <a href="#projects">PROJECTS</a>
+                <a href="mailto:realreshad@gmail.com">Email</a>
+                <a href="https://github.com/Reshad-Real" target="_blank">GitHub</a>
+                <a href="#publications">Publications</a>
+                <a href="#projects">Projects</a>
             </div>
-            <p style="letter-spacing: 1px;">&copy; 2026 MD. RESHAD AL MUTTAKI | DHAKA, BANGLADESH | ELECTRONICS ENGINEER</p>
+            <p>&copy; 2026 Md. Reshad Al Muttaki • Electronics Engineer & Researcher • Dhaka, Bangladesh</p>
         </div>
     </footer>
 

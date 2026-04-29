@@ -2,7 +2,7 @@
 
 A modern, responsive professional portfolio website showcasing research, projects, and academic achievements in Electrical and Electronic Engineering.
 
-🌐 **Live Website:** [Visit Portfolio](https://your-username.github.io/portfolio/)
+🌐 **Live Website:** [Visit Portfolio](https://reshad-real.github.io/portfolio/)
 
 ## About
 

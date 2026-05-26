@@ -238,7 +238,6 @@
             overflow: hidden;
         }
 
-        /* Flowing gradient mesh */
         .hero::before {
             content: '';
             position: absolute;
@@ -295,7 +294,6 @@
             z-index: 2;
         }
 
-        /* Startup sequence animations */
         .hero h1 {
             font-size: 3.5rem;
             font-weight: 800;
@@ -504,6 +502,7 @@
         .grid .card:nth-child(1) { animation-delay: 0.1s; }
         .grid .card:nth-child(2) { animation-delay: 0.2s; }
         .grid .card:nth-child(3) { animation-delay: 0.3s; }
+        .grid .card:nth-child(4) { animation-delay: 0.4s; }
 
         .card::before {
             content: '';
@@ -553,6 +552,16 @@
             font-size: 0.85rem;
             font-weight: 600;
             border: 1px solid rgba(88, 166, 255, 0.3);
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
         .card p {
@@ -623,6 +632,10 @@
         .skills-grid .skill-item:nth-child(6) { animation-delay: 0.35s; }
         .skills-grid .skill-item:nth-child(7) { animation-delay: 0.4s; }
         .skills-grid .skill-item:nth-child(8) { animation-delay: 0.45s; }
+        .skills-grid .skill-item:nth-child(9) { animation-delay: 0.5s; }
+        .skills-grid .skill-item:nth-child(10) { animation-delay: 0.55s; }
+        .skills-grid .skill-item:nth-child(11) { animation-delay: 0.6s; }
+        .skills-grid .skill-item:nth-child(12) { animation-delay: 0.65s; }
 
         .skill-item::after {
             content: '';
@@ -671,10 +684,20 @@
             animation-fill-mode: both;
         }
 
+        .pub-item.pub-highlight {
+            border-left-color: #34d399;
+            background: linear-gradient(135deg, var(--secondary) 0%, rgba(16, 185, 129, 0.05) 100%);
+        }
+
         .pub-item:hover {
             border-left-color: var(--accent-secondary);
             transform: translateX(6px);
             box-shadow: 0 8px 16px rgba(58, 130, 255, 0.15);
+        }
+
+        .pub-item.pub-highlight:hover {
+            border-left-color: #6ee7b7;
+            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.15);
         }
 
         .pub-title {
@@ -1013,8 +1036,8 @@
         <section class="hero" id="about">
             <div class="hero-content">
                 <h1>Md. Reshad Al Muttaki</h1>
-                <p class="title">Electronics Engineer & Biosensor Researcher</p>
-                <p>Specialized in self-powered biosensor design, embedded systems architecture, and smart grid innovation. Published researcher with expertise in hardware design, machine learning integration, and digital circuit optimization.</p>
+                <p class="title">Electronics Engineer & Researcher | Biosensors · Semiconductors · Smart Grids</p>
+                <p>Specializing in self-powered biosensor design, GaN-based semiconductor research, and smart grid innovation. Published researcher in Q1 journals with expertise in VLSI design, machine learning integration, embedded systems, and next-generation semiconductor fabrication.</p>
                 <div class="hero-buttons">
                     <a href="#projects" class="btn-primary">Explore Projects</a>
                     <button class="btn-secondary" onclick="openDownloadModal()">Download CV</button>
@@ -1036,10 +1059,21 @@
 
             <div class="grid">
                 <div class="card">
+                    <h3>Research Fellow</h3>
+                    <div class="card-meta">
+                        <span>BRAC University</span>
+                        <span class="badge">May 2026 - Present</span>
+                        <span class="badge-green">CREST Funded</span>
+                    </div>
+                    <p>Conducting research on "GaN-Based G4FET Technology: Fabrication, Characterization, Modeling, and Circuit Demonstration: A Strategic Pathway to Next-Generation Semiconductor Innovation," funded under the CREST initiative. Developing a GaN-Based G4FET up to the fabrication process.</p>
+                </div>
+
+                <div class="card">
                     <h3>Research Assistant</h3>
                     <div class="card-meta">
                         <span>BRAC University</span>
                         <span class="badge">Mar 2026 - Present</span>
+                        <span class="badge-green">RSGI Funded</span>
                     </div>
                     <p>Leading development of self-powered biosensors for wireless health monitoring. Managing full-cycle project from theoretical design to hardware implementation, with focus on flexible electronics and power harvesting technologies.</p>
                 </div>
@@ -1073,12 +1107,25 @@
 
             <div class="grid grid-wide">
                 <div class="card">
+                    <h3>GaN-Based G4FET Technology: Fabrication, Characterization & Circuit Demonstration</h3>
+                    <div class="card-meta">
+                        <span class="badge">Semiconductor Research</span>
+                        <span class="badge">GaN Technology</span>
+                        <span class="badge">May 2026 - Present</span>
+                        <span class="badge-green">CREST Funded</span>
+                    </div>
+                    <p><strong>Objective:</strong> Pioneer GaN-Based G4FET development through a strategic pathway toward next-generation semiconductor innovation, covering fabrication, characterization, modeling, and circuit demonstration.</p>
+                    <p><strong>Technologies:</strong> Silvaco TCAD simulation, GaN substrate processing, device characterization, compact modeling, circuit-level verification.</p>
+                    <p>Bridging advanced semiconductor physics with practical device engineering to unlock the performance potential of GaN technology for high-power and high-frequency applications.</p>
+                </div>
+
+                <div class="card">
                     <h3>Self-Powered Biosensor for Real-Time Health Monitoring</h3>
                     <div class="card-meta">
                         <span class="badge">Biomedical Electronics</span>
                         <span class="badge">Flexible Sensors</span>
                         <span class="badge">Mar 2026 - Present</span>
-                        <span class="badge">Funded Project</span>
+                        <span class="badge-green">RSGI Funded</span>
                     </div>
                     <p><strong>Objective:</strong> Develop e-skin-type biosensors capable of autonomous operation without external power sources for continuous health monitoring.</p>
                     <p><strong>Technologies:</strong> Flexible PCB design, energy harvesting circuits, wireless data transmission, biocompatible materials integration, real-time signal processing.</p>
@@ -1134,20 +1181,20 @@
 
             <div class="skills-grid">
                 <div class="skill-item">
-                    <strong>VLSI Design</strong>
-                    <p>Circuit design and optimization, physical layout, Cadence Virtuoso, fabrication processes</p>
+                    <strong>VLSI & Semiconductor</strong>
+                    <p>Cadence Virtuoso, Silvaco TCAD, circuit design, physical layout, fabrication processes</p>
                 </div>
                 <div class="skill-item">
                     <strong>Embedded Systems</strong>
                     <p>Microcontroller programming, IoT platform integration, hardware abstraction layers</p>
                 </div>
                 <div class="skill-item">
-                    <strong>Python</strong>
+                    <strong>Python & MATLAB</strong>
                     <p>Data analysis, signal processing, machine learning implementation, scientific computing</p>
                 </div>
                 <div class="skill-item">
                     <strong>Digital Logic</strong>
-                    <p>FSM design, HDL programming, circuit optimization, formal verification</p>
+                    <p>FSM design, HDL programming, C programming, circuit optimization, formal verification</p>
                 </div>
                 <div class="skill-item">
                     <strong>Smart Grids</strong>
@@ -1155,11 +1202,15 @@
                 </div>
                 <div class="skill-item">
                     <strong>Machine Learning</strong>
-                    <p>Deep learning frameworks, data-driven modeling, prediction systems, optimization</p>
+                    <p>Deep learning frameworks, Google Colab, data-driven modeling, prediction systems</p>
                 </div>
                 <div class="skill-item">
                     <strong>Flexible Electronics</strong>
-                    <p>PCB design for flexible substrates, biocompatible materials, sensor integration</p>
+                    <p>Altium Designer, PCB design for flexible substrates, biocompatible materials, sensor integration</p>
+                </div>
+                <div class="skill-item">
+                    <strong>Simulation & Modelling</strong>
+                    <p>COMSOL Multiphysics, Silvaco TCAD, digital twin systems, device characterization</p>
                 </div>
                 <div class="skill-item">
                     <strong>Project Leadership</strong>
@@ -1172,35 +1223,42 @@
         <section id="publications">
             <div class="section-header">
                 <h2>Publications</h2>
-                <p>Peer-reviewed research in Q1 energy and power systems journals</p>
+                <p>Peer-reviewed research in Q1 energy, power systems, and storage journals</p>
             </div>
 
             <div class="pub-item">
                 <div class="pub-title">Towards Smarter Grids: A Systematic Review of Wide Area Monitoring Enhancing Stability, Protection, and Environmental Sustainability</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
                 <p>Comprehensive systematic review of wide area monitoring technologies in smart grids, analyzing their contribution to system stability, protection mechanisms, and environmental sustainability objectives.</p>
                 <a href="https://doi.org/10.1016/j.ecmx.2025.101424" class="pub-link" target="_blank">View Publication →</a>
             </div>
 
             <div class="pub-item">
                 <div class="pub-title">AI-Powered Cybersecurity for Smart Grid Communication: A Systematic Review of Intrusion Detection and Threat Mitigation Systems</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
                 <p>Systematic review examining artificial intelligence applications in smart grid cybersecurity, with focus on intrusion detection algorithms and threat mitigation strategies.</p>
                 <a href="https://doi.org/10.1016/j.ecmx.2025.101416" class="pub-link" target="_blank">View Publication →</a>
             </div>
 
             <div class="pub-item">
                 <div class="pub-title">State-of-Charge-Aware Charging Opportunity Detection for Electric Vehicles Using Data-Driven Learning and Digital Twin Simulation</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
                 <p>Research on intelligent EV charging optimization utilizing machine learning algorithms and digital twin technology for predictive charging opportunity identification.</p>
                 <a href="https://doi.org/10.1016/j.ecmx.2026.101775" class="pub-link" target="_blank">View Publication →</a>
             </div>
 
             <div class="pub-item">
                 <div class="pub-title">The Next Generation of Energy Storage for Smart and Sustainable Power Grids: A Systematic Review</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78</div>
+                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
                 <p>In-depth review of emerging energy storage technologies and their enabling role in sustainable and intelligent power grid operations.</p>
                 <a href="https://doi.org/10.1016/j.ecmx.2026.101771" class="pub-link" target="_blank">View Publication →</a>
+            </div>
+
+            <div class="pub-item pub-highlight">
+                <div class="pub-title">Demand-Based Anomaly Detection Algorithm in Electric Vehicle Charging Systems Using Machine Learning and Digital Twin Simulation</div>
+                <div class="pub-meta">Journal of Energy Storage | Q1 (Top 6%) | Impact Factor: 9.8 | CiteScore: 13.3</div>
+                <p>Research on intelligent anomaly detection in EV charging infrastructure, combining machine learning algorithms with digital twin simulation to identify irregular demand patterns and improve grid reliability.</p>
+                <a href="https://doi.org/10.1016/j.est.2026.122795" class="pub-link" target="_blank">View Publication →</a>
             </div>
         </section>
 

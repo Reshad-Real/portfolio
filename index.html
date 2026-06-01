@@ -1,1367 +1,1012 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Md. Reshad Al Muttaki - Electronics Engineer & Researcher</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-dark: #0d1117;
-            --primary: #161b22;
-            --secondary: #21262d;
-            --tertiary: #30363d;
-            --accent-primary: #58a6ff;
-            --accent-secondary: #79c0ff;
-            --accent-tertiary: #1f6feb;
-            --electron-blue: #3b82f6;
-            --circuit-green: #10b981;
-            --warning: #d29922;
-            --text-primary: #e6edf3;
-            --text-secondary: #8b949e;
-            --text-tertiary: #6e7681;
-            --border: #30363d;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--secondary) 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Animated background lines */
-        .bg-lines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.15;
-        }
-
-        .bg-line {
-            position: absolute;
-            background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-            animation: slideAcross 8s infinite ease-in-out;
-        }
-
-        .line-1 {
-            width: 100%;
-            height: 2px;
-            top: 25%;
-            left: -100%;
-            animation-delay: 0s;
-        }
-
-        .line-2 {
-            width: 100%;
-            height: 2px;
-            top: 50%;
-            left: 100%;
-            animation-delay: 2s;
-            direction: rtl;
-        }
-
-        .line-3 {
-            width: 100%;
-            height: 2px;
-            top: 75%;
-            left: -100%;
-            animation-delay: 4s;
-        }
-
-        @keyframes slideAcross {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(13, 17, 23, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            animation: navSlideDown 0.6s ease-out;
-        }
-
-        @keyframes navSlideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .logo {
-            font-size: 1.3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo::before {
-            content: '⚛';
-            font-size: 1.5rem;
-            -webkit-text-fill-color: var(--electron-blue);
-            animation: spinAtom 3s linear infinite;
-        }
-
-        @keyframes spinAtom {
-            0% { transform: rotateZ(0deg); }
-            100% { transform: rotateZ(360deg); }
-        }
-
-        nav ul {
-            display: flex;
-            gap: 3rem;
-            list-style: none;
-        }
-
-        nav a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-weight: 500;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--electron-blue));
-            transition: width 0.3s ease;
-        }
-
-        nav a:hover {
-            color: var(--accent-primary);
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        .nav-right {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-
-        .download-btn {
-            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
-            color: white;
-            border: none;
-            padding: 0.6rem 1.4rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
-            animation: slideInRight 0.6s ease-out 0.2s both;
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
-        }
-
-        /* Main Container */
-        main {
-            margin-top: 60px;
-            position: relative;
-            z-index: 1;
-        }
-
-        section {
-            padding: 4rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        /* Hero Section with Startup Animation */
-        .hero {
-            min-height: calc(100vh - 60px);
-            display: flex;
-            align-items: center;
-            padding: 6rem 2rem;
-            background: linear-gradient(135deg, rgba(13, 17, 23, 0.8), rgba(22, 27, 34, 0.8)),
-                        radial-gradient(circle at 20% 50%, rgba(58, 130, 255, 0.1), transparent 50%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            right: -30%;
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, rgba(58, 130, 255, 0.2), transparent);
-            border-radius: 50%;
-            filter: blur(80px);
-            animation: meshFlow 10s ease-in-out infinite;
-            z-index: 0;
-        }
-
-        @keyframes meshFlow {
-            0%, 100% {
-                transform: translate(0, 0);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translate(100px, -50px);
-                opacity: 1;
-            }
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            bottom: -20%;
-            left: 10%;
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
-            border-radius: 50%;
-            filter: blur(60px);
-            animation: meshFlow2 12s ease-in-out infinite;
-            z-index: 0;
-        }
-
-        @keyframes meshFlow2 {
-            0%, 100% {
-                transform: translate(0, 0);
-                opacity: 0.5;
-            }
-            50% {
-                transform: translate(-50px, 50px);
-                opacity: 0.8;
-            }
-        }
-
-        .hero-content {
-            max-width: 800px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 0.8rem;
-            background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: titleReveal 0.8s ease-out, textShadowGlow 3s ease-in-out 0.8s infinite;
-        }
-
-        @keyframes titleReveal {
-            0% {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes textShadowGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 20px rgba(88, 166, 255, 0.3));
-            }
-            50% {
-                filter: drop-shadow(0 0 40px rgba(88, 166, 255, 0.6));
-            }
-        }
-
-        .hero .title {
-            font-size: 1.3rem;
-            color: var(--accent-primary);
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            animation: fadeInDown 0.8s ease-out 0.2s both;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero p {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.8;
-            max-width: 700px;
-            animation: fadeInUp 0.8s ease-out 0.4s both;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
-            animation: fadeIn 0.8s ease-out 0.6s both;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
-            color: white;
-            padding: 0.9rem 2rem;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(88, 166, 255, 0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--accent-primary);
-            padding: 0.9rem 2rem;
-            border: 1.5px solid var(--accent-primary);
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(88, 166, 255, 0.1);
-            transform: translateY(-3px);
-        }
-
-        .contact-info {
-            margin-top: 2rem;
-            font-size: 0.95rem;
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            animation: fadeIn 0.8s ease-out 0.8s both;
-        }
-
-        .contact-info > span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-        }
-
-        .contact-info a {
-            color: var(--accent-primary);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            font-weight: 500;
-        }
-
-        .contact-info a:hover {
-            color: var(--accent-secondary);
-            text-decoration: underline;
-        }
-
-        /* Section Styling */
-        .section-header {
-            margin-bottom: 3.5rem;
-            position: relative;
-            animation: slideInUp 0.6s ease-out;
-        }
-
-        .section-header h2 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .section-header h2::before {
-            content: '';
-            width: 4px;
-            height: 35px;
-            background: linear-gradient(180deg, var(--accent-primary), var(--electron-blue));
-            border-radius: 2px;
-            animation: expandHeight 0.6s ease-out;
-        }
-
-        @keyframes expandHeight {
-            from { height: 0; }
-            to { height: 35px; }
-        }
-
-        .section-header p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        /* Card Styles */
-        .card {
-            background: linear-gradient(135deg, var(--secondary) 0%, rgba(33, 38, 45, 0.5) 100%);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            animation: slideInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .grid .card:nth-child(1) { animation-delay: 0.1s; }
-        .grid .card:nth-child(2) { animation-delay: 0.2s; }
-        .grid .card:nth-child(3) { animation-delay: 0.3s; }
-        .grid .card:nth-child(4) { animation-delay: 0.4s; }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--electron-blue), transparent);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .card:hover {
-            border-color: var(--accent-primary);
-            background: linear-gradient(135deg, var(--secondary) 0%, rgba(58, 130, 255, 0.05) 100%);
-            transform: translateY(-6px);
-            box-shadow: 0 12px 24px rgba(58, 130, 255, 0.15);
-        }
-
-        .card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
-            color: var(--accent-secondary);
-            font-weight: 700;
-        }
-
-        .card-meta {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.2rem;
-            font-size: 0.9rem;
-            color: var(--text-tertiary);
-        }
-
-        .badge {
-            background: rgba(88, 166, 255, 0.15);
-            color: var(--accent-secondary);
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid rgba(88, 166, 255, 0.3);
-        }
-
-        .badge-green {
-            background: rgba(16, 185, 129, 0.15);
-            color: #34d399;
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 1rem;
-        }
-
-        .card-links {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .card-link {
-            color: var(--accent-primary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card-link:hover {
-            color: var(--accent-secondary);
-            transform: translateX(4px);
-        }
-
-        /* Grid */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .grid-wide {
-            grid-template-columns: 1fr;
-        }
-
-        /* Skills Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .skill-item {
-            background: linear-gradient(135deg, var(--secondary), rgba(33, 38, 45, 0.5));
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-            position: relative;
-            animation: slideInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .skills-grid .skill-item:nth-child(1) { animation-delay: 0.1s; }
-        .skills-grid .skill-item:nth-child(2) { animation-delay: 0.15s; }
-        .skills-grid .skill-item:nth-child(3) { animation-delay: 0.2s; }
-        .skills-grid .skill-item:nth-child(4) { animation-delay: 0.25s; }
-        .skills-grid .skill-item:nth-child(5) { animation-delay: 0.3s; }
-        .skills-grid .skill-item:nth-child(6) { animation-delay: 0.35s; }
-        .skills-grid .skill-item:nth-child(7) { animation-delay: 0.4s; }
-        .skills-grid .skill-item:nth-child(8) { animation-delay: 0.45s; }
-        .skills-grid .skill-item:nth-child(9) { animation-delay: 0.5s; }
-        .skills-grid .skill-item:nth-child(10) { animation-delay: 0.55s; }
-        .skills-grid .skill-item:nth-child(11) { animation-delay: 0.6s; }
-        .skills-grid .skill-item:nth-child(12) { animation-delay: 0.65s; }
-
-        .skill-item::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--accent-primary), var(--electron-blue));
-            transition: width 0.3s ease;
-        }
-
-        .skill-item:hover {
-            border-color: var(--accent-primary);
-            background: linear-gradient(135deg, var(--secondary), rgba(58, 130, 255, 0.05));
-            transform: translateY(-4px);
-        }
-
-        .skill-item:hover::after {
-            width: 100%;
-        }
-
-        .skill-item strong {
-            color: var(--accent-secondary);
-            display: block;
-            margin-bottom: 0.6rem;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .skill-item p {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* Publications */
-        .pub-item {
-            padding: 1.8rem;
-            border-left: 4px solid var(--accent-primary);
-            background: linear-gradient(135deg, var(--secondary) 0%, rgba(58, 130, 255, 0.05) 100%);
-            border-radius: 0 8px 8px 0;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-            animation: slideInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .pub-item.pub-highlight {
-            border-left-color: #34d399;
-            background: linear-gradient(135deg, var(--secondary) 0%, rgba(16, 185, 129, 0.05) 100%);
-        }
-
-        .pub-item:hover {
-            border-left-color: var(--accent-secondary);
-            transform: translateX(6px);
-            box-shadow: 0 8px 16px rgba(58, 130, 255, 0.15);
-        }
-
-        .pub-item.pub-highlight:hover {
-            border-left-color: #6ee7b7;
-            box-shadow: 0 8px 16px rgba(16, 185, 129, 0.15);
-        }
-
-        .pub-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--accent-secondary);
-            margin-bottom: 0.6rem;
-        }
-
-        .pub-meta {
-            font-size: 0.9rem;
-            color: var(--text-tertiary);
-            margin-bottom: 0.8rem;
-        }
-
-        .pub-link {
-            display: inline-block;
-            margin-top: 0.8rem;
-            color: var(--accent-primary);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .pub-link:hover {
-            color: var(--accent-secondary);
-            transform: translateX(4px);
-        }
-
-        /* Timeline */
-        .timeline {
-            position: relative;
-            padding: 2rem 0;
-        }
-
-        .timeline-item {
-            padding: 1.8rem;
-            padding-left: 3rem;
-            border-left: 2px solid var(--border);
-            margin-bottom: 2.5rem;
-            background: linear-gradient(135deg, var(--secondary), rgba(33, 38, 45, 0.3));
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            position: relative;
-            animation: slideInUp 0.6s ease-out;
-            animation-fill-mode: both;
-        }
-
-        .timeline-item:nth-child(1) { animation-delay: 0.1s; }
-        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
-        .timeline-item:nth-child(3) { animation-delay: 0.3s; }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -9px;
-            top: 28px;
-            width: 18px;
-            height: 18px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            transition: all 0.3s ease;
-            box-shadow: 0 0 0 3px rgba(58, 130, 255, 0.2);
-            animation: pulseNode 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseNode {
-            0%, 100% { box-shadow: 0 0 0 3px rgba(58, 130, 255, 0.2); }
-            50% { box-shadow: 0 0 0 8px rgba(58, 130, 255, 0.1); }
-        }
-
-        .timeline-item:hover {
-            border-left-color: var(--accent-primary);
-            background: linear-gradient(135deg, var(--secondary), rgba(58, 130, 255, 0.08));
-            transform: translateX(8px);
-        }
-
-        .timeline-item:hover::before {
-            box-shadow: 0 0 0 8px rgba(58, 130, 255, 0.4);
-        }
-
-        .timeline-date {
-            color: var(--accent-primary);
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 0.4rem;
-        }
-
-        .timeline-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent-secondary);
-            margin-bottom: 0.6rem;
-        }
-
-        .timeline-item p {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Footer */
-        footer {
-            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
-            border-top: 1px solid var(--border);
-            padding: 3rem 2rem;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 2rem;
-            justify-content: center;
-            margin-bottom: 2rem;
-        }
-
-        .social-links a {
-            color: var(--accent-primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            color: var(--accent-secondary);
-            transform: translateY(-2px);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, var(--secondary), var(--tertiary));
-            padding: 2.5rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            max-width: 400px;
-            text-align: center;
-            animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-        }
-
-        @keyframes popIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .modal-content h3 {
-            margin-bottom: 1rem;
-            color: var(--accent-secondary);
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .modal-content p {
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 0.9rem;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-        }
-
-        .modal-download {
-            background: linear-gradient(135deg, var(--accent-primary), var(--electron-blue));
-            color: white;
-            border: none;
-            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
-        }
-
-        .modal-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
-        }
-
-        .modal-cancel {
-            background: transparent;
-            color: var(--accent-primary);
-        }
-
-        .modal-cancel:hover {
-            background: rgba(88, 166, 255, 0.1);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav ul {
-                gap: 1.5rem;
-                font-size: 0.9rem;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .section-header h2 {
-                font-size: 2rem;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .skills-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-            }
-
-            .btn-primary,
-            .btn-secondary {
-                width: 100%;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            nav {
-                padding: 0.75rem 1rem;
-            }
-
-            nav ul {
-                gap: 1rem;
-                font-size: 0.85rem;
-            }
-
-            .hero {
-                padding: 3rem 1rem;
-            }
-
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-
-            section {
-                padding: 2rem 1rem;
-            }
-
-            .skills-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Reshad Al Muttaki — EEE Researcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #040608;
+  --bg2:      #080d12;
+  --panel:    #0a1018;
+  --border:   #0f1e2a;
+  --border2:  #162333;
+  --cyan:     #0af0c8;
+  --cyan-dim: rgba(10,240,200,0.12);
+  --cyan-glow:rgba(10,240,200,0.06);
+  --amber:    #f5a623;
+  --amber-dim:rgba(245,166,35,0.1);
+  --red:      #ff4757;
+  --text:     #c8d8e8;
+  --muted:    #3a5060;
+  --muted2:   #5a7080;
+  --white:    #eaf4ff;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CURSOR ─── */
+#cur { position:fixed; width:8px; height:8px; border-radius:50%; background:var(--cyan); pointer-events:none; z-index:9999; mix-blend-mode:screen; transition:transform 0.1s; }
+#cur-trail { position:fixed; width:28px; height:28px; border:1px solid var(--cyan); border-radius:50%; pointer-events:none; z-index:9998; mix-blend-mode:screen; opacity:0.5; transition:width 0.3s,height 0.3s,opacity 0.3s; }
+
+/* ─── CIRCUIT BACKGROUND ─── */
+#circuit-bg {
+  position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.35;
+}
+
+/* ─── NAV ─── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1rem 4rem;
+  background: rgba(4,6,8,0.85);
+  backdrop-filter: blur(24px);
+  border-bottom:1px solid var(--border);
+}
+.nav-id {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.4rem; letter-spacing:0.12em;
+  color:var(--cyan);
+}
+.nav-id span { color:var(--white); }
+.nav-links { display:flex; gap:2.5rem; list-style:none; }
+.nav-links a {
+  font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none;
+  transition:color 0.2s; position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; left:0; bottom:-4px; width:0; height:1px;
+  background:var(--cyan); transition:width 0.3s;
+}
+.nav-links a:hover { color:var(--cyan); }
+.nav-links a:hover::after { width:100%; }
+.nav-links a.active { color:var(--cyan); }
+.nav-links a.active::after { width:100%; }
+
+/* ─── HERO ─── */
+#hero {
+  position:relative; min-height:100vh;
+  display:flex; flex-direction:column; justify-content:center;
+  padding: 0 4rem 0 4rem;
+  overflow:hidden; z-index:1;
+}
+.hero-eyebrow {
+  font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase;
+  color:var(--muted2); margin-bottom:1.8rem;
+  opacity:0; animation:fadeIn 0.6s 0.6s forwards;
+  display:flex; align-items:center; gap:1rem;
+}
+.hero-eyebrow::before {
+  content:''; display:inline-block; width:40px; height:1px; background:var(--cyan);
+}
+.hero-name {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,9vw,8rem);
+  line-height:0.9; letter-spacing:0.04em;
+  color:var(--white);
+  opacity:0; animation:fadeIn 0.8s 0.8s forwards;
+}
+.hero-name .highlight { color:var(--cyan); }
+.hero-role {
+  margin-top:1.2rem;
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:clamp(0.85rem,1.5vw,1rem); font-weight:300;
+  color:var(--muted2); letter-spacing:0.08em;
+  opacity:0; animation:fadeIn 0.8s 1s forwards;
+}
+.hero-role strong { color:var(--amber); font-weight:500; }
+.hero-stats {
+  display:flex; gap:3rem; margin-top:3.5rem;
+  opacity:0; animation:fadeIn 0.8s 1.2s forwards;
+}
+.stat { display:flex; flex-direction:column; gap:0.3rem; }
+.stat-num {
+  font-family:'Bebas Neue',sans-serif; font-size:2.8rem;
+  line-height:1; color:var(--white);
+}
+.stat-num span { color:var(--cyan); font-size:1.6rem; }
+.stat-label { font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); }
+.hero-cta {
+  display:flex; gap:1.2rem; margin-top:3rem;
+  opacity:0; animation:fadeIn 0.8s 1.4s forwards;
+}
+.btn {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase;
+  padding:0.8rem 2rem; text-decoration:none; cursor:none;
+  transition:all 0.25s; position:relative; overflow:hidden;
+  display:inline-flex; align-items:center; gap:0.6rem;
+}
+.btn-primary {
+  background:transparent; color:var(--cyan);
+  border:1px solid var(--cyan);
+}
+.btn-primary::before {
+  content:''; position:absolute; inset:0;
+  background:var(--cyan); transform:scaleX(0); transform-origin:left;
+  transition:transform 0.3s ease; z-index:-1;
+}
+.btn-primary:hover::before { transform:scaleX(1); }
+.btn-primary:hover { color:var(--bg); }
+.btn-outline {
+  background:transparent; color:var(--muted2);
+  border:1px solid var(--border2);
+}
+.btn-outline:hover { border-color:var(--muted2); color:var(--white); }
+
+/* Oscilloscope widget */
+#osc-wrap {
+  position:absolute; right:4rem; top:50%; transform:translateY(-50%);
+  width:380px; opacity:0; animation:fadeIn 1s 1.6s forwards;
+}
+.osc-frame {
+  border:1px solid var(--border2);
+  background:var(--panel);
+  padding:1.2rem;
+  position:relative;
+}
+.osc-label {
+  font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:0.8rem;
+  display:flex; justify-content:space-between;
+}
+.osc-label span { color:var(--cyan); }
+.osc-screen {
+  position:relative; height:120px; overflow:hidden;
+  background:#020608;
+  border:1px solid var(--border);
+}
+/* grid lines on osc */
+.osc-screen::before {
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(10,240,200,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(10,240,200,0.06) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.osc-metrics {
+  display:flex; gap:1.5rem; margin-top:0.8rem;
+}
+.osc-m { display:flex; flex-direction:column; gap:2px; }
+.osc-m-val { font-size:0.75rem; color:var(--cyan); }
+.osc-m-key { font-size:0.55rem; letter-spacing:0.15em; color:var(--muted); text-transform:uppercase; }
+
+/* ─── SECTION BASE ─── */
+section { position:relative; z-index:1; padding:6rem 4rem; }
+.sec-header { margin-bottom:3.5rem; }
+.sec-num {
+  font-size:0.6rem; letter-spacing:0.25em; text-transform:uppercase;
+  color:var(--cyan); margin-bottom:0.6rem; display:flex; align-items:center; gap:0.8rem;
+}
+.sec-num::after { content:''; flex:1; max-width:60px; height:1px; background:var(--border2); }
+.sec-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.2rem,4vw,3.5rem); letter-spacing:0.06em;
+  color:var(--white); line-height:1;
+}
+.sec-title em { color:var(--cyan); font-style:normal; }
+
+/* ─── RESEARCH ACTIVITIES (prominent) ─── */
+.research-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+
+.r-card {
+  background:var(--panel); border:1px solid var(--border);
+  padding:2rem; position:relative; overflow:hidden;
+  opacity:0; transform:translateY(24px);
+  transition:opacity 0.5s,transform 0.5s,border-color 0.3s;
+}
+.r-card.visible { opacity:1; transform:none; }
+.r-card:hover { border-color:var(--cyan); }
+/* corner accent */
+.r-card::before,.r-card::after {
+  content:''; position:absolute;
+  width:12px; height:12px;
+  border-color:var(--cyan); border-style:solid;
+  opacity:0; transition:opacity 0.3s;
+}
+.r-card::before { top:8px; right:8px; border-width:1px 1px 0 0; }
+.r-card::after  { bottom:8px; left:8px; border-width:0 0 1px 1px; }
+.r-card:hover::before,.r-card:hover::after { opacity:1; }
+
+/* top accent bar */
+.r-card-bar {
+  height:2px; width:40px; background:var(--cyan);
+  margin-bottom:1.5rem;
+  transition:width 0.4s;
+}
+.r-card:hover .r-card-bar { width:80px; }
+
+.r-card-tag {
+  font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--amber); margin-bottom:0.8rem;
+  display:flex; align-items:center; gap:0.5rem;
+}
+.r-card-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--amber); animation:pulse-dot 2s infinite; }
+.r-card-title {
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:0.92rem; font-weight:500; color:var(--white);
+  line-height:1.5; margin-bottom:1rem;
+}
+.r-card-body {
+  font-size:0.75rem; line-height:1.9; color:var(--muted2);
+  font-family:'IBM Plex Mono',monospace; font-weight:300;
+}
+.r-card-body li { list-style:none; padding-left:1.2rem; position:relative; margin-bottom:0.4rem; }
+.r-card-body li::before { content:'▸'; position:absolute; left:0; color:var(--cyan); opacity:0.6; }
+.r-fund {
+  margin-top:1.2rem; font-size:0.6rem; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--muted);
+  padding:0.4rem 0.8rem; border:1px solid var(--border); display:inline-block;
+}
+.r-period {
+  position:absolute; top:1.5rem; right:1.5rem;
+  font-size:0.58rem; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase;
+}
+
+/* ─── EXPERIENCE TIMELINE ─── */
+.xp-timeline { position:relative; }
+.xp-timeline::before {
+  content:''; position:absolute; left:116px; top:0; bottom:0; width:1px;
+  background:linear-gradient(to bottom,var(--cyan),transparent 90%);
+}
+.xp-item {
+  display:grid; grid-template-columns:100px 1fr; gap:2.5rem;
+  margin-bottom:3rem; position:relative;
+  opacity:0; transform:translateX(-16px);
+  transition:opacity 0.5s,transform 0.5s;
+}
+.xp-item.visible { opacity:1; transform:none; }
+.xp-item::before {
+  content:''; position:absolute; left:109px; top:6px;
+  width:16px; height:16px; border:1px solid var(--cyan);
+  background:var(--bg); z-index:2;
+  box-shadow:0 0 16px var(--cyan-dim);
+  transform:rotate(45deg);
+}
+.xp-date {
+  text-align:right; font-size:0.62rem; letter-spacing:0.1em;
+  color:var(--muted); line-height:1.6; padding-top:2px;
+  font-style:italic;
+}
+.xp-content { padding-left:0.5rem; }
+.xp-title {
+  font-family:'Bebas Neue',sans-serif; font-size:1.35rem;
+  letter-spacing:0.08em; color:var(--white); margin-bottom:0.2rem;
+}
+.xp-org { font-size:0.68rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--cyan); margin-bottom:0.8rem; }
+.xp-body { font-size:0.75rem; line-height:1.85; color:var(--muted2); font-weight:300; }
+.xp-body li { list-style:none; padding-left:1rem; position:relative; margin-bottom:0.35rem; }
+.xp-body li::before { content:'—'; position:absolute; left:0; color:var(--border2); }
+
+/* Courses taught inline */
+.courses-row { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.8rem; }
+.course-chip {
+  font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.25rem 0.7rem; border:1px solid var(--border2); color:var(--muted);
+  transition:border-color 0.2s,color 0.2s;
+}
+.xp-item:hover .course-chip { border-color:var(--cyan); color:var(--cyan); }
+
+/* ─── PUBLICATIONS ─── */
+.pub-list { display:flex; flex-direction:column; gap:1px; }
+.pub-item {
+  display:grid; grid-template-columns:auto 1fr auto;
+  gap:2rem; align-items:start;
+  padding:1.8rem 0;
+  border-top:1px solid var(--border);
+  opacity:0; transform:translateY(16px);
+  transition:opacity 0.5s,transform 0.5s;
+  position:relative;
+}
+.pub-item.visible { opacity:1; transform:none; }
+.pub-item::after {
+  content:''; position:absolute; bottom:0; left:0; width:0; height:1px;
+  background:var(--cyan); transition:width 0.4s;
+}
+.pub-item:hover::after { width:100%; }
+.pub-idx {
+  font-family:'Bebas Neue',sans-serif; font-size:2.5rem;
+  color:var(--border2); line-height:1; padding-top:2px;
+  transition:color 0.3s;
+}
+.pub-item:hover .pub-idx { color:var(--cyan); }
+.pub-title {
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:0.88rem; font-weight:500; color:var(--white);
+  line-height:1.5; margin-bottom:0.6rem;
+}
+.pub-venue {
+  font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase;
+  color:var(--muted2); margin-bottom:0.4rem;
+}
+.pub-badges { display:flex; gap:0.6rem; flex-wrap:wrap; }
+.badge {
+  font-size:0.58rem; letter-spacing:0.1em; padding:0.2rem 0.6rem;
+  border:1px solid; text-transform:uppercase;
+}
+.badge-q1 { border-color:var(--amber); color:var(--amber); }
+.badge-if  { border-color:var(--border2); color:var(--muted); }
+.pub-doi {
+  font-size:0.62rem; letter-spacing:0.08em; text-decoration:none;
+  color:var(--muted); white-space:nowrap;
+  transition:color 0.2s; padding-top:4px;
+}
+.pub-doi:hover { color:var(--cyan); }
+
+/* ─── SKILLS ─── */
+.skills-section { display:grid; grid-template-columns:1fr 1fr; gap:4rem; }
+.skill-group-title {
+  font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:1.5rem;
+}
+.skill-bars { display:flex; flex-direction:column; gap:1rem; }
+.skill-bar-item { }
+.skill-bar-label {
+  display:flex; justify-content:space-between;
+  font-size:0.7rem; letter-spacing:0.08em; color:var(--text);
+  margin-bottom:0.4rem;
+}
+.skill-bar-label span { color:var(--muted); font-size:0.62rem; }
+.skill-bar-track {
+  height:2px; background:var(--border); position:relative; overflow:hidden;
+}
+.skill-bar-fill {
+  height:100%; background:linear-gradient(to right,var(--cyan),rgba(10,240,200,0.4));
+  width:0; transition:width 1.2s cubic-bezier(0.16,1,0.3,1);
+  position:relative;
+}
+.skill-bar-fill::after {
+  content:''; position:absolute; right:0; top:-3px;
+  width:8px; height:8px; background:var(--cyan);
+  border-radius:50%; box-shadow:0 0 10px var(--cyan);
+}
+.skill-tags { display:flex; flex-wrap:wrap; gap:0.7rem; }
+.skill-tag {
+  font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase;
+  padding:0.45rem 1rem; border:1px solid var(--border2); color:var(--muted2);
+  transition:border-color 0.25s,color 0.25s,background 0.25s;
+  opacity:0; transition:opacity 0.4s,border-color 0.25s,color 0.25s;
+}
+.skill-tag.visible { opacity:1; }
+.skill-tag:hover { border-color:var(--cyan); color:var(--cyan); background:var(--cyan-glow); }
+
+/* ─── INTERESTS ─── */
+.interests-strip {
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap:1px; background:var(--border);
+  border:1px solid var(--border);
+}
+.int-cell {
+  background:var(--panel); padding:1.5rem 1.2rem;
+  position:relative; overflow:hidden;
+  opacity:0; transition:opacity 0.5s;
+  cursor:none;
+}
+.int-cell.visible { opacity:1; }
+.int-cell::before {
+  content:''; position:absolute; inset:0;
+  background:var(--cyan-glow); opacity:0; transition:opacity 0.3s;
+}
+.int-cell:hover::before { opacity:1; }
+.int-cell:hover { background:var(--bg2); }
+.int-icon { font-size:1.4rem; margin-bottom:0.8rem; display:block; }
+.int-name {
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:0.72rem; font-weight:400; color:var(--text); line-height:1.4;
+}
+
+/* ─── ACHIEVEMENTS ─── */
+.achieve-row { display:flex; gap:1px; background:var(--border); border:1px solid var(--border); overflow:hidden; }
+.ach-cell {
+  flex:1; background:var(--panel); padding:1.4rem;
+  opacity:0; transition:opacity 0.4s;
+  position:relative; overflow:hidden;
+}
+.ach-cell.visible { opacity:1; }
+.ach-cell:hover { background:var(--bg2); }
+.ach-label {
+  font-size:0.58rem; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:0.5rem;
+}
+.ach-val {
+  font-family:'Bebas Neue',sans-serif; font-size:1.1rem;
+  letter-spacing:0.06em; color:var(--white);
+}
+.ach-type-vc .ach-val { color:var(--amber); }
+.ach-type-dl .ach-val { color:var(--cyan); }
+
+/* ─── EDUCATION ─── */
+.edu-row { display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); }
+.edu-cell {
+  display:grid; grid-template-columns:1fr auto;
+  background:var(--panel); padding:1.8rem 2rem;
+  opacity:0; transform:translateY(12px);
+  transition:opacity 0.5s,transform 0.5s,background 0.3s;
+}
+.edu-cell.visible { opacity:1; transform:none; }
+.edu-cell:hover { background:var(--bg2); }
+.edu-deg {
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:0.92rem; font-weight:500; color:var(--white); margin-bottom:0.3rem;
+}
+.edu-inst { font-size:0.68rem; letter-spacing:0.1em; color:var(--muted2); margin-bottom:0.2rem; }
+.edu-period { font-size:0.6rem; letter-spacing:0.12em; color:var(--muted); font-style:italic; }
+.edu-gpa {
+  font-family:'Bebas Neue',sans-serif; font-size:2rem;
+  color:var(--cyan); align-self:center; letter-spacing:0.04em;
+}
+
+/* ─── CONTACT / FOOTER ─── */
+.contact-strip {
+  background:var(--panel); border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:2.5rem 4rem;
+}
+.contact-label {
+  font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:0.4rem;
+}
+.contact-val { font-size:0.85rem; color:var(--white); }
+.contact-val a { color:var(--cyan); text-decoration:none; }
+.contact-val a:hover { text-decoration:underline; }
+footer {
+  z-index:1; position:relative;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.2rem 4rem;
+  font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase;
+  color:var(--muted); border-top:1px solid var(--border);
+}
+footer span { color:var(--cyan); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes pulse-dot { 0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(245,166,35,0.4)} 50%{opacity:0.6;box-shadow:0 0 0 6px rgba(245,166,35,0)} }
+@keyframes osc-draw { to { stroke-dashoffset:0; } }
+@keyframes signal-flow { 0%{stroke-dashoffset:400} 100%{stroke-dashoffset:0} }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+@keyframes trace-in { from{stroke-dashoffset:var(--len)} to{stroke-dashoffset:0} }
+@keyframes dim-flicker { 0%,100%{opacity:0.35} 40%{opacity:0.22} 70%{opacity:0.4} }
+
+/* Oscilloscope wave animation */
+.osc-path {
+  fill:none; stroke:var(--cyan); stroke-width:1.5;
+  stroke-dasharray:900; stroke-dashoffset:900;
+  animation:osc-draw 2.4s cubic-bezier(0.4,0,0.2,1) 1.8s forwards;
+  filter:drop-shadow(0 0 4px rgba(10,240,200,0.6));
+}
+.osc-path2 {
+  fill:none; stroke:var(--amber); stroke-width:1; opacity:0.4;
+  stroke-dasharray:900; stroke-dashoffset:900;
+  animation:osc-draw 2.8s cubic-bezier(0.4,0,0.2,1) 2s forwards;
+}
+
+/* Circuit SVG traces */
+.ct { fill:none; stroke:var(--cyan); stroke-width:0.8; opacity:0; }
+.ct.trace { animation:trace-in var(--dur,2s) var(--delay,0s) ease forwards, dim-flicker 8s var(--delay,0s) infinite; stroke-dasharray:var(--len,200); stroke-dashoffset:var(--len,200); }
+.ct-node { fill:var(--cyan); opacity:0; }
+.ct-node.on { animation:fadeIn 0.3s var(--nd,0s) forwards; }
+
+/* Responsive */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem}
+  section{padding:4rem 1.5rem}
+  .research-grid{grid-template-columns:1fr}
+  #osc-wrap{display:none}
+  .xp-timeline::before{left:0}
+  .xp-item{grid-template-columns:1fr;gap:0.5rem}
+  .xp-item::before{display:none}
+  .xp-date{text-align:left}
+  .skills-section{grid-template-columns:1fr;gap:2rem}
+  .interests-strip{grid-template-columns:repeat(2,1fr)}
+  .contact-strip{flex-direction:column;gap:2rem;align-items:flex-start}
+  footer{flex-direction:column;gap:0.5rem}
+}
+</style>
 </head>
 <body>
-    <!-- Animated background lines -->
-    <div class="bg-lines">
-        <div class="bg-line line-1"></div>
-        <div class="bg-line line-2"></div>
-        <div class="bg-line line-3"></div>
+
+<!-- cursor -->
+<div id="cur"></div>
+<div id="cur-trail"></div>
+
+<!-- circuit bg -->
+<svg id="circuit-bg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <!-- main horizontal traces -->
+  <path class="ct trace" style="--len:800;--dur:3.5s;--delay:0.2s" d="M0 180 H320 V260 H600 V180 H900"/>
+  <path class="ct trace" style="--len:600;--dur:3s;--delay:0.8s" d="M1440 520 H1100 V440 H800"/>
+  <path class="ct trace" style="--len:700;--dur:4s;--delay:0.4s" d="M0 650 H200 V580 H500 V650 H780"/>
+  <path class="ct trace" style="--len:500;--dur:3.2s;--delay:1.2s" d="M1440 280 H1260 V360 H1060 V280 H900"/>
+  <path class="ct trace" style="--len:400;--dur:2.8s;--delay:1.5s" d="M300 900 V720 H540 V800 H740"/>
+  <path class="ct trace" style="--len:350;--dur:3s;--delay:0.6s" d="M1100 900 V760 H960 V840 H820"/>
+  <!-- nodes / pads -->
+  <circle class="ct-node on" style="--nd:0.8s" cx="320" cy="180" r="3"/>
+  <circle class="ct-node on" style="--nd:1.2s" cx="600" cy="260" r="3"/>
+  <circle class="ct-node on" style="--nd:1.8s" cx="800" cy="440" r="3"/>
+  <circle class="ct-node on" style="--nd:2s"   cx="500" cy="650" r="3"/>
+  <circle class="ct-node on" style="--nd:2.4s" cx="1060" cy="360" r="3"/>
+  <!-- IC outlines -->
+  <rect class="ct trace" style="--len:120;--dur:2s;--delay:2s" x="880" y="155" width="60" height="50" rx="2"/>
+  <rect class="ct trace" style="--len:120;--dur:2s;--delay:2.5s" x="750" y="415" width="60" height="50" rx="2"/>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-id">RAM<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#research">Research</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#education">Education</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <p class="hero-eyebrow">EEE Researcher · BRAC University · Dhaka, Bangladesh</p>
+  <h1 class="hero-name">MD. RESHAD<br>AL <span class="highlight">MUTTAKI</span></h1>
+  <p class="hero-role">Research Assistant &amp; Fellow — Biosensors · GaN Semiconductors · <strong>Smart Grid AI</strong></p>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">5<span>×</span></div>
+      <div class="stat-label">Q1 Publications</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3.81</div>
+      <div class="stat-label">CGPA / 4.00</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">9<span>+</span></div>
+      <div class="stat-label">Research Fields</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2<span>×</span></div>
+      <div class="stat-label">Active Grants</div>
+    </div>
+  </div>
+
+  <div class="hero-cta">
+    <a href="#publications" class="btn btn-primary">↓ Publications</a>
+    <a href="mailto:realreshad@gmail.com" class="btn btn-outline">realreshad@gmail.com</a>
+  </div>
+
+  <!-- oscilloscope -->
+  <div id="osc-wrap">
+    <div class="osc-frame">
+      <div class="osc-label">
+        <span>Biosensor Signal — CH1/CH2</span>
+        <span>AUTO</span>
+      </div>
+      <div class="osc-screen">
+        <svg viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+          <!-- CH1: biopotential-ish wave -->
+          <path class="osc-path" d="
+            M0,60 L20,60 L22,60 L24,30 L26,80 L28,60
+            L60,60 L62,60 L64,28 L66,82 L68,60
+            L100,60 L102,60 L104,30 L106,80 L108,60
+            L140,60 L142,60 L144,28 L146,82 L148,60
+            L180,60 L182,60 L184,30 L186,80 L188,60
+            L220,60 L222,60 L224,28 L226,82 L228,60
+            L260,60 L262,60 L264,30 L266,80 L268,60
+            L300,60 L302,60 L304,28 L306,82 L308,60
+            L360,60"/>
+          <!-- CH2: slower sinusoidal -->
+          <path class="osc-path2" d="M0,60 Q30,30 60,60 Q90,90 120,60 Q150,30 180,60 Q210,90 240,60 Q270,30 300,60 Q330,90 360,60"/>
+        </svg>
+      </div>
+      <div class="osc-metrics">
+        <div class="osc-m"><div class="osc-m-val">3.3V</div><div class="osc-m-key">Vpp CH1</div></div>
+        <div class="osc-m"><div class="osc-m-val">1.8V</div><div class="osc-m-key">Vpp CH2</div></div>
+        <div class="osc-m"><div class="osc-m-val">72Hz</div><div class="osc-m-key">Freq</div></div>
+        <div class="osc-m"><div class="osc-m-val" id="osc-time" style="font-family:'IBM Plex Mono'">—</div><div class="osc-m-key">Timestamp</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH ACTIVITIES -->
+<section id="research">
+  <div class="sec-header">
+    <div class="sec-num">01 — Active Research</div>
+    <h2 class="sec-title">Current <em>Investigations</em></h2>
+  </div>
+  <div class="research-grid">
+
+    <div class="r-card">
+      <div class="r-period">Mar 2026 – Present</div>
+      <div class="r-card-bar"></div>
+      <div class="r-card-tag">Research Assistant · RSGI Funded</div>
+      <div class="r-card-title">Advancing Sustainable Biosensing: A Self-Powered Biosensor for Real-Time and Wireless Health Monitoring</div>
+      <ul class="r-card-body">
+        <li>Developing an e-skin-type biosensor in both simulation and hardware environments</li>
+        <li>Targeting real-time, wireless biopotential acquisition for continuous health monitoring</li>
+        <li>Integrating energy harvesting to create a fully self-powered sensing platform</li>
+      </ul>
+      <div class="r-fund">Funded by RSGI — BRAC University</div>
     </div>
 
-    <!-- Navigation -->
-    <nav>
-        <div class="logo">RESHAD</div>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#experience">Experience</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#publications">Publications</a></li>
-            <li><a href="#education">Education</a></li>
+    <div class="r-card">
+      <div class="r-period">May 2026 – Present</div>
+      <div class="r-card-bar" style="background:var(--amber)"></div>
+      <div class="r-card-tag" style="color:var(--cyan)">Research Fellow · CREST Initiative</div>
+      <div class="r-card-title">GaN-Based G4FET Technology: Fabrication, Characterization, Modeling, and Circuit Demonstration</div>
+      <ul class="r-card-body">
+        <li>Developing a GaN-Based G4FET from design through full fabrication process</li>
+        <li>Characterizing device performance and building compact electrical models</li>
+        <li>Demonstrating circuit-level functionality as a next-gen semiconductor pathway</li>
+      </ul>
+      <div class="r-fund" style="border-color:rgba(245,166,35,0.3);color:var(--amber)">Funded under CREST Initiative</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="padding-top:2rem">
+  <div class="sec-header">
+    <div class="sec-num">02 — Professional Experience</div>
+    <h2 class="sec-title">Work &amp; <em>Teaching</em></h2>
+  </div>
+  <div class="xp-timeline">
+
+    <div class="xp-item">
+      <div class="xp-date">Jan 2024<br>→ Oct 2025</div>
+      <div class="xp-content">
+        <div class="xp-title">Student Tutor (ST)</div>
+        <div class="xp-org">BSRM School of Engineering — Dept. of EEE, BRAC University</div>
+        <ul class="xp-body">
+          <li>Managed and mentored undergraduate students through structured tutorial and consultation sessions</li>
+          <li>Facilitated problem-solving workshops covering circuit theory, energy systems, and embedded electronics</li>
+          <li>Collaborated with faculty supervisors across three academic departments</li>
         </ul>
-        <div class="nav-right">
-            <button class="download-btn" onclick="openDownloadModal()">Download CV</button>
+        <div class="courses-row">
+          <span class="course-chip">Electronic Circuits I</span>
+          <span class="course-chip">Electrical Circuits I</span>
+          <span class="course-chip">Energy Conversion</span>
         </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero" id="about">
-            <div class="hero-content">
-                <h1>Md. Reshad Al Muttaki</h1>
-                <p class="title">Electronics Engineer & Researcher | Biosensors · Semiconductors · Smart Grids</p>
-                <p>Specializing in self-powered biosensor design, GaN-based semiconductor research, and smart grid innovation. Published researcher in Q1 journals with expertise in VLSI design, machine learning integration, embedded systems, and next-generation semiconductor fabrication.</p>
-                <div class="hero-buttons">
-                    <a href="#projects" class="btn-primary">Explore Projects</a>
-                    <button class="btn-secondary" onclick="openDownloadModal()">Download CV</button>
-                </div>
-                <div class="contact-info">
-                    <span>📍 Dhaka, Bangladesh</span>
-                    <span>📧 <a href="mailto:realreshad@gmail.com">realreshad@gmail.com</a></span>
-                    <span>💻 <a href="https://github.com/Reshad-Real" target="_blank">github.com/Reshad-Real</a></span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Experience Section -->
-        <section id="experience">
-            <div class="section-header">
-                <h2>Professional Experience</h2>
-                <p>Current roles and responsibilities in research and mentorship</p>
-            </div>
-
-            <div class="grid">
-                <div class="card">
-                    <h3>Research Fellow</h3>
-                    <div class="card-meta">
-                        <span>BRAC University</span>
-                        <span class="badge">May 2026 - Present</span>
-                        <span class="badge-green">CREST Funded</span>
-                    </div>
-                    <p>Conducting research on "GaN-Based G4FET Technology: Fabrication, Characterization, Modeling, and Circuit Demonstration: A Strategic Pathway to Next-Generation Semiconductor Innovation," funded under the CREST initiative. Developing a GaN-Based G4FET up to the fabrication process.</p>
-                </div>
-
-                <div class="card">
-                    <h3>Research Assistant</h3>
-                    <div class="card-meta">
-                        <span>BRAC University</span>
-                        <span class="badge">Mar 2026 - Present</span>
-                        <span class="badge-green">RSGI Funded</span>
-                    </div>
-                    <p>Leading development of self-powered biosensors for wireless health monitoring. Managing full-cycle project from theoretical design to hardware implementation, with focus on flexible electronics and power harvesting technologies.</p>
-                </div>
-
-                <div class="card">
-                    <h3>Student Tutor</h3>
-                    <div class="card-meta">
-                        <span>BRAC University</span>
-                        <span class="badge">Jan 2024 - Oct 2025</span>
-                    </div>
-                    <p>Provided comprehensive tutorial sessions and consultation for undergraduate electrical engineering students. Developed instructional materials and fostered collaborative learning environments across multiple core EEE courses.</p>
-                </div>
-
-                <div class="card">
-                    <h3>Student Mentor</h3>
-                    <div class="card-meta">
-                        <span>First Year Advising Team</span>
-                        <span class="badge">Jan 2024 - Jan 2025</span>
-                    </div>
-                    <p>Delivered one-on-one mentorship to incoming students through the institutional advising program. Supported student development, academic planning, and professional growth during critical transition period.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects">
-            <div class="section-header">
-                <h2>Research Projects</h2>
-                <p>Ongoing and completed research initiatives in electronics and biomedical engineering</p>
-            </div>
-
-            <div class="grid grid-wide">
-                <div class="card">
-                    <h3>GaN-Based G4FET Technology: Fabrication, Characterization & Circuit Demonstration</h3>
-                    <div class="card-meta">
-                        <span class="badge">Semiconductor Research</span>
-                        <span class="badge">GaN Technology</span>
-                        <span class="badge">May 2026 - Present</span>
-                        <span class="badge-green">CREST Funded</span>
-                    </div>
-                    <p><strong>Objective:</strong> Pioneer GaN-Based G4FET development through a strategic pathway toward next-generation semiconductor innovation, covering fabrication, characterization, modeling, and circuit demonstration.</p>
-                    <p><strong>Technologies:</strong> Silvaco TCAD simulation, GaN substrate processing, device characterization, compact modeling, circuit-level verification.</p>
-                    <p>Bridging advanced semiconductor physics with practical device engineering to unlock the performance potential of GaN technology for high-power and high-frequency applications.</p>
-                </div>
-
-                <div class="card">
-                    <h3>Self-Powered Biosensor for Real-Time Health Monitoring</h3>
-                    <div class="card-meta">
-                        <span class="badge">Biomedical Electronics</span>
-                        <span class="badge">Flexible Sensors</span>
-                        <span class="badge">Mar 2026 - Present</span>
-                        <span class="badge-green">RSGI Funded</span>
-                    </div>
-                    <p><strong>Objective:</strong> Develop e-skin-type biosensors capable of autonomous operation without external power sources for continuous health monitoring.</p>
-                    <p><strong>Technologies:</strong> Flexible PCB design, energy harvesting circuits, wireless data transmission, biocompatible materials integration, real-time signal processing.</p>
-                    <p>Advancing the intersection of flexible electronics and biomedical engineering to create next-generation wearable monitoring systems with minimal infrastructure requirements.</p>
-                </div>
-
-                <div class="card">
-                    <h3>PUF-Driven Adaptive Redundancy in RNS-Based DSP Architectures</h3>
-                    <div class="card-meta">
-                        <span class="badge">Hardware Security</span>
-                        <span class="badge">VLSI Design</span>
-                        <span class="badge">Ongoing</span>
-                    </div>
-                    <p><strong>Objective:</strong> Develop security-reliability co-design framework coupling Physical Unclonable Functions (PUF) with Redundant Residue Number System (RRNS) arithmetic for trustworthy edge computing devices.</p>
-                    <p><strong>Key Components:</strong> Ring Oscillator PUF characterization in Cadence Virtuoso, 16-tap FIR filter implementation, Adaptive Redundancy Controller FSM design, health monitoring systems.</p>
-                    <p>Creating unified framework for device authentication and fault tolerance in safety-critical edge computing applications.</p>
-                </div>
-
-                <div class="card">
-                    <h3>AutoEncoder-Based Health Index with Dynamic RUL Prediction</h3>
-                    <div class="card-meta">
-                        <span class="badge">Machine Learning</span>
-                        <span class="badge">Battery Systems</span>
-                        <span class="badge">Ongoing</span>
-                    </div>
-                    <p><strong>Objective:</strong> Develop data-driven framework for lithium-ion battery health monitoring and Remaining Useful Life (RUL) prediction using deep learning.</p>
-                    <p><strong>Approach:</strong> Nonlinear health index construction via deep autoencoders combined with explicit temporal degradation dynamics modeling for enhanced prediction accuracy.</p>
-                    <p>Addressing critical challenges in battery prognostics for electric vehicles, renewable energy storage, and grid-scale applications.</p>
-                </div>
-
-                <div class="card">
-                    <h3>IoT-Based Air Quality Monitoring with Adaptive Filtration Control</h3>
-                    <div class="card-meta">
-                        <span>Final Year Design Project</span>
-                        <span class="badge">Jan 2025 - Jan 2026</span>
-                    </div>
-                    <p><strong>Technologies:</strong> Multi-node IoT architecture, WiFi mesh networking, distributed sensor arrays, intelligent filtration systems, real-time data processing.</p>
-                    <p>Designed and implemented comprehensive environmental monitoring system with autonomous control capabilities. Demonstrated integration of sensing, communication, and actuation subsystems in production-ready hardware.</p>
-                    <div class="card-links">
-                        <a href="http://hdl.handle.net/10361/27479" class="card-link" target="_blank">Academic Repository →</a>
-                        <a href="https://github.com/Reshad-Real/IoT-Based-Monitoring-and-Industrial-Air-Purification-System.git" class="card-link" target="_blank">GitHub Repository →</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills">
-            <div class="section-header">
-                <h2>Technical Expertise</h2>
-                <p>Core competencies across hardware design, embedded systems, and computational methods</p>
-            </div>
-
-            <div class="skills-grid">
-                <div class="skill-item">
-                    <strong>VLSI & Semiconductor</strong>
-                    <p>Cadence Virtuoso, Silvaco TCAD, circuit design, physical layout, fabrication processes</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Embedded Systems</strong>
-                    <p>Microcontroller programming, IoT platform integration, hardware abstraction layers</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Python & MATLAB</strong>
-                    <p>Data analysis, signal processing, machine learning implementation, scientific computing</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Digital Logic</strong>
-                    <p>FSM design, HDL programming, C programming, circuit optimization, formal verification</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Smart Grids</strong>
-                    <p>Grid architecture, monitoring systems, control strategies, sustainability analysis</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Machine Learning</strong>
-                    <p>Deep learning frameworks, Google Colab, data-driven modeling, prediction systems</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Flexible Electronics</strong>
-                    <p>Altium Designer, PCB design for flexible substrates, biocompatible materials, sensor integration</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Simulation & Modelling</strong>
-                    <p>COMSOL Multiphysics, Silvaco TCAD, digital twin systems, device characterization</p>
-                </div>
-                <div class="skill-item">
-                    <strong>Project Leadership</strong>
-                    <p>Team coordination, stakeholder management, technical documentation, mentorship</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Publications Section -->
-        <section id="publications">
-            <div class="section-header">
-                <h2>Publications</h2>
-                <p>Peer-reviewed research in Q1 energy, power systems, and storage journals</p>
-            </div>
-
-            <div class="pub-item">
-                <div class="pub-title">Towards Smarter Grids: A Systematic Review of Wide Area Monitoring Enhancing Stability, Protection, and Environmental Sustainability</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>Comprehensive systematic review of wide area monitoring technologies in smart grids, analyzing their contribution to system stability, protection mechanisms, and environmental sustainability objectives.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2025.101424" class="pub-link" target="_blank">View Publication →</a>
-            </div>
-
-            <div class="pub-item">
-                <div class="pub-title">AI-Powered Cybersecurity for Smart Grid Communication: A Systematic Review of Intrusion Detection and Threat Mitigation Systems</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>Systematic review examining artificial intelligence applications in smart grid cybersecurity, with focus on intrusion detection algorithms and threat mitigation strategies.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2025.101416" class="pub-link" target="_blank">View Publication →</a>
-            </div>
-
-            <div class="pub-item">
-                <div class="pub-title">State-of-Charge-Aware Charging Opportunity Detection for Electric Vehicles Using Data-Driven Learning and Digital Twin Simulation</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>Research on intelligent EV charging optimization utilizing machine learning algorithms and digital twin technology for predictive charging opportunity identification.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2026.101775" class="pub-link" target="_blank">View Publication →</a>
-            </div>
-
-            <div class="pub-item">
-                <div class="pub-title">The Next Generation of Energy Storage for Smart and Sustainable Power Grids: A Systematic Review</div>
-                <div class="pub-meta">Energy Conversion and Management: X | Q1 (Top 7%) | Impact Factor: 8.78 | CiteScore: 11.3</div>
-                <p>In-depth review of emerging energy storage technologies and their enabling role in sustainable and intelligent power grid operations.</p>
-                <a href="https://doi.org/10.1016/j.ecmx.2026.101771" class="pub-link" target="_blank">View Publication →</a>
-            </div>
-
-            <div class="pub-item pub-highlight">
-                <div class="pub-title">Demand-Based Anomaly Detection Algorithm in Electric Vehicle Charging Systems Using Machine Learning and Digital Twin Simulation</div>
-                <div class="pub-meta">Journal of Energy Storage | Q1 (Top 6%) | Impact Factor: 9.8 | CiteScore: 13.3</div>
-                <p>Research on intelligent anomaly detection in EV charging infrastructure, combining machine learning algorithms with digital twin simulation to identify irregular demand patterns and improve grid reliability.</p>
-                <a href="https://doi.org/10.1016/j.est.2026.122795" class="pub-link" target="_blank">View Publication →</a>
-            </div>
-        </section>
-
-        <!-- Education Section -->
-        <section id="education">
-            <div class="section-header">
-                <h2>Education</h2>
-                <p>Academic background and qualifications</p>
-            </div>
-
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-date">January 2022 - January 2026</div>
-                    <div class="timeline-title">B.Sc. Electrical and Electronic Engineering</div>
-                    <p><strong>BRAC University, Dhaka</strong></p>
-                    <p><strong>Major:</strong> Electronics | <strong>CGPA:</strong> 3.81 | <strong>Distinctions:</strong> 5× Dean's Lister, 3× Vice Chancellor's Lister</p>
-                    <p>Comprehensive curriculum in electrical and electronic engineering with specialization in electronics. Advanced coursework in VLSI design, embedded systems, digital logic, smart grids, and machine learning applications. Capstone project focused on IoT-based environmental monitoring systems.</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">2020</div>
-                    <div class="timeline-title">Higher Secondary Certificate (HSC)</div>
-                    <p><strong>Square School and College, Rajshahi Board</strong></p>
-                    <p><strong>Grade:</strong> 5.00</p>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-date">2018</div>
-                    <div class="timeline-title">Secondary School Certificate (SSC)</div>
-                    <p><strong>Square School and College, Rajshahi Board</strong></p>
-                    <p><strong>Grade:</strong> 5.00</p>
-                </div>
-            </div>
-
-            <div style="margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, var(--secondary) 0%, rgba(58, 130, 255, 0.05) 100%); border-left: 4px solid var(--accent-primary); border-radius: 0 8px 8px 0;">
-                <p><strong style="color: var(--accent-secondary);">Languages:</strong> <span style="color: var(--text-secondary);">English (Professional Working Proficiency) • Bangla (Native Proficiency)</span></p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Download CV Modal -->
-    <div id="downloadModal" class="modal">
-        <div class="modal-content">
-            <h3>Download CV</h3>
-            <p>Download your professional curriculum vitae in PDF format.</p>
-            <div class="modal-buttons">
-                <button class="modal-download" onclick="downloadCV()">Download PDF</button>
-                <button class="modal-cancel" onclick="closeDownloadModal()">Cancel</button>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="social-links">
-                <a href="mailto:realreshad@gmail.com">Email</a>
-                <a href="https://github.com/Reshad-Real" target="_blank">GitHub</a>
-                <a href="#publications">Publications</a>
-                <a href="#projects">Projects</a>
-            </div>
-            <p>&copy; 2026 Md. Reshad Al Muttaki • Electronics Engineer & Researcher • Dhaka, Bangladesh</p>
+    <div class="xp-item">
+      <div class="xp-date">Jan 2024<br>→ Jan 2025</div>
+      <div class="xp-content">
+        <div class="xp-title">Student Mentor</div>
+        <div class="xp-org">First Year Advising Team (FYAT) — OAA, BRAC University</div>
+        <ul class="xp-body">
+          <li>Provided one-on-one academic and personal mentorship to first-year engineering students</li>
+          <li>Guided students through course selection, study habits, and university integration</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PUBLICATIONS -->
+<section id="publications" style="padding-top:2rem">
+  <div class="sec-header">
+    <div class="sec-num">03 — Research Output</div>
+    <h2 class="sec-title">Published <em>Works</em></h2>
+  </div>
+  <div class="pub-list">
+
+    <div class="pub-item">
+      <div class="pub-idx">01</div>
+      <div>
+        <div class="pub-title">Towards Smarter Grids: A Systematic Review of Wide Area Monitoring Enhancing Stability, Protection, and Environmental Sustainability</div>
+        <div class="pub-venue">Energy Conversion and Management: X</div>
+        <div class="pub-badges">
+          <span class="badge badge-q1">Q1 · Top 7%</span>
+          <span class="badge badge-if">IF 8.78</span>
+          <span class="badge badge-if">CiteScore 11.3</span>
         </div>
-    </footer>
+      </div>
+      <a class="pub-doi" href="https://doi.org/10.1016/j.ecmx.2025.101424" target="_blank">DOI ↗</a>
+    </div>
 
-    <script>
-        function openDownloadModal() {
-            document.getElementById('downloadModal').classList.add('active');
-        }
+    <div class="pub-item">
+      <div class="pub-idx">02</div>
+      <div>
+        <div class="pub-title">AI-Powered Cybersecurity for Smart Grid Communication: A Systematic Review of Intrusion Detection and Threat Mitigation Systems</div>
+        <div class="pub-venue">Energy Conversion and Management: X</div>
+        <div class="pub-badges">
+          <span class="badge badge-q1">Q1 · Top 7%</span>
+          <span class="badge badge-if">IF 8.78</span>
+          <span class="badge badge-if">CiteScore 11.3</span>
+        </div>
+      </div>
+      <a class="pub-doi" href="https://doi.org/10.1016/j.ecmx.2025.101416" target="_blank">DOI ↗</a>
+    </div>
 
-        function closeDownloadModal() {
-            document.getElementById('downloadModal').classList.remove('active');
-        }
+    <div class="pub-item">
+      <div class="pub-idx">03</div>
+      <div>
+        <div class="pub-title">State-of-Charge-Aware Charging Opportunity Detection for Electric Vehicles Using Data-Driven Learning and Digital Twin Simulation</div>
+        <div class="pub-venue">Energy Conversion and Management: X</div>
+        <div class="pub-badges">
+          <span class="badge badge-q1">Q1 · Top 7%</span>
+          <span class="badge badge-if">IF 8.78</span>
+          <span class="badge badge-if">CiteScore 11.3</span>
+        </div>
+      </div>
+      <a class="pub-doi" href="https://doi.org/10.1016/j.ecmx.2026.101775" target="_blank">DOI ↗</a>
+    </div>
 
-        function downloadCV() {
-            const link = document.createElement('a');
-            link.href = 'CV_Reshad.pdf';
-            link.download = 'Md_Reshad_Al_Muttaki_CV.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            closeDownloadModal();
-        }
+    <div class="pub-item">
+      <div class="pub-idx">04</div>
+      <div>
+        <div class="pub-title">The Next Generation of Energy Storage for Smart and Sustainable Power Grids: A Systematic Review</div>
+        <div class="pub-venue">Energy Conversion and Management: X</div>
+        <div class="pub-badges">
+          <span class="badge badge-q1">Q1 · Top 7%</span>
+          <span class="badge badge-if">IF 8.78</span>
+          <span class="badge badge-if">CiteScore 11.3</span>
+        </div>
+      </div>
+      <a class="pub-doi" href="https://doi.org/10.1016/j.ecmx.2026.101771" target="_blank">DOI ↗</a>
+    </div>
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('downloadModal');
-            if (event.target == modal) {
-                modal.classList.remove('active');
-            }
-        }
+    <div class="pub-item">
+      <div class="pub-idx">05</div>
+      <div>
+        <div class="pub-title">Demand-Based Anomaly Detection Algorithm in Electric Vehicle Charging Systems Using Machine Learning and Digital Twin Simulation</div>
+        <div class="pub-venue">Journal of Energy Storage</div>
+        <div class="pub-badges">
+          <span class="badge badge-q1">Q1 · Top 6%</span>
+          <span class="badge badge-if">IF 9.8</span>
+          <span class="badge badge-if">CiteScore 13.3</span>
+        </div>
+      </div>
+      <a class="pub-doi" href="https://doi.org/10.1016/j.est.2026.122795" target="_blank">DOI ↗</a>
+    </div>
 
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="padding-top:2rem">
+  <div class="sec-header">
+    <div class="sec-num">04 — Technical Skills</div>
+    <h2 class="sec-title">Tools &amp; <em>Expertise</em></h2>
+  </div>
+  <div class="skills-section">
+    <div>
+      <div class="skill-group-title">// Core Proficiency</div>
+      <div class="skill-bars">
+        <div class="skill-bar-item">
+          <div class="skill-bar-label">Python <span>Primary</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" data-w="90"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-label">MATLAB <span>Simulation</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" data-w="85"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-label">COMSOL Multiphysics <span>FEA / FEM</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" data-w="80"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-label">Silvaco TCAD <span>Semiconductor</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" data-w="75"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-label">Verilog / VHDL <span>HDL Design</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" data-w="70"></div></div>
+        </div>
+        <div class="skill-bar-item">
+          <div class="skill-bar-label">Cadence <span>IC Layout</span></div>
+          <div class="skill-bar-track"><div class="skill-bar-fill" data-w="65"></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-title">// Additional Tools</div>
+      <div class="skill-tags">
+        <span class="skill-tag">C Programming</span>
+        <span class="skill-tag">Altium Designer</span>
+        <span class="skill-tag">Git & GitHub</span>
+        <span class="skill-tag">HTML</span>
+        <span class="skill-tag">Google Suite</span>
+        <span class="skill-tag">MS Office Suite</span>
+      </div>
+      <div class="skill-group-title" style="margin-top:2.5rem">// Research Interests</div>
+      <div class="interests-strip" style="grid-template-columns:repeat(2,1fr)">
+        <div class="int-cell"><span class="int-icon">⚡</span><div class="int-name">AI & Machine Learning</div></div>
+        <div class="int-cell"><span class="int-icon">🔒</span><div class="int-name">Cybersecurity</div></div>
+        <div class="int-cell"><span class="int-icon">🪞</span><div class="int-name">Digital Twin Systems</div></div>
+        <div class="int-cell"><span class="int-icon">🔬</span><div class="int-name">VLSI & Hardware</div></div>
+        <div class="int-cell"><span class="int-icon">📡</span><div class="int-name">IoT Smart Monitoring</div></div>
+        <div class="int-cell"><span class="int-icon">💎</span><div class="int-name">Semiconductor Research</div></div>
+        <div class="int-cell"><span class="int-icon">🤖</span><div class="int-name">Edge AI & Sensing</div></div>
+        <div class="int-cell"><span class="int-icon">🏥</span><div class="int-name">Biomedical AI</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education" style="padding-top:2rem">
+  <div class="sec-header">
+    <div class="sec-num">05 — Education</div>
+    <h2 class="sec-title">Academic <em>Record</em></h2>
+  </div>
+  <div class="edu-row">
+    <div class="edu-cell">
+      <div>
+        <div class="edu-deg">B.Sc. Electrical & Electronic Engineering</div>
+        <div class="edu-inst">BRAC University · Major: Electronics</div>
+        <div class="edu-period">Jan 2022 – Jan 2026</div>
+      </div>
+      <div class="edu-gpa">3.81</div>
+    </div>
+    <div class="edu-cell">
+      <div>
+        <div class="edu-deg">Higher Secondary Certificate (HSC)</div>
+        <div class="edu-inst">Square School & College · Rajshahi Board · Science</div>
+        <div class="edu-period">Passing Year: 2020</div>
+      </div>
+      <div class="edu-gpa">5.00</div>
+    </div>
+    <div class="edu-cell">
+      <div>
+        <div class="edu-deg">Secondary School Certificate (SSC)</div>
+        <div class="edu-inst">Square School & College · Rajshahi Board · Science</div>
+        <div class="edu-period">Passing Year: 2018</div>
+      </div>
+      <div class="edu-gpa">5.00</div>
+    </div>
+  </div>
+
+  <!-- Achievements -->
+  <div style="margin-top:2rem">
+    <div class="skill-group-title" style="margin-bottom:1rem">// Honors & Distinctions</div>
+    <div class="achieve-row">
+      <div class="ach-cell ach-type-vc"><div class="ach-label">VC's List</div><div class="ach-val">Spring '23</div></div>
+      <div class="ach-cell ach-type-vc"><div class="ach-label">VC's List</div><div class="ach-val">Summer '23</div></div>
+      <div class="ach-cell ach-type-vc"><div class="ach-label">VC's List</div><div class="ach-val">Summer '24</div></div>
+      <div class="ach-cell ach-type-dl"><div class="ach-label">Dean's List</div><div class="ach-val">Fall '22</div></div>
+      <div class="ach-cell ach-type-dl"><div class="ach-label">Dean's List</div><div class="ach-val">Fall '23</div></div>
+      <div class="ach-cell ach-type-dl"><div class="ach-label">Dean's List</div><div class="ach-val">Spring '24</div></div>
+      <div class="ach-cell ach-type-dl"><div class="ach-label">Dean's List</div><div class="ach-val">Fall '24</div></div>
+      <div class="ach-cell ach-type-dl"><div class="ach-label">Dean's List</div><div class="ach-val">Spring '25</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-strip">
+  <div>
+    <div class="contact-label">Email</div>
+    <div class="contact-val"><a href="mailto:realreshad@gmail.com">realreshad@gmail.com</a></div>
+  </div>
+  <div>
+    <div class="contact-label">Phone</div>
+    <div class="contact-val">+8801919482265</div>
+  </div>
+  <div>
+    <div class="contact-label">Location</div>
+    <div class="contact-val">Mirpur 11, Dhaka-1212, Bangladesh</div>
+  </div>
+  <a href="#research" class="btn btn-primary" style="margin-top:0">↑ Back to Top</a>
+</div>
+
+<footer>
+  <span>Md. Reshad Al Muttaki</span>
+  <span>EEE · BRAC University · 2026</span>
+</footer>
+
+<script>
+/* ── Cursor ── */
+const cur = document.getElementById('cur');
+const curT = document.getElementById('cur-trail');
+let mx=0, my=0, tx=0, ty=0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = (mx - 4) + 'px';
+  cur.style.top  = (my - 4) + 'px';
+});
+(function loop() {
+  tx += (mx - tx) * 0.1;
+  ty += (my - ty) * 0.1;
+  curT.style.left = (tx - 14) + 'px';
+  curT.style.top  = (ty - 14) + 'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,.r-card,.pub-item,.int-cell,.skill-tag').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cur.style.transform = 'scale(2.5)';
+    curT.style.width = '50px'; curT.style.height = '50px';
+    curT.style.opacity = '0.25';
+    curT.style.borderColor = 'var(--amber)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cur.style.transform = 'scale(1)';
+    curT.style.width = '28px'; curT.style.height = '28px';
+    curT.style.opacity = '0.5';
+    curT.style.borderColor = 'var(--cyan)';
+  });
+});
+
+/* ── Scroll Reveal ── */
+const revealAll = document.querySelectorAll('.r-card,.xp-item,.pub-item,.edu-cell,.ach-cell,.int-cell,.skill-tag');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealAll.forEach((el, i) => {
+  const siblings = [...el.parentNode.children];
+  const idx = siblings.indexOf(el);
+  el.style.transitionDelay = (idx * 55) + 'ms';
+  io.observe(el);
+});
+
+/* ── Skill bars ── */
+const barIO = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.skill-bar-fill').forEach(fill => {
+        const w = fill.getAttribute('data-w');
+        setTimeout(() => { fill.style.width = w + '%'; }, 200);
+      });
+      barIO.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+document.querySelectorAll('.skill-bars').forEach(el => barIO.observe(el));
+
+/* ── Active nav on scroll ── */
+const sections = document.querySelectorAll('section[id]');
+const navAs = document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 220) cur = s.id; });
+  navAs.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+}, { passive: true });
+
+/* ── Oscilloscope clock ── */
+const oscTime = document.getElementById('osc-time');
+if (oscTime) {
+  setInterval(() => {
+    const now = new Date();
+    oscTime.textContent = now.toTimeString().slice(0,8);
+  }, 1000);
+}
+
+/* ── Hero typewriter for eyebrow ── */
+const eyebrow = document.querySelector('.hero-eyebrow');
+if (eyebrow) {
+  const txt = eyebrow.textContent;
+  eyebrow.textContent = '';
+  eyebrow.style.opacity = '1';
+  let i = 0;
+  const iv = setInterval(() => {
+    eyebrow.textContent += txt[i++];
+    if (i >= txt.length) clearInterval(iv);
+  }, 30);
+}
+
+/* ── Research card stagger override ── */
+document.querySelectorAll('.r-card').forEach((el, i) => {
+  el.style.transitionDelay = (i * 120) + 'ms';
+});
+</script>
 </body>
 </html>

@@ -361,13 +361,32 @@ body::after {
 .cert-title { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; }
 .cert-org { color: var(--copper); font-family: var(--font-mono); font-size: 0.9rem; margin-top: 4px; }
 .cert-date { font-family: var(--font-mono); font-size: 0.82rem; color: var(--text-mute); padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; }
-.cert-desc { color: var(--text-dim); max-width: 720px; margin-bottom: 24px; position: relative; }
-.cert-modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; position: relative; }
-.module-chip { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: rgba(6,9,17,0.5); transition: all 0.3s var(--ease); }
-.module-chip:hover { border-color: var(--copper); transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.35); }
-.mod-idx { font-family: var(--font-digital); font-size: 0.9rem; color: var(--copper); border: 1px solid rgba(255,157,59,0.3); border-radius: 6px; padding: 4px 8px; flex-shrink: 0; }
-.module-chip b { display: block; font-size: 0.92rem; margin-bottom: 3px; }
-.module-chip small { color: var(--text-mute); font-size: 0.76rem; line-height: 1.4; }
+.cert-desc { color: var(--text-dim); margin-bottom: 0; position: relative; }
+.cert-main { display: flex; gap: 24px; align-items: flex-start; position: relative; }
+.cert-seal { flex-shrink: 0; width: 96px; height: 96px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 1px solid rgba(255,157,59,0.35); background: radial-gradient(circle at 50% 32%, rgba(255,157,59,0.2), transparent 70%), var(--panel-2); position: relative; }
+.cert-seal svg { width: 34px; height: 34px; fill: none; stroke: var(--copper); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.cert-seal span { font-family: var(--font-digital); font-size: 0.64rem; letter-spacing: 0.12em; color: var(--copper); }
+.cert-seal::after { content: ""; position: absolute; inset: -7px; border: 1px dashed rgba(255,157,59,0.28); border-radius: 24px; animation: spin 20s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.cert-info { flex: 1; min-width: 0; }
+.cert-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.cert-flow { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 34px; position: relative; }
+.flow-step { position: relative; padding: 0 12px; text-align: center; }
+.flow-step::before { content: ""; position: absolute; top: 21px; left: -50%; width: 100%; height: 2px; background: linear-gradient(90deg, var(--copper), var(--cyan)); opacity: 0.35; }
+.flow-step:first-child::before { display: none; }
+.flow-node { position: relative; z-index: 1; width: 44px; height: 44px; margin: 0 auto 14px; border-radius: 13px; display: grid; place-items: center; font-family: var(--font-digital); font-size: 0.9rem; color: var(--copper); border: 1px solid rgba(255,157,59,0.4); background: var(--panel-2); box-shadow: 0 0 0 5px var(--bg); transition: all 0.3s var(--ease); }
+.flow-step:hover .flow-node { color: #120a02; background: linear-gradient(135deg, var(--copper), #ffca7a); box-shadow: 0 0 0 5px var(--bg), 0 0 20px rgba(255,157,59,0.45); transform: translateY(-3px); }
+.flow-body b { display: block; font-size: 0.9rem; margin-bottom: 5px; }
+.flow-body small { color: var(--text-mute); font-size: 0.76rem; line-height: 1.45; }
+@media (max-width: 780px) {
+  .cert-flow { grid-template-columns: 1fr; gap: 6px; }
+  .flow-step { display: flex; align-items: flex-start; gap: 14px; text-align: left; padding: 10px 0; }
+  .flow-step::before { display: none; }
+  .flow-node { margin: 0; box-shadow: none; }
+}
+@media (max-width: 620px) {
+  .cert-main { flex-direction: column; }
+}
 
 /* ── RESEARCH FLOORPLAN ────────────────────────────────── */
 .floorplan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 18px; background: linear-gradient(160deg, rgba(8,11,22,0.9), rgba(6,9,17,0.7)); position: relative; }

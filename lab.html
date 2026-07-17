@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Silicon Lab — Md. Reshad Al Muttaki</title>
+  <meta name="description" content="An interactive VLSI playground — toggle FinFETs, drive CMOS logic, ripple carries through an adder, decode 7-segment digits, and sweep MOSFET I–V curves.">
+  <meta name="theme-color" content="#05070e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="lab-body">
+
+  <!-- ═══════════ TOP BAR ═══════════ -->
+  <div class="lab-topbar">
+    <div class="container">
+      <a href="index.html" class="lab-back">
+        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to portfolio
+      </a>
+      <span class="lab-badge">reshad.vlsi / lab</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ LAB HERO ═══════════ -->
+  <header class="lab-hero">
+    <canvas id="lab-canvas" aria-hidden="true"></canvas>
+    <div class="container">
+      <p class="lab-eyebrow">// interactive silicon lab</p>
+      <h1>The <span>Silicon Lab</span></h1>
+      <p>Eight live circuits you can actually drive. Flip a FinFET gate and watch electrons cross the channel, ripple a carry through a 4-bit adder, decode hex on a 7-segment display, and sweep a MOSFET's I–V curves. No installs, no simulator — just click.</p>
+      <div class="lab-hero-stats">
+        <div><b>8</b><span>modules</span></div>
+        <div><b>0</b><span>installs</span></div>
+        <div><b>∞</b><span>tinkering</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════ MODULES ═══════════ -->
+  <main class="lab-section">
+    <div class="container">
+      <div class="lab-modules">
+
+        <!-- 1 · FinFET -->
+        <section class="lab-card reveal">
+          <div class="lab-card-head"><h3>Tri-Gate FinFET</h3><span class="lab-tag">device</span></div>
+          <div class="finfet-stage">
+            <svg viewBox="0 0 340 200" class="finfet-svg" id="finfetSvg" aria-hidden="true">
+              <rect x="20" y="150" width="300" height="34" rx="4" class="ff-substrate"/>
+              <text x="30" y="172" class="ff-label">p-substrate</text>
+              <rect x="40" y="96" width="70" height="54" rx="4" class="ff-sd"/>
+              <text x="60" y="128" class="ff-label-dark">Source</text>
+              <rect x="230" y="96" width="70" height="54" rx="4" class="ff-sd"/>
+              <text x="250" y="128" class="ff-label-dark">Drain</text>
+              <rect x="110" y="118" width="120" height="18" rx="2" class="ff-channel" id="ffChannel"/>
+              <rect x="140" y="60" width="60" height="90" rx="4" class="ff-gate" id="ffGate"/>
+              <rect x="150" y="30" width="40" height="34" rx="3" class="ff-gate-contact"/>
+              <text x="170" y="50" class="ff-label-dark" text-anchor="middle">G</text>
+              <g id="ffCurrent" class="ff-current">
+                <circle r="3" class="ff-electron"/><circle r="3" class="ff-electron"/><circle r="3" class="ff-electron"/>
+                <circle r="3" class="ff-electron"/><circle r="3" class="ff-electron"/><circle r="3" class="ff-electron"/>
+              </g>
+            </svg>
+          </div>
+          <div class="lab-controls">
+            <button class="lab-switch" id="ffSwitch" aria-pressed="false">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+              <span class="switch-text">Gate: <b id="ffState">OFF</b></span>
+            </button>
+            <div class="lab-readout"><span>I<sub>DS</sub></span><b id="ffCurrentVal">0.0 µA</b></div>
+          </div>
+          <label class="slider-row"><span>V<sub>GS</sub> = <b id="ffVgsVal">0.00 V</b></span>
+            <input type="range" min="0" max="120" value="0" id="ffVgs" class="clk-slider" aria-label="Gate voltage"></label>
+          <p class="lab-note">Below V<sub>th</sub> ≈ 0.30 V the channel is off. Above it the surface inverts and electrons drift source→drain — faster as V<sub>GS</sub> climbs.</p>
+        </section>
+
+        <!-- 2 · CMOS inverter -->
+        <section class="lab-card reveal">
+          <div class="lab-card-head"><h3>CMOS Inverter</h3><span class="lab-tag">device · logic</span></div>
+          <div class="inv-stage">
+            <svg viewBox="0 0 260 210" class="inv-svg" id="invSvg" aria-hidden="true">
+              <!-- rails -->
+              <line x1="70" y1="24" x2="190" y2="24" class="inv-rail"/>
+              <text x="196" y="28" class="inv-label">VDD</text>
+              <line x1="70" y1="188" x2="190" y2="188" class="inv-rail"/>
+              <text x="196" y="192" class="inv-label">GND</text>
+              <!-- vertical connections -->
+              <path d="M130 24 V50" class="inv-wire"/>
+              <path d="M130 100 V132" class="inv-wire" id="invMid"/>
+              <path d="M130 182 V162" class="inv-wire"/>
+              <!-- pull-up / pull-down current paths -->
+              <path d="M130 26 V98" class="inv-flow" id="invPullup"/>
+              <path d="M130 134 V186" class="inv-flow" id="invPulldown"/>
+              <!-- devices -->
+              <rect x="100" y="50" width="60" height="50" rx="5" class="inv-dev" id="invPmos"/>
+              <text x="130" y="79" class="inv-label" text-anchor="middle">PMOS</text>
+              <rect x="100" y="112" width="60" height="50" rx="5" class="inv-dev" id="invNmos"/>
+              <text x="130" y="141" class="inv-label" text-anchor="middle">NMOS</text>
+              <!-- input wire to gates -->
+              <path d="M40 106 H100" class="inv-wire"/>
+              <path d="M100 62 H90 V150 H100" class="inv-wire"/>
+              <text x="30" y="110" class="inv-label" text-anchor="end">A</text>
+              <!-- output wire -->
+              <path d="M160 116 H210" class="inv-wire" id="invOutWire"/>
+              <text x="214" y="120" class="inv-label">Y</text>
+            </svg>
+          </div>
+          <div class="lab-controls">
+            <button class="lab-switch" id="invA" aria-pressed="false">
+              <span class="switch-track"><span class="switch-thumb"></span></span>
+              <span class="switch-text">Input A = <b id="invAState">0</b></span>
+            </button>
+            <div class="logic-output" style="flex-direction:row;gap:10px">
+              <div class="led on" id="invLed"></div>
+              <div class="out-label">Y = <b id="invOut">1</b></div>
+            </div>
+          </div>
+          <p class="lab-note">A=0 turns the PMOS on and pulls Y high; A=1 turns the NMOS on and pulls Y low. One transistor conducts at a time — that's why CMOS sips power.</p>
+        </section>
+
+        <!-- 3 · Logic gate bench -->
+        <section class="lab-card reveal">
+          <div class="lab-card-head"><h3>Logic Gate Bench</h3><span class="lab-tag">digital</span></div>
+          <div class="logic-stage">
+            <div class="logic-inputs">
+              <button class="bit" id="bitA" data-bit="0" aria-label="Input A">A<span class="bit-val">0</span></button>
+              <button class="bit" id="bitB" data-bit="0" aria-label="Input B">B<span class="bit-val">0</span></button>
+            </div>
+            <div class="logic-gate-wrap">
+              <div class="gate-glyph" id="gateGlyph">AND</div>
+              <div class="gate-wire" id="gateWire"></div>
+            </div>
+            <div class="logic-output">
+              <div class="led" id="logicLed"></div>
+              <div class="out-label">Y = <b id="logicOut">0</b></div>
+            </div>
+          </div>
+          <div class="lab-controls gate-select" id="gateSelect">
+            <button class="chip-btn active" data-gate="AND">AND</button>
+            <button class="chip-btn" data-gate="OR">OR</button>
+            <button class="chip-btn" data-gate="XOR">XOR</button>
+            <button class="chip-btn" data-gate="NAND">NAND</button>
+            <button class="chip-btn" data-gate="NOR">NOR</button>
+            <button class="chip-btn" data-gate="XNOR">XNOR</button>
+          </div>
+          <table class="truth-table" id="truthTable">
+            <thead><tr><th>A</th><th>B</th><th>Y</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </section>
+
+        <!-- 4 · 7-segment decoder -->
+        <section class="lab-card reveal">
+          <div class="lab-card-head"><h3>7-Segment Decoder</h3><span class="lab-tag">digital</span></div>
+          <div class="seg-stage">
+            <svg viewBox="0 0 120 210" class="seg-svg" aria-hidden="true">
+              <rect x="30" y="12"  width="60" height="14" rx="4" class="seg" id="seg-a"/>
+              <rect x="18" y="24"  width="14" height="66" rx="4" class="seg" id="seg-f"/>
+              <rect x="88" y="24"  width="14" height="66" rx="4" class="seg" id="seg-b"/>
+              <rect x="30" y="96"  width="60" height="14" rx="4" class="seg" id="seg-g"/>
+              <rect x="18" y="108" width="14" height="66" rx="4" class="seg" id="seg-e"/>
+              <rect x="88" y="108" width="14" height="66" rx="4" class="seg" id="seg-c"/>
+              <rect x="30" y="180" width="60" height="14" rx="4" class="seg" id="seg-d"/>
+            </svg>
+            <div class="seg-readout">
+              <span class="big" id="segHex">0</span>
+              <small id="segDec">DEC 0</small>
+              <small id="segBin">0000</small>
+            </div>
+          </div>
+          <div class="nibble" id="segBits">
+            <button class="tbit" data-bit="0" data-w="8"><b>0</b><small>D3</small></button>
+            <button class="tbit" data-bit="0" data-w="4"><b>0</b><small>D2</small></button>
+            <button class="tbit" data-bit="0" data-w="2"><b>0</b><small>D1</small></button>
+            <button class="tbit" data-bit="0" data-w="1"><b>0</b><small>D0</small></button>
+          </div>
+          <p class="lab-note">Flip the four input bits (0–15). The decoder lights the segment pattern for the matching hex digit, 0 through F.</p>
+        </section>
+
+        <!-- 5 · Ripple-carry adder -->
+        <section class="lab-card reveal span-2">
+          <div class="lab-card-head"><h3>4-Bit Ripple-Carry Adder</h3><span class="lab-tag">arithmetic</span></div>
+          <div class="adder-inputs">
+            <div class="adder-row"><span class="rl">A</span><div class="nibble" id="adderA"></div></div>
+            <div class="adder-row"><span class="rl">B</span><div class="nibble" id="adderB"></div></div>
+            <div class="adder-row"><span class="rl">C<sub>in</sub></span><div class="nibble" id="adderCin"></div></div>
+          </div>
+          <div class="fa-row" id="faRow"></div>
+          <div class="adder-eq" id="adderEq">0 + 0 = <b>0</b></div>
+          <p class="lab-note">Each full adder must wait for the carry from the bit below it — click the high bits and watch the carry ripple left. That latency is exactly why real designs use carry-lookahead.</p>
+        </section>
+
+        <!-- 6 · Register / number systems -->
+        <section class="lab-card reveal span-2">
+          <div class="lab-card-head"><h3>8-Bit Register</h3><span class="lab-tag">number systems</span></div>
+          <div class="reg-bits" id="regBits"></div>
+          <div class="reg-out">
+            <div><b id="regDec">0</b><span>decimal</span></div>
+            <div><b id="regHex">0x00</b><span>hex</span></div>
+            <div><b id="regBin">00000000</b><span>binary</span></div>
+          </div>
+          <p class="lab-note">Every bit carries a power-of-two weight. Toggle them and read the same value three ways — the mental model behind every register, bus, and memory word.</p>
+        </section>
+
+        <!-- 7 · System clock -->
+        <section class="lab-card reveal">
+          <div class="lab-card-head"><h3>System Clock</h3><span class="lab-tag">timing</span></div>
+          <div class="clock-stage">
+            <svg viewBox="0 0 320 120" class="clk-scope" aria-hidden="true">
+              <line x1="0" y1="60" x2="320" y2="60" class="scope-mid"/>
+              <path class="scope-wave" d="M0 90 H30 V30 H70 V90 H110 V30 H150 V90 H190 V30 H230 V90 H270 V30 H310 V90 H320"/>
+              <path class="scope-flow" d="M0 90 H30 V30 H70 V90 H110 V30 H150 V90 H190 V30 H230 V90 H270 V30 H310 V90 H320"/>
+            </svg>
+          </div>
+          <div class="lab-controls clock-controls">
+            <div class="lab-readout big"><span>f<sub>clk</sub></span><b id="clkFreq">3.20 GHz</b></div>
+            <input type="range" min="1" max="50" value="32" id="clkSlider" class="clk-slider" aria-label="Clock frequency">
+          </div>
+          <div class="clk-stats">
+            <div><span>Period</span><b id="clkPeriod">312 ps</b></div>
+            <div><span>Nodes</span><b>5-stage RO</b></div>
+            <div><span>Logic</span><b>CMOS</b></div>
+          </div>
+        </section>
+
+        <!-- 8 · MOSFET I-V -->
+        <section class="lab-card reveal span-2">
+          <div class="lab-card-head"><h3>MOSFET I–V Characteristics</h3><span class="lab-tag">analog</span></div>
+          <div class="iv-stage"><canvas id="ivCanvas" class="iv-canvas" aria-hidden="true"></canvas></div>
+          <div class="lab-controls clock-controls">
+            <div class="lab-readout big"><span>V<sub>GS</sub> = <b id="ivVgsVal">0.90 V</b></span><b id="ivRegion">saturation</b></div>
+            <input type="range" min="35" max="120" value="90" id="ivVgs" class="clk-slider" aria-label="Gate-source voltage">
+          </div>
+          <p class="lab-note">Drag V<sub>GS</sub> to redraw the drain-current family. Each curve rises linearly in the <em>triode</em> region, then flattens into <em>saturation</em> once V<sub>DS</sub> &gt; V<sub>GS</sub> − V<sub>th</sub>. This square-law behavior is the heart of every analog stage.</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>&copy; 2026 Md. Reshad Al Muttaki</p>
+      <p class="footer-meta"><a href="index.html" class="footer-accent">← back to portfolio</a></p>
+    </div>
+  </footer>
+
+  <button class="to-top" id="toTop" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+  </button>
+
+  <script src="lab.js"></script>
+</body>
+</html>

@@ -1,495 +1,415 @@
 /* ═══════════════════════════════════════════════════════════
-   CIRCUIT NEXUS — Portfolio JavaScript
-   Three.js 3D Hero · Scroll Animations · Interactions
+   SILICON — VLSI Portfolio Interactions
+   Md. Reshad Al Muttaki
+   Boot sequence · Place-and-route hero · Interactive silicon lab
    ═══════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
-  // ── NAVBAR ─────────────────────────────────────────────
-  const navbar = document.getElementById('navbar');
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 60);
-  });
-  navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('active');
-    navLinks.classList.toggle('open');
-  });
-  // Close mobile menu on link click
-  navLinks.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      navToggle.classList.remove('active');
-      navLinks.classList.remove('open');
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  var $  = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* ── BOOT PRELOADER ─────────────────────────────────── */
+  (function boot() {
+    var pre = $('#preloader');
+    if (!pre) return;
+    var logEl = $('#bootLog');
+    var barEl = $('#bootBar');
+    var done = false;
+
+    function finish() {
+      if (done) return;
+      done = true;
+      pre.classList.add('done');
+      document.body.style.overflow = '';
+      setTimeout(function () { if (pre && pre.parentNode) pre.parentNode.removeChild(pre); }, 700);
+    }
+
+    // Safety: never trap the user behind the loader.
+    setTimeout(finish, 4000);
+    pre.addEventListener('click', finish);
+    window.addEventListener('wheel', finish, { passive: true, once: true });
+    window.addEventListener('touchstart', finish, { passive: true, once: true });
+
+    if (reduce) { finish(); return; }
+
+    document.body.style.overflow = 'hidden';
+    var lines = [
+      '> power-on self-test ......... <span class="ok">[OK]</span>',
+      '> Vdd rail .................. <span class="val">1.20 V</span>',
+      '> PLL lock .................. <span class="val">3.20 GHz</span>',
+      '> loading std-cell library .. <span class="ok">[OK]</span>',
+      '> DRC / LVS ................. <span class="ok">clean</span>',
+      '> booting reshad.vlsi ....... <span class="ok">[OK]</span>'
+    ];
+    var i = 0;
+    (function step() {
+      if (done) return;
+      if (i < lines.length) {
+        logEl.innerHTML += lines[i] + '\n';
+        i++;
+        if (barEl) barEl.style.width = Math.round((i / lines.length) * 100) + '%';
+        setTimeout(step, 250);
+      } else {
+        setTimeout(finish, 420);
+      }
+    })();
+  })();
+
+  /* ── NAVBAR ─────────────────────────────────────────── */
+  var navbar = $('#navbar');
+  var navToggle = $('#navToggle');
+  var navLinks = $('#navLinks');
+  var railEl = $('#scrollRail');
+  var toTop = $('#toTop');
+
+  if (navToggle) {
+    navToggle.addEventListener('click', function () {
+      navToggle.classList.toggle('active');
+      navLinks.classList.toggle('open');
     });
-  });
-  // Active section highlighting
-  const sections = document.querySelectorAll('section[id]');
-  const navItems = navLinks.querySelectorAll('a');
-  function highlightNav() {
-    const scrollY = window.scrollY + 120;
-    sections.forEach(section => {
-      const top = section.offsetTop;
-      const height = section.offsetHeight;
-      const id = section.getAttribute('id');
-      if (scrollY >= top && scrollY < top + height) {
-        navItems.forEach(a => {
-          a.classList.remove('active');
-          if (a.getAttribute('href') === '#' + id) {
-            a.classList.add('active');
-          }
+    $$('a', navLinks).forEach(function (link) {
+      link.addEventListener('click', function () {
+        navToggle.classList.remove('active');
+        navLinks.classList.remove('open');
+      });
+    });
+  }
+
+  var sections = $$('section[id]');
+  var navItems = navLinks ? $$('a', navLinks) : [];
+  function onScroll() {
+    var y = window.scrollY;
+    if (navbar) navbar.classList.toggle('scrolled', y > 60);
+    // progress rail
+    if (railEl) {
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      railEl.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+    }
+    // back to top
+    if (toTop) toTop.classList.toggle('show', y > 600);
+    // active section
+    var pos = y + 130;
+    sections.forEach(function (sec) {
+      var top = sec.offsetTop, id = sec.getAttribute('id');
+      if (pos >= top && pos < top + sec.offsetHeight) {
+        navItems.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + id);
         });
       }
     });
   }
-  window.addEventListener('scroll', highlightNav);
-  // ── REVEAL ON SCROLL ───────────────────────────────────
-  const revealElements = document.querySelectorAll('.reveal');
-  function revealOnScroll() {
-    const triggerBottom = window.innerHeight * 0.88;
-    revealElements.forEach((el, i) => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < triggerBottom) {
-        // Stagger delay for siblings
-        const delay = el.dataset.delay || 0;
-        setTimeout(() => {
-          el.classList.add('revealed');
-        }, delay);
-      }
-    });
-  }
-  // Apply stagger delays to reveal groups
-  document.querySelectorAll('.research-grid, .publications-grid, .stats-grid, .courses-grid, .education-grid, .achievements-grid, .skills-container').forEach(grid => {
-    grid.querySelectorAll('.reveal').forEach((item, i) => {
-      item.dataset.delay = i * 80;
-    });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (toTop) toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
   });
-  window.addEventListener('scroll', revealOnScroll);
-  revealOnScroll(); // Initial check
-  // ── COUNTER ANIMATION ─────────────────────────────────
-  const statNumbers = document.querySelectorAll('.stat-number[data-target]');
-  let countersStarted = false;
-  function animateCounters() {
-    if (countersStarted) return;
-    const statsSection = document.getElementById('about');
-    if (!statsSection) return;
-    const rect = statsSection.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.8) {
-      countersStarted = true;
-      statNumbers.forEach(el => {
-        const target = parseFloat(el.dataset.target);
-        const isDecimal = el.dataset.decimal === 'true';
-        const duration = 1500;
-        const startTime = performance.now();
-        function update(currentTime) {
-          const elapsed = currentTime - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          // Ease out cubic
-          const eased = 1 - Math.pow(1 - progress, 3);
-          const current = eased * target;
-          if (isDecimal) {
-            el.textContent = current.toFixed(2);
-          } else {
-            el.textContent = Math.round(current);
-          }
-          if (progress < 1) {
-            requestAnimationFrame(update);
-          } else {
-            el.textContent = isDecimal ? target.toFixed(2) : target;
-          }
-        }
-        requestAnimationFrame(update);
-      });
-    }
-  }
-  window.addEventListener('scroll', animateCounters);
-  // ── GPA CIRCLE ANIMATION ──────────────────────────────
-  const gpaCircles = document.querySelectorAll('.gpa-fill');
-  let gpaStarted = false;
-  function animateGPA() {
-    if (gpaStarted) return;
-    const eduSection = document.getElementById('education');
-    if (!eduSection) return;
-    const rect = eduSection.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.8) {
-      gpaStarted = true;
-      gpaCircles.forEach(circle => {
-        const percent = parseFloat(circle.dataset.percent);
-        const circumference = 2 * Math.PI * 35; // r=35
-        const offset = circumference - (percent / 100) * circumference;
-        circle.style.strokeDasharray = circumference;
-        circle.style.strokeDashoffset = circumference;
-        // Trigger animation after a small delay
-        setTimeout(() => {
-          circle.style.strokeDashoffset = offset;
-        }, 100);
-      });
-    }
-  }
-  window.addEventListener('scroll', animateGPA);
-  // ── AMBIENT PARTICLES (CSS-based) ─────────────────────
-  function createAmbientParticles() {
-    const count = 12;
-    for (let i = 0; i < count; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'ambient-particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 20 + 's';
-      particle.style.animationDuration = (15 + Math.random() * 15) + 's';
-      document.body.appendChild(particle);
-    }
-  }
-  createAmbientParticles();
-  // ── THREE.JS HERO PARTICLE NETWORK ────────────────────
-  function initHeroScene() {
-    const canvas = document.getElementById('hero-canvas');
-    if (!canvas || typeof THREE === 'undefined') return;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    camera.position.z = 50;
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      alpha: true,
-      antialias: true
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x000000, 0);
-    // ── Particle System ──
-    const PARTICLE_COUNT = 180;
-    const SPREAD = 80;
-    const CONNECTION_DISTANCE = 14;
-    const particlePositions = new Float32Array(PARTICLE_COUNT * 3);
-    const particleVelocities = [];
-    const particleSizes = new Float32Array(PARTICLE_COUNT);
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particlePositions[i * 3] = (Math.random() - 0.5) * SPREAD;
-      particlePositions[i * 3 + 1] = (Math.random() - 0.5) * SPREAD;
-      particlePositions[i * 3 + 2] = (Math.random() - 0.5) * 30;
-      particleVelocities.push({
-        x: (Math.random() - 0.5) * 0.02,
-        y: (Math.random() - 0.5) * 0.02,
-        z: (Math.random() - 0.5) * 0.01
-      });
-      particleSizes[i] = 1.5 + Math.random() * 2.5;
-    }
-    // Particle geometry
-    const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    particleGeometry.setAttribute('size', new THREE.BufferAttribute(particleSizes, 1));
-    // Custom shader for glowing particles
-    const particleMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        uColor: { value: new THREE.Color(0x00e5ff) },
-        uTime: { value: 0 }
-      },
-      vertexShader: `
-        attribute float size;
-        varying float vAlpha;
-        uniform float uTime;
-        void main() {
-          vAlpha = 0.4 + 0.3 * sin(uTime * 0.5 + position.x * 0.1);
-          vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-          gl_PointSize = size * (50.0 / -mvPosition.z);
-          gl_Position = projectionMatrix * mvPosition;
-        }
-      `,
-      fragmentShader: `
-        uniform vec3 uColor;
-        varying float vAlpha;
-        void main() {
-          float dist = length(gl_PointCoord - vec2(0.5));
-          if (dist > 0.5) discard;
-          float alpha = smoothstep(0.5, 0.1, dist) * vAlpha;
-          gl_FragColor = vec4(uColor, alpha);
-        }
-      `,
-      transparent: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending
-    });
-    const particles = new THREE.Points(particleGeometry, particleMaterial);
-    scene.add(particles);
-    // ── Connection Lines ──
-    const MAX_LINES = PARTICLE_COUNT * 6;
-    const linePositions = new Float32Array(MAX_LINES * 6);
-    const lineColors = new Float32Array(MAX_LINES * 6);
-    const lineGeometry = new THREE.BufferGeometry();
-    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-    lineGeometry.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-    const lineMaterial = new THREE.LineBasicMaterial({
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.35,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(lines);
-    // ── Circuit Trace Grid (subtle background grid) ──
-    const gridHelper = new THREE.GridHelper(120, 30, 0x00e5ff, 0x00e5ff);
-    gridHelper.material.opacity = 0.03;
-    gridHelper.material.transparent = true;
-    gridHelper.rotation.x = Math.PI / 2;
-    gridHelper.position.z = -15;
-    scene.add(gridHelper);
-    // ── Mouse Interaction ──
-    const mouse = { x: 0, y: 0, worldX: 0, worldY: 0 };
-    canvas.addEventListener('mousemove', (e) => {
-      mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-      mouse.worldX = mouse.x * SPREAD * 0.5;
-      mouse.worldY = mouse.y * SPREAD * 0.5;
-    });
-    // ── Resize Handler ──
-    function onResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-    window.addEventListener('resize', onResize);
-    // ── Animation Loop ──
-    const clock = new THREE.Clock();
-    function animate() {
-      requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-      particleMaterial.uniforms.uTime.value = time;
-      const positions = particleGeometry.attributes.position.array;
-      // Update particle positions
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const ix = i * 3;
-        const iy = i * 3 + 1;
-        const iz = i * 3 + 2;
-        positions[ix] += particleVelocities[i].x;
-        positions[iy] += particleVelocities[i].y;
-        positions[iz] += particleVelocities[i].z;
-        // Boundary wrapping
-        if (positions[ix] > SPREAD / 2) positions[ix] = -SPREAD / 2;
-        if (positions[ix] < -SPREAD / 2) positions[ix] = SPREAD / 2;
-        if (positions[iy] > SPREAD / 2) positions[iy] = -SPREAD / 2;
-        if (positions[iy] < -SPREAD / 2) positions[iy] = SPREAD / 2;
-        if (positions[iz] > 15) positions[iz] = -15;
-        if (positions[iz] < -15) positions[iz] = 15;
-        // Mouse repulsion
-        const dx = positions[ix] - mouse.worldX;
-        const dy = positions[iy] - mouse.worldY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 15) {
-          const force = (15 - dist) / 15 * 0.08;
-          positions[ix] += (dx / dist) * force;
-          positions[iy] += (dy / dist) * force;
-        }
-      }
-      particleGeometry.attributes.position.needsUpdate = true;
-      // Update connection lines
-      let lineIndex = 0;
-      const lp = lineGeometry.attributes.position.array;
-      const lc = lineGeometry.attributes.color.array;
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        for (let j = i + 1; j < PARTICLE_COUNT; j++) {
-          if (lineIndex >= MAX_LINES) break;
-          const ax = positions[i * 3];
-          const ay = positions[i * 3 + 1];
-          const az = positions[i * 3 + 2];
-          const bx = positions[j * 3];
-          const by = positions[j * 3 + 1];
-          const bz = positions[j * 3 + 2];
-          const ddx = ax - bx;
-          const ddy = ay - by;
-          const ddz = az - bz;
-          const d = Math.sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
-          if (d < CONNECTION_DISTANCE) {
-            const li = lineIndex * 6;
-            lp[li] = ax;
-            lp[li + 1] = ay;
-            lp[li + 2] = az;
-            lp[li + 3] = bx;
-            lp[li + 4] = by;
-            lp[li + 5] = bz;
-            const alpha = 1 - d / CONNECTION_DISTANCE;
-            // Cyan to amber gradient based on distance
-            const r = alpha * 0;
-            const g = alpha * 0.9;
-            const b = alpha * 1;
-            lc[li] = r; lc[li + 1] = g; lc[li + 2] = b;
-            lc[li + 3] = r; lc[li + 4] = g; lc[li + 5] = b;
-            lineIndex++;
-          }
-        }
-        if (lineIndex >= MAX_LINES) break;
-      }
-      // Clear unused line segments
-      for (let i = lineIndex * 6; i < MAX_LINES * 6; i++) {
-        lp[i] = 0;
-        lc[i] = 0;
-      }
-      lineGeometry.attributes.position.needsUpdate = true;
-      lineGeometry.attributes.color.needsUpdate = true;
-      lineGeometry.setDrawRange(0, lineIndex * 2);
-      // Gentle camera sway
-      camera.position.x += (mouse.x * 3 - camera.position.x) * 0.02;
-      camera.position.y += (mouse.y * 2 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
-      // Subtle grid rotation
-      gridHelper.rotation.z = time * 0.02;
-      renderer.render(scene, camera);
-    }
-    animate();
-  }
-  // ── PUBLICATION CARD TILT EFFECT ───────────────────────
-  function initTiltEffect() {
-    const cards = document.querySelectorAll('.pub-card, .timeline-card');
-    cards.forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -3;
-        const rotateY = ((x - centerX) / centerX) * 3;
-        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
-        // Spotlight gradient follows cursor
-        const percentX = (x / rect.width) * 100;
-        const percentY = (y / rect.height) * 100;
-        card.style.background = `
-          radial-gradient(circle at ${percentX}% ${percentY}%, rgba(0, 229, 255, 0.06) 0%, transparent 50%),
-          rgba(12, 18, 34, 0.65)
-        `;
-      });
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-        card.style.background = '';
-      });
-    });
-  }
-  // ── SKILL TAG MAGNETIC HOVER ──────────────────────────
-  function initSkillHover() {
-    document.querySelectorAll('.skill-tag').forEach(tag => {
-      tag.addEventListener('mousemove', (e) => {
-        const rect = tag.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        tag.style.transform = `translate(${x * 0.15}px, ${y * 0.15 - 2}px)`;
-      });
-      tag.addEventListener('mouseleave', () => {
-        tag.style.transform = '';
-      });
-    });
-  }
-  // ── RESEARCH TILE GLOW ────────────────────────────────
-  function initResearchGlow() {
-    document.querySelectorAll('.research-tile').forEach(tile => {
-      tile.addEventListener('mousemove', (e) => {
-        const rect = tile.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        tile.style.setProperty('--glow-x', x + '%');
-        tile.style.setProperty('--glow-y', y + '%');
-      });
-    });
-  }
-  // ── SMOOTH SCROLL ─────────────────────────────────────
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+
+  // Smooth in-page scroll with offset
+  $$('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var href = this.getAttribute('href');
+      if (href === '#') return;
+      var target = document.querySelector(href);
+      if (!target) return;
       e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        const offset = 80;
-        const top = target.getBoundingClientRect().top + window.scrollY - offset;
-        window.scrollTo({ top, behavior: 'smooth' });
-      }
+      var top = target.getBoundingClientRect().top + window.scrollY - 76;
+      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
     });
   });
-  // ── CIRCUIT TRACE DRAWING (canvas overlay for sections) ──
-  function drawCircuitTraces() {
-    const traceCanvas = document.createElement('canvas');
-    traceCanvas.id = 'circuit-traces';
-    traceCanvas.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.04;
-    `;
-    document.body.appendChild(traceCanvas);
-    const ctx = traceCanvas.getContext('2d');
-    let w, h;
-    function resize() {
-      w = traceCanvas.width = window.innerWidth;
-      h = traceCanvas.height = window.innerHeight;
-      draw();
-    }
-    function draw() {
-      ctx.clearRect(0, 0, w, h);
-      ctx.strokeStyle = '#00e5ff';
-      ctx.lineWidth = 1;
-      // Draw horizontal circuit traces
-      const spacing = 80;
-      for (let y = spacing; y < h; y += spacing) {
-        ctx.beginPath();
-        let x = 0;
-        ctx.moveTo(x, y);
-        while (x < w) {
-          const segLen = 30 + Math.random() * 60;
-          x += segLen;
-          ctx.lineTo(x, y);
-          // Random right-angle turns
-          if (Math.random() > 0.7 && x < w - 40) {
-            const turnLen = 15 + Math.random() * 25;
-            const dir = Math.random() > 0.5 ? 1 : -1;
-            ctx.lineTo(x, y + turnLen * dir);
-            ctx.lineTo(x + 20, y + turnLen * dir);
-            ctx.lineTo(x + 20, y);
-            x += 20;
-          }
-        }
-        ctx.stroke();
-        // Draw nodes at random positions
-        if (Math.random() > 0.5) {
-          const nodeX = spacing + Math.random() * (w - spacing * 2);
-          ctx.beginPath();
-          ctx.arc(nodeX, y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = '#00e5ff';
-          ctx.fill();
-        }
-      }
-    }
-    resize();
-    window.addEventListener('resize', resize);
-  }
-  // ── TYPED EFFECT FOR HERO GREETING ────────────────────
-  function typeEffect(element, text, speed = 50) {
-    element.textContent = '';
-    let i = 0;
-    function type() {
-      if (i < text.length) {
-        element.textContent += text.charAt(i);
-        i++;
-        setTimeout(type, speed);
-      }
-    }
-    setTimeout(type, 800);
-  }
-  // ── INIT ──────────────────────────────────────────────
-  document.addEventListener('DOMContentLoaded', () => {
-    initHeroScene();
-    initTiltEffect();
-    initSkillHover();
-    initResearchGlow();
-    drawCircuitTraces();
-    // Type effect for greeting
-    const greeting = document.querySelector('.hero-greeting');
-    if (greeting) {
-      const text = greeting.textContent;
-      typeEffect(greeting, text);
-    }
+
+  /* ── REVEAL ON SCROLL (staggered) ───────────────────── */
+  var groups = $$('.stats-grid, .publications-grid, .courses-grid, .education-grid, .achievements-grid, .skills-container, .lab-grid, .refs-grid, .cert-modules, .floorplan');
+  groups.forEach(function (grid) {
+    $$('.reveal', grid).forEach(function (item, idx) {
+      item.style.transitionDelay = (idx * 70) + 'ms';
+    });
   });
+  var revealEls = $$('.reveal');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('revealed'); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('revealed'); });
+  }
+
+  /* ── COUNTERS ───────────────────────────────────────── */
+  function animateCounters() {
+    $$('.stat-number[data-target]').forEach(function (el) {
+      var target = parseFloat(el.dataset.target);
+      var dec = el.dataset.decimal === 'true';
+      if (reduce) { el.textContent = dec ? target.toFixed(2) : target; return; }
+      var dur = 1400, start = null;
+      function tick(t) {
+        if (start === null) start = t;
+        var p = Math.min((t - start) / dur, 1);
+        var e = 1 - Math.pow(1 - p, 3);
+        el.textContent = dec ? (e * target).toFixed(2) : Math.round(e * target);
+        if (p < 1) requestAnimationFrame(tick);
+        else el.textContent = dec ? target.toFixed(2) : target;
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+  function animateGPA() {
+    $$('.gpa-fill').forEach(function (c) {
+      var pct = parseFloat(c.dataset.percent);
+      var C = 2 * Math.PI * 35;
+      c.style.strokeDasharray = C;
+      c.style.strokeDashoffset = reduce ? (C - pct / 100 * C) : C;
+      if (!reduce) setTimeout(function () { c.style.strokeDashoffset = C - pct / 100 * C; }, 120);
+    });
+  }
+  function once(id, cb) {
+    var sec = document.getElementById(id);
+    if (!sec) return;
+    if (!('IntersectionObserver' in window)) { cb(); return; }
+    var fired = false;
+    var o = new IntersectionObserver(function (ents) {
+      ents.forEach(function (en) { if (en.isIntersecting && !fired) { fired = true; cb(); o.disconnect(); } });
+    }, { threshold: 0.3 });
+    o.observe(sec);
+  }
+  once('about', animateCounters);
+  once('education', animateGPA);
+
+  /* ── HERO: PLACE & ROUTE CANVAS ─────────────────────── */
+  (function heroRoute() {
+    var canvas = $('#hero-canvas');
+    var hero = $('#hero');
+    if (!canvas || !hero) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0;
+    var traces = [], packets = [], cells = [], pads = [];
+    var mouse = { x: 0.5, y: 0.5, active: false };
+    var COLORS = ['#22e0ff', '#22e0ff', '#22e0ff', '#a06bff', '#ff9d3b'];
+
+    function rand(a, b) { return a + Math.random() * (b - a); }
+
+    function build() {
+      var rect = hero.getBoundingClientRect();
+      W = rect.width; H = Math.max(rect.height, window.innerHeight);
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      traces = []; packets = []; cells = []; pads = [];
+      var grid = Math.max(46, Math.min(W, H) / 14);
+
+      // Manhattan traces
+      var count = Math.round(Math.min(34, (W * H) / 42000));
+      for (var i = 0; i < count; i++) {
+        var sx = Math.round(rand(0, W) / grid) * grid;
+        var sy = Math.round(rand(0, H) / grid) * grid;
+        var ex = Math.round(rand(0, W) / grid) * grid;
+        var ey = Math.round(rand(0, H) / grid) * grid;
+        if (Math.abs(sx - ex) + Math.abs(sy - ey) < grid * 2) { ex += grid * 3; ey += grid * 2; }
+        var pts;
+        if (Math.random() < 0.5) pts = [{ x: sx, y: sy }, { x: ex, y: sy }, { x: ex, y: ey }];
+        else                     pts = [{ x: sx, y: sy }, { x: sx, y: ey }, { x: ex, y: ey }];
+        var segs = [], total = 0;
+        for (var k = 0; k < pts.length - 1; k++) {
+          var d = Math.hypot(pts[k + 1].x - pts[k].x, pts[k + 1].y - pts[k].y);
+          segs.push(d); total += d;
+        }
+        traces.push({ pts: pts, segs: segs, total: total, color: COLORS[(Math.random() * COLORS.length) | 0] });
+        pads.push(pts[0], pts[pts.length - 1]);
+      }
+
+      // Packets travel along a subset of traces
+      var pk = Math.round(Math.min(16, count * 0.55));
+      for (var p = 0; p < pk; p++) {
+        var tr = traces[(Math.random() * traces.length) | 0];
+        packets.push({ tr: tr, t: Math.random(), speed: rand(0.04, 0.11), color: tr.color });
+      }
+
+      // Standard cells in a couple of rows
+      var rows = 2, perRow = Math.max(4, Math.round(W / 220));
+      for (var r = 0; r < rows; r++) {
+        var ry = H * (0.34 + r * 0.34);
+        for (var c = 0; c < perRow; c++) {
+          if (Math.random() < 0.4) continue;
+          cells.push({ x: rand(40, W - 90), y: ry + rand(-20, 20), w: rand(26, 60), h: rand(16, 26) });
+        }
+      }
+    }
+
+    function pointAt(tr, t) {
+      var dist = t * tr.total, acc = 0;
+      for (var k = 0; k < tr.segs.length; k++) {
+        if (acc + tr.segs[k] >= dist) {
+          var f = tr.segs[k] === 0 ? 0 : (dist - acc) / tr.segs[k];
+          var a = tr.pts[k], b = tr.pts[k + 1];
+          return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f };
+        }
+        acc += tr.segs[k];
+      }
+      return tr.pts[tr.pts.length - 1];
+    }
+
+    function draw(dt) {
+      ctx.clearRect(0, 0, W, H);
+      var ox = (mouse.x - 0.5) * 26, oy = (mouse.y - 0.5) * 26;
+      ctx.save();
+      ctx.translate(-ox, -oy);
+
+      // traces
+      ctx.lineWidth = 1;
+      traces.forEach(function (tr) {
+        ctx.beginPath();
+        ctx.moveTo(tr.pts[0].x, tr.pts[0].y);
+        for (var k = 1; k < tr.pts.length; k++) ctx.lineTo(tr.pts[k].x, tr.pts[k].y);
+        ctx.strokeStyle = tr.color;
+        ctx.globalAlpha = 0.12;
+        ctx.stroke();
+      });
+
+      // pads / vias
+      ctx.globalAlpha = 0.5;
+      pads.forEach(function (pd) {
+        ctx.fillStyle = '#22e0ff';
+        ctx.fillRect(pd.x - 2, pd.y - 2, 4, 4);
+      });
+
+      // standard cells
+      ctx.globalAlpha = 0.14;
+      ctx.strokeStyle = '#a06bff';
+      ctx.lineWidth = 1;
+      cells.forEach(function (cl) {
+        ctx.strokeRect(cl.x, cl.y, cl.w, cl.h);
+        ctx.fillStyle = 'rgba(160,107,255,0.06)';
+        ctx.fillRect(cl.x, cl.y, cl.w, cl.h);
+      });
+
+      // packets (glowing)
+      ctx.globalCompositeOperation = 'lighter';
+      packets.forEach(function (pkt) {
+        if (!reduce) {
+          pkt.t += pkt.speed * dt;
+          if (pkt.t > 1) { pkt.t = 0; pkt.tr = traces[(Math.random() * traces.length) | 0]; pkt.color = pkt.tr.color; }
+        }
+        var pos = pointAt(pkt.tr, pkt.t);
+        // trail — sampled along the polyline so it hugs the right-angle corners
+        var TAIL = 0.07, STEPS = 9, t0 = Math.max(0, pkt.t - TAIL);
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+        for (var s = 0; s < STEPS; s++) {
+          var pa = pointAt(pkt.tr, t0 + (pkt.t - t0) * (s / STEPS));
+          var pb = pointAt(pkt.tr, t0 + (pkt.t - t0) * ((s + 1) / STEPS));
+          ctx.strokeStyle = pkt.color;
+          ctx.globalAlpha = 0.10 + 0.62 * (s / STEPS);
+          ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke();
+        }
+        // head glow
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = pkt.color;
+        ctx.shadowColor = pkt.color; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(pos.x, pos.y, 2.4, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+      ctx.restore();
+
+      // cursor glow
+      if (mouse.active && !reduce) {
+        var gx = mouse.x * W, gy = mouse.y * H;
+        var g = ctx.createRadialGradient(gx, gy, 0, gx, gy, 150);
+        g.addColorStop(0, 'rgba(34,224,255,0.10)');
+        g.addColorStop(1, 'rgba(34,224,255,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(gx - 150, gy - 150, 300, 300);
+      }
+    }
+
+    var last = 0, raf = null;
+    function loop(t) {
+      var dt = last ? Math.min((t - last) / 1000, 0.05) : 0.016;
+      last = t;
+      draw(dt);
+      raf = requestAnimationFrame(loop);
+    }
+
+    hero.addEventListener('mousemove', function (e) {
+      var r = hero.getBoundingClientRect();
+      mouse.x = (e.clientX - r.left) / r.width;
+      mouse.y = (e.clientY - r.top) / r.height;
+      mouse.active = true;
+    });
+    hero.addEventListener('mouseleave', function () { mouse.active = false; });
+
+    var rz;
+    window.addEventListener('resize', function () {
+      clearTimeout(rz);
+      rz = setTimeout(build, 200);
+    });
+
+    build();
+    if (reduce) { draw(0); }
+    else { raf = requestAnimationFrame(loop); }
+  })();
+
+  /* ── HERO: ROLE TYPEWRITER ──────────────────────────── */
+  (function roles() {
+    var el = $('#heroRole');
+    if (!el || reduce) return;
+    var titles = [
+      'VLSI & Semiconductor Device Engineer',
+      'TCAD Device Modeling Researcher',
+      'Sub-5 nm FinFET Designer',
+      'Researcher · Educator · Innovator'
+    ];
+    var ti = 0, ci = 0, deleting = false;
+    el.textContent = '';
+    function tick() {
+      var word = titles[ti];
+      if (!deleting) {
+        ci++;
+        if (ci > word.length) { deleting = true; setTimeout(tick, 1600); return; }
+      } else {
+        ci--;
+        if (ci < 0) { deleting = false; ti = (ti + 1) % titles.length; ci = 0; setTimeout(tick, 260); return; }
+      }
+      el.textContent = word.slice(0, ci);
+      setTimeout(tick, deleting ? 34 : 62);
+    }
+    setTimeout(tick, 1200);
+  })();
+
+  /* Silicon-lab widgets (FinFET, logic, clock, adder, 7-seg, …) live in lab.js */
+
+  /* ── CARD TILT (pointer only) ───────────────────────── */
+  if (finePointer && !reduce) {
+    $$('.pub-card, .timeline-card').forEach(function (card) {
+      card.addEventListener('mousemove', function (e) {
+        var r = card.getBoundingClientRect();
+        var rx = ((e.clientY - r.top) / r.height - 0.5) * -4;
+        var ry = ((e.clientX - r.left) / r.width - 0.5) * 4;
+        card.style.transform = 'perspective(900px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-4px)';
+      });
+      card.addEventListener('mouseleave', function () { card.style.transform = ''; });
+    });
+
+    /* ── SKILL MAGNETIC HOVER ─────────────────────────── */
+    $$('.skill-tag, .social-chip').forEach(function (tag) {
+      tag.addEventListener('mousemove', function (e) {
+        var r = tag.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width / 2) * 0.18;
+        var y = (e.clientY - r.top - r.height / 2) * 0.18;
+        tag.style.transform = 'translate(' + x + 'px,' + (y - 2) + 'px)';
+      });
+      tag.addEventListener('mouseleave', function () { tag.style.transform = ''; });
+    });
+  }
+
 })();

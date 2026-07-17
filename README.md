@@ -1,193 +1,78 @@
-# Professional Portfolio - Md. Reshad Al Muttaki
+# Md. Reshad Al Muttaki — VLSI Portfolio
 
-A modern, responsive professional portfolio website showcasing research, projects, and academic achievements in Electrical and Electronic Engineering.
+A VLSI-themed, heavily animated personal portfolio for **Md. Reshad Al Muttaki** — VLSI &
+semiconductor device researcher at BRAC University.
 
-🌐 **Live Website:** [Visit Portfolio](https://reshad-real.github.io/portfolio/)
+🌐 **Live:** https://reshad-real.github.io/portfolio/
 
-## About
+Built with vanilla **HTML5, CSS3, and JavaScript** — no build step, no frameworks, no runtime
+dependencies. Everything runs from three static files plus the CV.
 
-EEE Graduate and Research Assistant focusing on:
-- Self-powered biosensors
-- Embedded systems
-- Smart grids
-- Digital logic design
-- Machine learning applications
+## The theme
 
-## Features
+The whole site is styled as a piece of silicon:
 
-✨ **Modern Design**
-- Clean, professional aesthetic with dark theme
-- Smooth animations and transitions
-- Fully responsive (desktop, tablet, mobile)
-- Fast loading and optimized performance
+- **Boot sequence** preloader — a power-on self-test log (Vdd rail, PLL lock, std-cell library, DRC/LVS).
+- **Place-and-route hero** — a live `<canvas>` animation of Manhattan-routed interconnect with
+  glowing signal packets flowing between pads and standard cells.
+- **Interactive Silicon Lab** — a dedicated page (`lab.html`) with eight live circuits: a tri-gate
+  FinFET with a V<sub>GS</sub> sweep, a CMOS inverter, a logic-gate bench with truth table, a
+  7-segment hex decoder, a 4-bit ripple-carry adder, an 8-bit register, a system clock, and a
+  MOSFET I–V plotter. Reached from the "Enter the Silicon Lab" button on the home page.
+- **Die-floorplan** research interests, **clock-signal** section dividers, chip-package publication
+  cards, a **standard-cell** skills library, and animated GPA rings.
+- Silicon palette: signal **cyan**, interconnect **copper**, poly **violet**, on a dark lattice grid.
+- Fully **responsive**, respects **`prefers-reduced-motion`**, and keyboard/screen-reader friendly.
 
-📋 **Comprehensive Sections**
-- **Hero Section:** Eye-catching introduction
-- **Professional Activities:** Current roles and responsibilities
-- **Ongoing Projects:** Active research initiatives
-- **Completed Projects:** Capstone and design projects with links
-- **Technical Skills:** Core competencies showcase
-- **Publications:** Q1 journal publications
-- **Education:** Academic background and achievements
+## Sections
 
-📥 **CV Download**
-- One-click CV download button
-- Modal confirmation dialog
-- Professional CV included (PDF format)
+**Home** (`index.html`): Hero · About · Experience (process-flow timeline) · Publications · VLSI
+Training · Research Interests · Courses Taught · Education · Skills · Awards · References · Contact.
 
-🔗 **Project Links**
-- Direct links to GitHub repositories
-- Access links to academic repositories
-- DOI links to publications
+**Silicon Lab** (`lab.html`): eight self-contained interactive modules.
 
-## File Structure
+## Highlights
+
+- **6 peer-reviewed Q1 journal publications** (impact factors up to 9.8), with DOI links.
+- **Sub-5 nm AlGaN/GaN tri-gate FinFET** research in Silvaco Atlas TCAD (CREST initiative).
+- **Industrial VLSI Design training** at Ulkasemi Pvt. Ltd. — analog, digital, verification, and layout.
+
+## File structure
 
 ```
 portfolio/
-├── index.html              # Main portfolio website
-├── CV_Reshad.pdf          # Professional CV
-├── README.md              # This file
-└── GITHUB_HOSTING_GUIDE.md # Deployment instructions
+├── index.html      # Home page — markup and content
+├── lab.html        # The Silicon Lab — interactive VLSI playground
+├── style.css       # VLSI design system, layout, and animations (both pages)
+├── script.js       # Boot sequence, place-and-route hero canvas, home interactions
+├── lab.js          # Interactive lab modules (FinFET, logic, adder, 7-seg, I–V, …)
+├── CV_Reshad.pdf   # Résumé (downloadable)
+└── README.md
 ```
 
-## Installation & Deployment
-
-### Local Testing
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/portfolio.git
-   cd portfolio
-   ```
-
-2. Open `index.html` in your browser:
-   - Double-click the file, or
-   - Use a local server (optional):
-     ```bash
-     python -m http.server 8000
-     # Then visit http://localhost:8000
-     ```
-
-### Deploy on GitHub Pages
-1. Ensure repository is **public**
-2. Go to **Settings** → **Pages**
-3. Select **Deploy from a branch**
-4. Choose **main branch** and **/ (root)**
-5. Save and wait 1-2 minutes
-
-Your site will be live at: `https://YOUR_USERNAME.github.io/portfolio/`
-
-See [GITHUB_HOSTING_GUIDE.md](./GITHUB_HOSTING_GUIDE.md) for detailed instructions.
-
-## Projects Showcase
-
-### Current Research
-- **Self-Powered Biosensor for Real-Time Wireless Health Monitoring**
-  - Funded by BRAC University (Mar 2026 - Present)
-  - Focus: E-skin, flexible sensors, biomedical engineering
-
-- **PUF-Driven Adaptive Redundancy in RNS-Based DSP Architectures**
-  - Security-reliability co-design framework
-  - Focus: Edge computing, hardware security, fault tolerance
-
-- **AutoEncoder-based Health Index with Dynamic RUL Prediction**
-  - Battery prognostics using machine learning
-  - Focus: Lithium-ion battery health monitoring
-
-### Completed Projects
-- **IoT-Based Air Pollution Monitoring & Adaptive Filtration Control**
-  - Final Year Design Project (Jan 2025 - Jan 2026)
-  - [GitHub Repository](https://github.com/Reshad-Real/IoT-Based-Monitoring-and-Industrial-Air-Purification-System.git)
-  - [Academic Repository](http://hdl.handle.net/10361/27479)
-
-## Publications
-
-All publications in **Energy Conversion and Management: X** (Q1 Journal, Impact Factor: 8.78)
-
-1. Towards Smarter Grids: A Systematic Review of Wide Area Monitoring
-2. AI-Powered Cybersecurity for Smart Grid Communication
-3. State-of-Charge-Aware Charging Opportunity Detection for Electric Vehicles
-4. The Next Generation of Energy Storage for Smart Grids
-
-## Education
-
-**B.Sc. Electrical and Electronic Engineering** | BRAC University (2022-2026)
-- Major: Electronics
-- CGPA: 3.81
-- 5x Dean's Lister | 3x VC's Lister
-
-## Technical Skills
-
-- **Programming:** Python
-- **VLSI Design:** Cadence Virtuoso
-- **Embedded Systems:** Microcontrollers, IoT, Hardware Integration
-- **Smart Grids:** Energy systems, monitoring, control
-- **Machine Learning:** Deep learning, data-driven models
-- **Digital Logic:** FSM, HDL, circuit optimization
-- **Leadership:** Mentoring, team guidance
-
-## Contact
-
-📧 **Email:** realreshad@gmail.com  
-📍 **Location:** Dhaka, Bangladesh  
-🔗 **GitHub:** https://github.com/Reshad-Real  
-🔬 **Research Focus:** Biosensors, Embedded Systems, Smart Grids
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-- Mobile browsers (iOS Safari, Chrome Mobile)
-
-## Performance
-
-- ⚡ Optimized CSS and HTML
-- 🚀 Smooth animations with CSS3
-- 📱 Mobile-first responsive design
-- ♿ Semantic HTML for accessibility
-
-## Customization
-
-To modify the portfolio:
-
-1. **Update content:** Edit `index.html` directly
-2. **Change colors:** Modify CSS variables in `<style>` section
-   ```css
-   :root {
-       --primary: #0f172a;
-       --accent: #0ea5e9;
-       /* ... other variables */
-   }
-   ```
-3. **Update CV:** Replace `CV_Reshad.pdf` with your updated CV
-4. **Modify links:** Update project and publication URLs
-
-## Updates & Maintenance
-
-To update your portfolio:
+## Run locally
 
 ```bash
-# Edit files locally
-# Then commit and push
-git add .
-git commit -m "Update portfolio content"
-git push origin main
+git clone https://github.com/Reshad-Real/portfolio.git
+cd portfolio
+python -m http.server 8000   # then open http://localhost:8000
 ```
 
-Changes will be live within 1-2 minutes.
+Or just open `index.html` directly in a browser.
 
-## License
+## Deploy (GitHub Pages)
 
-This portfolio template is available for personal and professional use.
+Repository **Settings → Pages → Deploy from a branch → `main` / root**. Live within a minute or two
+at `https://reshad-real.github.io/portfolio/`.
 
-## Acknowledgments
+## Customize
 
-Built with HTML5, CSS3, and vanilla JavaScript for optimal performance and compatibility.
+- **Content:** edit `index.html`.
+- **Colors / spacing:** the design tokens live in `:root { … }` at the top of `style.css`.
+- **CV:** replace `CV_Reshad.pdf`.
+- **Social links:** the Google Scholar and LinkedIn buttons in the hero are marked with
+  `<!-- TODO -->` — drop in the real profile URLs.
 
 ---
 
-**Last Updated:** January 2026  
-**Version:** 1.0
-
-For detailed hosting instructions, see [GITHUB_HOSTING_GUIDE.md](./GITHUB_HOSTING_GUIDE.md)
+Fabricated with `<silicon/>`.

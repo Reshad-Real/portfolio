@@ -64,8 +64,8 @@
 
     /* ---- shoulders: a bust, cut off at the bottom of the frame ---- */
     var shoulders = ball(0.92, shirtM, 22);
-    shoulders.scale.set(1.18, 0.62, 0.74);
-    shoulders.position.y = -1.22;
+    shoulders.scale.set(1.52, 0.74, 0.86);
+    shoulders.position.y = -1.30;
     person.add(shoulders);
 
     var collarM = mat(o.collar, 12, 0x333a3c);
@@ -128,8 +128,10 @@
     var hair = new THREE.Group();
     head.add(hair);
 
-    var cap = ball(0.472, hairM, 24);
-    cap.scale.set(0.99, o.hairH, 0.99);
+    /* The cap is deliberately larger than the skull (0.46 x 1.06 = 0.488 tall).
+       When it was smaller the crown poked through and both figures read bald. */
+    var cap = ball(0.505, hairM, 26);
+    cap.scale.set(o.capS[0], o.capS[1], o.capS[2]);
     cap.position.set(0, o.hairY, o.hairZ);
     hair.add(cap);
 
@@ -147,8 +149,8 @@
 
     if (o.fringe) {
       var fringe = ball(0.40, hairM, 16);
-      fringe.scale.set(1.02, 0.42, 0.72);
-      fringe.position.set(0, 0.30, 0.13);
+      fringe.scale.set(1.02, 0.40, 0.62);
+      fringe.position.set(0, 0.31, 0.08);
       hair.add(fringe);
     }
 
@@ -199,7 +201,7 @@
 
     return {
       canvas: canvas, renderer: renderer, scene: scene, camera: camera,
-      person: person, head: head, hair: hair, mouth: mouth, nose: nose,
+      person: person, head: head, hair: hair, mouth: mouth, nose: nose, skullMesh: skull,
       lidL: lidL, lidR: lidR, eyeL: eyeL, eyeR: eyeR, browL: browL, browR: browR,
       beard: beard,
       look: { x: 0, y: 0 }, blink: 0, nextBlink: 1 + Math.random() * 3,
@@ -211,15 +213,15 @@
     older: {
       skin: 0xa9784f, hair: 0xc3c9cc, brow: 0xa8afb2, shirt: 0x34474f,
       collar: 0xe8eef0, accent: 0x0c7b86, beardColor: 0xc3c9cc,
-      hairH: 0.66, hairY: 0.165, hairZ: -0.09,
-      sideS: [1.04, 0.86, 0.94], sideY: 0.02, sideZ: -0.07, backH: 0.74,
+      capS: [0.99, 0.88, 0.93], hairY: 0.115, hairZ: -0.10,
+      sideS: [1.00, 0.84, 0.93], sideY: 0.02, sideZ: -0.07, backH: 0.74,
       glasses: true, beard: true, fringe: false
     },
     younger: {
       skin: 0xb07a4e, hair: 0x2b1e16, brow: 0x2b1e16, shirt: 0x1d5f68,
       collar: 0xf2f6f7, accent: 0x6dbb1c, beardColor: 0x35251a,
-      hairH: 0.80, hairY: 0.125, hairZ: -0.02,
-      sideS: [1.05, 0.92, 0.98], sideY: 0.03, sideZ: -0.06, backH: 0.82,
+      capS: [1.02, 0.98, 0.98], hairY: 0.085, hairZ: -0.05,
+      sideS: [1.02, 0.92, 0.97], sideY: 0.03, sideZ: -0.06, backH: 0.82,
       glasses: false, beard: true, fringe: true
     }
   };

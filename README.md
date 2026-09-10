@@ -28,31 +28,38 @@ Three.js r128 is pulled from a CDN. Everything else is hand-written.
 
 ## The hero
 
-A **chip floorplan** seen from above, in a panel on the right of the hero. It never takes
-over the screen. Logic core, two SRAM macros, a PLL, an analogue block and the I/O ring,
-laid out on a substrate with a pad ring around the edge.
+A **chip floorplan** seen from above — and the site map. The six labelled blocks *are* the
+navigation: hover one to read what it holds, click it to travel to that section.
+
+| Block | Section |
+|---|---|
+| U1 · logic core | About |
+| U2 · SRAM macro | Work |
+| U3 · SRAM macro | Papers |
+| U5 · PLL | Research |
+| U6 · analogue | Teaching |
+| J1 · I/O ring | Contact |
+
+Around them sits everything a real floorplan has and nobody clicks: filler and decap with
+hatching, a seal ring, corner alignment marks, a gold pad ring with bond stubs, power
+straps overhead, a clock spine, standard-cell rows across the core, and bit-cell arrays on
+the memories.
 
 - **Drag** to rotate.
-- **Hover** a block to read what it does.
-- **Click** a block to isolate it; everything else dims back.
-- **Power** runs signal packets along the routing channels between blocks.
-- **X-ray** drops the block heights so the routing grid underneath shows through.
-
-Six **probes orbit the die**, one per section of the site. Hover one and it lights up and
-offers the jump; click it and the page travels there. They are real navigation, not
-decoration.
-
-Everything in this scene is a box on a plate. Simple forms hold up from any angle, which
-matters when the thing rotates.
+- **Power** runs signal packets along the routing channels.
+- **X-ray** flattens the blocks and hides the straps so the routing grid shows through.
 
 If WebGL is unavailable, a static floorplan diagram takes its place.
 
 ## BYTE
 
 A golden retriever puppy with a chrome panel over one eye and cheek, a glowing blue optic
-set into it, a lit seam along its edge, and a metal cuff on one ear tip. The rest is fur,
-floppy ears and tongue. The panel is deliberately small — covering the whole side of the
-head turned him into a silver blob.
+set into it, a lit seam along its edge, and a metal cuff on one ear tip.
+
+His **proportions** are the thing that makes him read as a puppy rather than a lumpy
+quadruped: the head is nearly as big as the body, the body is short and round, and the
+legs are stubby with no visible knee. Those ratios are asserted in the geometry tests,
+because they are what earlier versions got wrong while passing every other check.
 
 He **sits** in the bottom-right corner, facing you, and **stands up** to walk — the two
 poses are separate sets of joint angles that lerp into each other, so getting up reads as
@@ -122,9 +129,11 @@ replace the matching `<symbol>` and everything picks it up.
 Three harnesses live outside the site (`test-home.js`, `test-arcade.js`,
 `test-geometry.js`). The geometry one is the interesting one: because the 3D scenes cannot
 be eyeballed in CI, every model is projected through its own camera and measured — does it
-fit inside the canvas, is it centred, does the lattice stay in frame through a full
-rotation, does any hair geometry sit in front of a face. That is how the cropped busts and
-the overflowing hero were caught.
+fit inside the canvas, is it centred, does the die stay in frame through a full rotation,
+does any hair geometry sit in front of a face, does the hair actually cover the crown, do
+two floorplan blocks overlap, are the dog's proportions those of a puppy. That is how the
+cropped busts, the overflowing hero, the bald figures and the adult-proportioned dog were
+all caught.
 
 ## Accessibility
 

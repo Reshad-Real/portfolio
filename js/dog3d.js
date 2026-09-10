@@ -33,7 +33,7 @@
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);
-  camera.position.set(0, 0.62, 10.0);
+  camera.position.set(0, 0.62, 8.7);
   camera.lookAt(0, 0, 0);
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x6a5334, 0.9));
@@ -65,216 +65,182 @@
   var goldM = fur(GOLD), goldD = fur(GOLD_D), creamM = fur(CREAM);
   var chromeM = metal(CHROME), chromeD = metal(CHROME_D, 60);
 
-  /* ---------- the dog. Built facing +X. ---------- */
+  /* ---------- the dog. Built facing +X. ----------
+     PROPORTIONS ARE THE WHOLE POINT HERE. Earlier versions had an adult
+     dog's build — long body, small head, long jointed legs — which reads
+     as a lumpy quadruped no matter how good the details are. A puppy is
+     roughly: head nearly as big as the body, body short and round, legs
+     stubby with no visible knee. Those ratios are asserted in the tests. */
   var dog = new THREE.Group();
-  dog.position.y = -0.06;  /* tuned against the geometry test so he sits centred */
+  dog.position.y = -0.10;
   scene.add(dog);
 
   var torso = new THREE.Group();
   dog.add(torso);
 
-  /* puppy proportions: short round body, big head */
-  var trunk = ball(0.80, goldM);
-  trunk.scale.set(1.38, 1.00, 0.98);
+  /* ONE rounded body. No chest or rump spheres bulging out of it. */
+  var trunk = ball(0.82, goldM, 28);
+  trunk.scale.set(1.06, 1.00, 0.94);
   torso.add(trunk);
 
-  /* chest and rump stay inside the trunk's cross-section, so the body
-     reads as one form instead of a string of beads */
-  var chestBall = ball(0.62, goldM);
-  chestBall.scale.set(0.96, 0.98, 0.96);
-  chestBall.position.set(0.64, -0.02, 0);
-  torso.add(chestBall);
-
-  var rump = ball(0.64, goldM);
-  rump.scale.set(0.98, 0.98, 0.99);
-  rump.position.set(-0.62, 0.02, 0);
-  torso.add(rump);
-
-  var bib = ball(0.42, creamM);
-  bib.scale.set(0.72, 1.12, 0.70);
-  bib.position.set(0.86, -0.22, 0);
+  var bib = ball(0.50, creamM, 20);
+  bib.scale.set(0.72, 1.02, 0.74);
+  bib.position.set(0.52, -0.22, 0);
   torso.add(bib);
 
-  /* ---------- head ---------- */
-  var neck = tube(0.34, 0.42, 0.5, goldM);
-  neck.position.set(1.02, 0.42, 0);
-  neck.rotation.z = -0.5;
-  torso.add(neck);
-
+  /* ---------- head: big, the way a puppy's is ---------- */
   var head = new THREE.Group();
-  head.position.set(1.28, 0.92, 0);
+  head.position.set(0.62, 0.92, 0);
   torso.add(head);
 
-  var skull = ball(0.56, goldM);
-  skull.scale.set(1.0, 0.96, 0.98);
+  var skull = ball(0.72, goldM, 28);
+  skull.scale.set(1.0, 0.95, 0.98);
   head.add(skull);
 
-  /* forehead fluff */
-  var topFluff = ball(0.30, goldM, 10);
-  topFluff.position.set(-0.06, 0.44, 0);
-  head.add(topFluff);
-
-  /* short puppy muzzle */
-  var muzzle = ball(0.34, creamM);
-  muzzle.scale.set(1.22, 0.88, 0.96);
-  muzzle.position.set(0.50, -0.14, 0);
+  var muzzle = ball(0.40, creamM, 22);
+  muzzle.scale.set(1.05, 0.78, 0.92);
+  muzzle.position.set(0.52, -0.20, 0);
   head.add(muzzle);
 
-  var nose = ball(0.145, metal(NOSE, 70), 14);
-  nose.scale.set(0.86, 0.78, 1.05);
-  nose.position.set(0.80, -0.06, 0);
+  var nose = ball(0.155, metal(NOSE, 60), 16);
+  nose.scale.set(0.88, 0.80, 1.02);
+  nose.position.set(0.84, -0.12, 0);
   head.add(nose);
 
-  /* open mouth + tongue, like the photo */
   var jaw = new THREE.Group();
-  jaw.position.set(0.34, -0.26, 0);
+  jaw.position.set(0.40, -0.34, 0);
   head.add(jaw);
-  var mouth = box(0.40, 0.16, 0.40, metal(0x6b3540, 20));
-  mouth.position.set(0.16, -0.06, 0);
+  var mouth = ball(0.24, metal(0x6b3540, 18), 16);
+  mouth.scale.set(0.80, 0.52, 0.80);
+  mouth.position.set(0.20, -0.02, 0);
   jaw.add(mouth);
-  var tongue = box(0.26, 0.09, 0.24, fur(TONGUE));
-  tongue.position.set(0.30, -0.20, 0);
-  tongue.rotation.z = 0.30;
+  var tongue = ball(0.16, fur(TONGUE), 14);
+  tongue.scale.set(0.92, 0.44, 0.80);
+  tongue.position.set(0.30, -0.14, 0);
   jaw.add(tongue);
-  var tongueTip = ball(0.13, fur(TONGUE), 10);
-  tongueTip.scale.set(1.0, 0.55, 0.9);
-  tongueTip.position.set(0.42, -0.29, 0);
+  var tongueTip = ball(0.12, fur(TONGUE), 12);
+  tongueTip.scale.set(0.9, 0.42, 0.85);
+  tongueTip.position.set(0.40, -0.20, 0);
   jaw.add(tongueTip);
 
   /* the fur-side eye */
-  var eye = ball(0.105, metal(0x171009, 90), 14);
-  eye.position.set(0.40, 0.10, -0.27);
+  var eye = ball(0.125, metal(0x171009, 90), 16);
+  eye.position.set(0.50, 0.14, -0.32);
   head.add(eye);
-  var glint = ball(0.034, lit(0xffffff), 8);
-  glint.position.set(0.47, 0.16, -0.32);
+  var glint = ball(0.042, lit(0xffffff), 10);
+  glint.position.set(0.58, 0.21, -0.38);
   head.add(glint);
-  var lid = ball(0.115, goldM, 12);
-  lid.position.set(0.40, 0.24, -0.27);
+  var lid = ball(0.135, goldM, 14);
+  lid.position.set(0.50, 0.31, -0.32);
   head.add(lid);
 
-  /* the fur-side ear: long, floppy, hanging */
+  /* ---------- big floppy ears ---------- */
   var earFur = new THREE.Group();
-  earFur.position.set(-0.02, 0.20, -0.46);
+  earFur.position.set(-0.04, 0.26, -0.56);
   head.add(earFur);
-  var earFurM = ball(0.24, goldD, 12);
-  earFurM.scale.set(0.62, 1.75, 0.82);
-  earFurM.position.y = -0.34;
+  var earFurM = ball(0.30, goldD, 18);
+  earFurM.scale.set(0.60, 1.55, 0.82);
+  earFurM.position.y = -0.40;
   earFur.add(earFurM);
-  var earFurTip = ball(0.20, goldD, 10);
-  earFurTip.scale.set(0.6, 0.9, 0.8);
-  earFurTip.position.y = -0.66;
-  earFur.add(earFurTip);
-  earFur.rotation.x = -0.16;
+  earFur.rotation.x = -0.20;
+  earFur.rotation.z = 0.10;
 
-  /* ---------- the chrome half ---------- */
+  var earBot = new THREE.Group();
+  earBot.position.set(-0.04, 0.26, 0.56);
+  head.add(earBot);
+  var earBotM = ball(0.30, goldD, 18);
+  earBotM.scale.set(0.60, 1.55, 0.82);
+  earBotM.position.y = -0.40;
+  earBot.add(earBotM);
+  var earCuff = ball(0.22, chromeD, 16);
+  earCuff.scale.set(0.82, 0.58, 0.98);
+  earCuff.position.y = -0.74;
+  earBot.add(earCuff);
+  var earSeam = box(0.03, 0.03, 0.18, lit(OPTIC));
+  earSeam.position.set(0.10, -0.80, 0);
+  earBot.add(earSeam);
+  earBot.rotation.x = 0.20;
+  earBot.rotation.z = 0.10;
+
+  /* ---------- the chrome panel: one eye and cheek only ---------- */
   var cyber = new THREE.Group();
   head.add(cyber);
 
-  /* A panel over one eye and cheek — the way the reference has it.
-     A shell over the whole side turned the head into a silver blob. */
-  var plateA = ball(0.575, chromeM, 24);
-  plateA.scale.set(0.62, 0.78, 0.42);
-  plateA.position.set(0.16, 0.10, 0.30);
+  var plateA = ball(0.735, chromeM, 26);
+  plateA.scale.set(0.60, 0.74, 0.40);
+  plateA.position.set(0.22, 0.12, 0.36);
   cyber.add(plateA);
 
-  var cheekPlate = ball(0.42, chromeD, 18);
-  cheekPlate.scale.set(0.72, 0.52, 0.40);
-  cheekPlate.position.set(0.40, -0.14, 0.24);
+  var cheekPlate = ball(0.52, chromeD, 20);
+  cheekPlate.scale.set(0.70, 0.52, 0.42);
+  cheekPlate.position.set(0.50, -0.16, 0.28);
   cyber.add(cheekPlate);
 
-  /* a short lit seam along the panel's edge, not a hoop round the head */
-  var seamLine = box(0.03, 0.62, 0.05, lit(OPTIC));
-  seamLine.position.set(-0.15, 0.08, 0.40);
-  seamLine.rotation.z = 0.16;
+  var seamLine = box(0.035, 0.72, 0.05, lit(OPTIC));
+  seamLine.position.set(-0.16, 0.10, 0.48);
+  seamLine.rotation.z = 0.14;
   cyber.add(seamLine);
 
-  var browPlate = box(0.42, 0.07, 0.06, chromeD);
-  browPlate.position.set(0.22, 0.40, 0.30);
-  browPlate.rotation.z = -0.18;
-  cyber.add(browPlate);
-
-  /* the optic, set into the panel */
-  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.145, 0.045, 10, 22), chromeD);
-  opticHousing.position.set(0.30, 0.10, 0.40);
-  opticHousing.rotation.y = -0.62;
+  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.05, 10, 24), chromeD);
+  opticHousing.position.set(0.38, 0.13, 0.47);
+  opticHousing.rotation.y = -0.6;
   cyber.add(opticHousing);
-  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.125, 20), lit(OPTIC));
-  opticLens.position.set(0.328, 0.10, 0.436);
-  opticLens.rotation.y = -0.62;
+  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.145, 22), lit(OPTIC));
+  opticLens.position.set(0.408, 0.13, 0.508);
+  opticLens.rotation.y = -0.6;
   cyber.add(opticLens);
-  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.052, 16), lit(0xdff4ff));
-  opticCore.position.set(0.34, 0.10, 0.449);
-  opticCore.rotation.y = -0.62;
+  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.06, 16), lit(0xdff4ff));
+  opticCore.position.set(0.42, 0.13, 0.522);
+  opticCore.rotation.y = -0.6;
   cyber.add(opticCore);
 
   for (var rv = 0; rv < 3; rv++) {
-    var rivet = ball(0.024, chromeD, 8);
-    rivet.position.set(-0.08 + rv * 0.10, 0.36 - rv * 0.18, 0.36);
+    var rivet = ball(0.028, chromeD, 8);
+    rivet.position.set(-0.06 + rv * 0.12, 0.44 - rv * 0.20, 0.42);
     cyber.add(rivet);
   }
 
-  /* the chrome-side ear: metal plated, held up */
-  var earBot = new THREE.Group();
-  earBot.position.set(-0.04, 0.24, 0.46);
-  head.add(earBot);
-  var earBotM = ball(0.24, goldD, 16);
-  earBotM.scale.set(0.62, 1.75, 0.82);
-  earBotM.position.y = -0.34;
-  earBot.add(earBotM);
-  var earCuff = ball(0.20, chromeD, 14);
-  earCuff.scale.set(0.76, 0.62, 0.94);
-  earCuff.position.y = -0.66;
-  earBot.add(earCuff);
-  var earSeam = box(0.03, 0.03, 0.16, lit(OPTIC));
-  earSeam.position.set(0.10, -0.70, 0.0);
-  earBot.add(earSeam);
-  earBot.rotation.x = 0.20;
-
-  /* ---------- legs ---------- */
+  /* ---------- stubby legs: one segment, no visible knee ---------- */
   function makeLeg(x, z, front) {
     var g = new THREE.Group();
-    g.position.set(x, -0.46, z);
+    g.position.set(x, -0.58, z);
     torso.add(g);
 
-    var thigh = tube(front ? 0.20 : 0.26, front ? 0.18 : 0.24, 0.52, goldM);
-    thigh.position.y = -0.26;
-    g.add(thigh);
+    var limb = tube(0.20, 0.22, 0.42, goldM);
+    limb.position.y = -0.21;
+    g.add(limb);
 
+    /* kept as a group so the walk cycle still has something to bend */
     var knee = new THREE.Group();
-    knee.position.y = -0.50;
+    knee.position.y = -0.40;
     g.add(knee);
 
-    var shin = tube(0.16, 0.17, 0.44, goldM);
-    shin.position.y = -0.22;
-    knee.add(shin);
-
-    var paw = ball(0.22, creamM, 12);
-    paw.scale.set(1.15, 0.72, 1.0);
-    paw.position.set(0.05, -0.44, 0);
+    var paw = ball(0.24, creamM, 16);
+    paw.scale.set(1.0, 0.72, 1.05);
+    paw.position.set(0.03, -0.14, 0);
     knee.add(paw);
 
     return { g: g, knee: knee, paw: paw, front: !!front };
   }
 
-  var legFL = makeLeg(0.70, 0.36, true);
-  var legFR = makeLeg(0.70, -0.36, true);
-  var legRL = makeLeg(-0.72, 0.34, false);
-  var legRR = makeLeg(-0.72, -0.34, false);
+  var legFL = makeLeg(0.48, 0.40, true);
+  var legFR = makeLeg(0.48, -0.40, true);
+  var legRL = makeLeg(-0.52, 0.38, false);
+  var legRR = makeLeg(-0.52, -0.38, false);
   var legs = [legFL, legFR, legRL, legRR];
 
-  /* ---------- fluffy tail ---------- */
+  /* ---------- small curled tail ---------- */
   var tail = new THREE.Group();
-  tail.position.set(-1.22, 0.10, 0);
+  tail.position.set(-0.86, 0.30, 0);
   torso.add(tail);
   var seg = [];
-  for (var s = 0; s < 3; s++) {
+  for (var sI = 0; sI < 3; sI++) {
     var sg = new THREE.Group();
-    var puff = ball(0.24 - s * 0.02, goldM, 11);
-    puff.scale.set(1.1, 0.92, 0.92);
-    puff.position.x = -0.20;
+    var puff = ball(0.21 - sI * 0.025, goldM, 14);
+    puff.position.x = -0.16;
     sg.add(puff);
-    sg.position.x = s === 0 ? 0 : -0.20;
-    if (s === 0) tail.add(sg); else seg[s - 1].add(sg);
+    sg.position.x = sI === 0 ? 0 : -0.16;
+    if (sI === 0) tail.add(sg); else seg[sI - 1].add(sg);
     seg.push(sg);
   }
 
@@ -307,16 +273,16 @@
   /* every value lerps, so sitting down is a motion, not a jump */
   var POSE = {
     sit: {
-      torsoRotZ: 0.26, torsoY: -0.14,
-      flHip: 0.10, flKnee: -0.06,
-      rlHip: 0.92, rlKnee: -1.34,
-      tailRotZ: 0.55, headRotZ: 0.10, headY: 0.98
+      torsoRotZ: 0.20, torsoY: -0.16,
+      flHip: 0.04, flKnee: 0.0,
+      rlHip: 0.44, rlKnee: -0.62,
+      tailRotZ: 0.60, headRotZ: 0.08, headY: 0.96
     },
     stand: {
-      torsoRotZ: 0.0, torsoY: 0.10,
+      torsoRotZ: 0.0, torsoY: 0.04,
       flHip: 0, flKnee: 0,
       rlHip: 0, rlKnee: 0,
-      tailRotZ: 0.30, headRotZ: 0, headY: 0.92
+      tailRotZ: 0.34, headRotZ: 0, headY: 0.92
     }
   };
   var pose = {};
@@ -611,14 +577,14 @@
 
     /* breathing */
     var breath = 1 + Math.sin(clock * 1.8) * (moving ? 0.004 : 0.014);
-    trunk.scale.set(1.42, 1.02 * breath, 1.0 * breath);
+    trunk.scale.set(1.06, 1.00 * breath, 0.94 * breath);
 
     /* head: bob, look about, snap up on a bark */
     head.position.y = pose.headY + Math.sin(clock * 1.8) * 0.012 + happy * 0.05;
     head.rotation.z = pose.headRotZ - barkT * 0.34 + (moving ? Math.sin(walkPhase * 2 + 0.5) * 0.03 : 0);
     head.rotation.y = moving ? 0 : Math.sin(clock * 0.5) * 0.22;
-    jaw.rotation.z = 0.10 + barkT * 0.55 + happy * 0.14;
-    tongue.rotation.z = 0.30 + Math.sin(clock * 3) * 0.06 + happy * 0.2;
+    jaw.rotation.z = 0.06 + barkT * 0.50 + happy * 0.12;
+    tongue.rotation.z = 0.10 + Math.sin(clock * 3) * 0.06 + happy * 0.16;
 
     /* ears swing */
     earFur.rotation.x = -0.16 + Math.sin(walkPhase * 2) * (moving ? 0.22 : 0.035) - happy * 0.12;
@@ -636,7 +602,7 @@
     nextBlink -= 0.016;
     if (nextBlink <= 0) { blink = 1; nextBlink = 2.4 + Math.random() * 3.4; }
     blink *= 0.80;
-    lid.position.y = 0.24 - blink * 0.16;
+    lid.position.y = 0.31 - blink * 0.20;
     eye.scale.y = Math.max(0.1, 1 - blink * 1.05) * (1 - happy * 0.4);
     glint.visible = blink < 0.4;
 
@@ -667,7 +633,7 @@
   /* exposed for the geometry tests */
   canvas.__dog = {
     scene: scene, camera: camera, dog: dog, head: head, legs: legs,
-    nose: nose, skull: skull, opticLens: opticLens, plateA: plateA,
+    nose: nose, skull: skull, trunk: trunk, opticLens: opticLens, plateA: plateA,
     setSit: function (v) { sitOverride = v; sitAmt = v; },
     freeSit: function () { sitOverride = null; }
   };

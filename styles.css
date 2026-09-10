@@ -1331,3 +1331,12 @@ kbd {
 /* course cards fill their column evenly */
 .course-list { height: 100%; align-content: start; }
 .teach-grid .awards { margin-top: 18px; }
+
+
+/* the block designator inside the hero readout */
+.die-desig {
+  font-family: var(--f-mono); font-size: 11.5px; color: var(--teal);
+  border: 1px solid color-mix(in srgb, var(--teal-b) 34%, transparent);
+  border-radius: 100px; padding: 1px 8px; margin: 0 2px;
+}
+.dev-read { min-height: 66px; }

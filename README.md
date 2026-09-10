@@ -17,7 +17,7 @@ Two pages, no build step, no framework. Open `index.html` and it runs.
 | `arcade.html` | The games, on their own page |
 | `styles.css` | All styling. Light is the default theme; dark is opt-in |
 | `js/app.js` | Theme, navigation, scroll reveals, counters, card tilt |
-| `js/lattice3d.js` | The hero: an interactive 3D silicon crystal you can dope |
+| `js/die3d.js` | The hero: an interactive 3D chip floorplan |
 | `js/dog3d.js` | BYTE, the cyborg dog |
 | `js/refs3d.js` | The two 3D figures on the reference cards |
 | `js/games.js` | The four arcade games |
@@ -28,30 +28,31 @@ Three.js r128 is pulled from a CDN. Everything else is hand-written.
 
 ## The hero
 
-A **silicon unit cell** — diamond cubic, eighteen atoms, sixteen tetrahedral bonds — in a
-panel on the right of the hero. It never takes over the screen.
+A **chip floorplan** seen from above, in a panel on the right of the hero. It never takes
+over the screen. Logic core, two SRAM macros, a PLL, an analogue block and the I/O ring,
+laid out on a substrate with a pad ring around the edge.
 
 - **Drag** to rotate.
-- **Hover** an atom to read what it is.
-- **Click** an atom to dope it. Silicon → phosphorus donor (a spare electron appears) →
-  boron acceptor (a hole appears) → back to silicon. The badge above tracks the running
-  total: intrinsic, n-type, p-type, or compensated.
-- **Bias** sets the free carriers drifting — electrons one way, holes the other.
-- **Thermal** heats the lattice to 300 K so the atoms rattle about their sites and the
-  carriers scatter harder.
-- **Undope** puts every atom back.
+- **Hover** a block to read what it does.
+- **Click** a block to isolate it; everything else dims back.
+- **Power** runs signal packets along the routing channels between blocks.
+- **X-ray** drops the block heights so the routing grid underneath shows through.
 
-Six **probes orbit the crystal**, one per section of the site. Hover one and it lights up
-and offers the jump; click it and the page travels there. They are real navigation, not
+Six **probes orbit the die**, one per section of the site. Hover one and it lights up and
+offers the jump; click it and the page travels there. They are real navigation, not
 decoration.
 
-If WebGL is unavailable, a static bond diagram takes its place.
+Everything in this scene is a box on a plate. Simple forms hold up from any angle, which
+matters when the thing rotates.
+
+If WebGL is unavailable, a static floorplan diagram takes its place.
 
 ## BYTE
 
-A golden retriever puppy with half a chrome face: a plated skull, a glowing blue optic
-where one eye should be, a metal-plated ear, and a seam of light down the middle. The
-other half is all fur, floppy ear, and tongue.
+A golden retriever puppy with a chrome panel over one eye and cheek, a glowing blue optic
+set into it, a lit seam along its edge, and a metal cuff on one ear tip. The rest is fur,
+floppy ears and tongue. The panel is deliberately small — covering the whole side of the
+head turned him into a silver blob.
 
 He **sits** in the bottom-right corner, facing you, and **stands up** to walk — the two
 poses are separate sets of joint angles that lerp into each other, so getting up reads as

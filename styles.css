@@ -69,7 +69,7 @@ body {
   overflow-x: hidden;
 }
 
-/* a crystal-lattice wash instead of a board texture */
+/* a fine dot wash, so the page is not flat white */
 body::before {
   content: '';
   position: fixed;
@@ -273,20 +273,18 @@ button { font: inherit; color: inherit; }
   background: var(--surface-2);
 }
 .dev-tag { font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
-.crys-stat {
+.die-stat {
   font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3);
   border: 1px solid var(--line-2); border-radius: 100px; padding: 3px 11px;
   transition: color .3s, border-color .3s, background .3s;
 }
-.crys-stat.n { color: var(--teal); border-color: color-mix(in srgb, var(--teal-b) 45%, transparent);
-  background: color-mix(in srgb, var(--teal-b) 10%, transparent); }
-.crys-stat.p { color: var(--copper); border-color: color-mix(in srgb, var(--copper) 45%, transparent);
-  background: color-mix(in srgb, var(--copper) 10%, transparent); }
+.die-stat.live { color: var(--lime); border-color: color-mix(in srgb, var(--lime-b) 48%, transparent);
+  background: color-mix(in srgb, var(--lime-b) 10%, transparent); }
 .sw-plain { color: var(--ink-3); }
 .sw-plain:hover { color: var(--ink); }
 
 .dev-stagewrap { position: relative; }
-#crystalCanvas {
+#dieCanvas {
   width: 100%;
   height: clamp(300px, 40vh, 420px);
   display: block;
@@ -307,7 +305,7 @@ button { font: inherit; color: inherit; }
 
 .dev-fallback { padding: 26px; text-align: center; }
 .dev-fallback svg { width: 100%; max-width: 240px; margin: 0 auto 14px; fill: var(--line-2); stroke: none; }
-.dev-fallback .fb-bond path { fill: none; stroke: var(--line-2); stroke-width: 5; }
+.dev-fallback .fb-die { fill: none; stroke: var(--line-2); stroke-width: 3; }
 .dev-fallback p { font-size: 14px; color: var(--ink-2); margin: 0; }
 
 .dev-read {
@@ -462,7 +460,7 @@ button { font: inherit; color: inherit; }
 .scholar-link:hover .go { transform: translateX(4px); }
 
 /* ---------- research floor ---------- */
-.floor { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 34px; }
+.floor { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 34px; }
 .blockk {
   background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-l);
   padding: 24px; transition: transform .25s, box-shadow .25s, border-color .25s;
@@ -484,7 +482,7 @@ button { font: inherit; color: inherit; }
 }
 
 /* ---------- teaching ---------- */
-.teach-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 52px; margin-top: 34px; align-items: start; }
+.teach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 34px; align-items: start; }
 .course-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .course-list li {
   display: grid; grid-template-columns: auto 1fr; gap: 4px 16px;
@@ -535,10 +533,13 @@ button { font: inherit; color: inherit; }
 .award i { width: 8px; height: 8px; border-radius: 2px; background: var(--copper); transform: rotate(45deg); }
 
 /* ---------- skills ---------- */
-.kits { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 34px; }
+.kits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 34px; }
 .kit { background: var(--surface); border: 1px solid var(--line-2); border-radius: var(--r-l); padding: 22px; }
 .kit h3 { font-size: 15px; color: var(--ink-3); font-family: var(--f-mono); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 16px; }
-.tools-grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.tools-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;
+}
 .tools-grid li {
   display: flex; align-items: center; gap: 12px;
   font-size: 14.5px; font-weight: 500;
@@ -568,7 +569,7 @@ button { font: inherit; color: inherit; }
 }
 .ref:hover { border-color: var(--teal-b); box-shadow: var(--shadow); }
 .ref-fig {
-  flex: none; width: 112px; height: 112px; border-radius: var(--r-m);
+  flex: none; width: 112px; height: 112px; border-radius: 50%;
   background: linear-gradient(180deg, var(--bg-2), var(--surface));
   border: 1px solid var(--line);
   overflow: hidden; display: grid; place-items: center;
@@ -819,7 +820,7 @@ kbd {
 @media (max-width: 1020px) {
   .hero-grid { grid-template-columns: 1fr; gap: 34px; min-height: 0; padding-top: 10px; }
   .hero-device { order: -1; }
-  #crystalCanvas { height: 300px; }
+  #dieCanvas { height: 300px; }
   .about-grid, .teach-grid, .contact-grid { grid-template-columns: 1fr; gap: 34px; }
 }
 
@@ -1098,7 +1099,7 @@ kbd {
 /* ============================================================
    HOW I WORK
    ============================================================ */
-.how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 30px 0 6px; }
+.how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 40px 0 0; }
 .how-card {
   position: relative; overflow: hidden;
   padding: 20px 18px; border-radius: var(--r-m);
@@ -1307,3 +1308,26 @@ kbd {
   .art-res.over .smoke, .art-runner.over .shards, .dev-probes i { animation: none !important; }
   .rise { opacity: 1; transform: none; }
 }
+
+
+/* ---------- keeping the new grids honest on smaller screens ---------- */
+@media (max-width: 1020px) {
+  .floor { grid-template-columns: 1fr; }
+  .kits { grid-template-columns: 1fr; }
+  .teach-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .tools-grid { grid-template-columns: 1fr; }
+  .how { grid-template-columns: 1fr; }
+}
+
+/* the kit cards read better with a rule under the heading */
+.kit h3 {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.kit { display: flex; flex-direction: column; }
+
+/* course cards fill their column evenly */
+.course-list { height: 100%; align-content: start; }
+.teach-grid .awards { margin-top: 18px; }

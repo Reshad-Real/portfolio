@@ -55,9 +55,9 @@
     fill.position.set(-3, 1, 2.4);
     scene.add(fill);
 
-    var skinM = mat(o.skin, 9, 0x3a2c22);
-    var hairM = mat(o.hair, 20, 0x555555);
-    var shirtM = mat(o.shirt, 8, 0x22282a);
+    var skinM = mat(o.skin, 3, 0x1f1811);
+    var hairM = mat(o.hair, 8, 0x3a3a3a);
+    var shirtM = mat(o.shirt, 4, 0x181d1f);
 
     var person = new THREE.Group();
     scene.add(person);
@@ -107,19 +107,19 @@
     nose.position.set(0, -0.07, 0.42);
     head.add(nose);
 
-    var mouth = box(0.19, 0.032, 0.04, mat(0x71392f, 8));
+    var mouth = box(0.20, 0.04, 0.05, mat(0x71392f, 6));
     mouth.position.set(0, -0.27, 0.38);
     head.add(mouth);
 
     var eyeM = mat(0x161210, 78, 0xffffff);
-    var eyeL = ball(0.052, eyeM, 12); eyeL.position.set(-0.165, 0.04, 0.375); head.add(eyeL);
-    var eyeR = ball(0.052, eyeM, 12); eyeR.position.set(0.165, 0.04, 0.375); head.add(eyeR);
+    var eyeL = ball(0.062, eyeM, 14); eyeL.position.set(-0.168, 0.035, 0.375); head.add(eyeL);
+    var eyeR = ball(0.062, eyeM, 14); eyeR.position.set(0.168, 0.035, 0.375); head.add(eyeR);
     var lidL = ball(0.062, skinM, 12); lidL.position.set(-0.165, 0.115, 0.365); head.add(lidL);
     var lidR = ball(0.062, skinM, 12); lidR.position.set(0.165, 0.115, 0.365); head.add(lidR);
 
     var browM = mat(o.brow, 9);
-    var browL = box(0.17, 0.038, 0.05, browM); browL.position.set(-0.165, 0.155, 0.385); head.add(browL);
-    var browR = box(0.17, 0.038, 0.05, browM); browR.position.set(0.165, 0.155, 0.385); head.add(browR);
+    var browL = box(0.185, 0.05, 0.06, browM); browL.position.set(-0.168, 0.155, 0.383); head.add(browL);
+    var browR = box(0.185, 0.05, 0.06, browM); browR.position.set(0.168, 0.155, 0.383); head.add(browR);
 
     /* ---- hair ----
        One shell that follows the skull, plus a band around the sides and
@@ -211,15 +211,15 @@
     older: {
       skin: 0xa9784f, hair: 0xc3c9cc, brow: 0xa8afb2, shirt: 0x34474f,
       collar: 0xe8eef0, accent: 0x0c7b86, beardColor: 0xc3c9cc,
-      hairH: 0.46, hairY: 0.235, hairZ: -0.13,
-      sideS: [1.02, 0.60, 0.88], sideY: 0.01, sideZ: -0.12, backH: 0.60,
+      hairH: 0.66, hairY: 0.165, hairZ: -0.09,
+      sideS: [1.04, 0.86, 0.94], sideY: 0.02, sideZ: -0.07, backH: 0.74,
       glasses: true, beard: true, fringe: false
     },
     younger: {
       skin: 0xb07a4e, hair: 0x2b1e16, brow: 0x2b1e16, shirt: 0x1d5f68,
       collar: 0xf2f6f7, accent: 0x6dbb1c, beardColor: 0x35251a,
-      hairH: 0.72, hairY: 0.145, hairZ: -0.03,
-      sideS: [1.03, 0.84, 0.96], sideY: 0.04, sideZ: -0.08, backH: 0.78,
+      hairH: 0.80, hairY: 0.125, hairZ: -0.02,
+      sideS: [1.05, 0.92, 0.98], sideY: 0.03, sideZ: -0.06, backH: 0.82,
       glasses: false, beard: true, fringe: true
     }
   };

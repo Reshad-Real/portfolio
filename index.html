@@ -130,42 +130,41 @@
       </ul>
     </div>
 
-    <!-- the crystal panel. It stays here; it never takes the screen. -->
+    <!-- the die panel. It stays here; it never takes the screen. -->
     <div class="hero-device">
       <div class="dev-card">
         <div class="dev-top">
-          <span class="dev-tag">crystal under the probe</span>
-          <span class="crys-stat" id="crysStat">intrinsic</span>
+          <span class="dev-tag">floorplan · 9 mm² die</span>
+          <span class="die-stat live" id="dieStat">powered</span>
         </div>
 
         <div class="dev-stagewrap">
-          <canvas id="crystalCanvas" tabindex="0" role="img"
-                  aria-label="Interactive 3D silicon crystal lattice. Drag to rotate, click an atom to dope it."></canvas>
-          <div class="dev-fallback" id="crystalFallback" hidden>
+          <canvas id="dieCanvas" tabindex="0" role="img"
+                  aria-label="Interactive 3D chip floorplan. Drag to rotate, click a block to read about it, click an orbiting probe to jump to that section."></canvas>
+          <div class="dev-fallback" id="dieFallback" hidden>
             <svg viewBox="0 0 200 170" aria-hidden="true">
-              <g class="fb-bond"><path d="M40 130 100 95M100 95 160 130M100 95 100 40M40 40 100 95M160 40 100 95"/></g>
-              <circle cx="100" cy="95" r="13"/><circle cx="40" cy="130" r="11"/>
-              <circle cx="160" cy="130" r="11"/><circle cx="100" cy="40" r="11"/>
-              <circle cx="40" cy="40" r="11"/><circle cx="160" cy="40" r="11"/>
+              <rect x="8" y="8" width="184" height="154" rx="6" class="fb-die"/>
+              <rect x="26" y="28" width="74" height="62" rx="3"/>
+              <rect x="112" y="28" width="62" height="28" rx="3"/>
+              <rect x="112" y="62" width="62" height="28" rx="3"/>
+              <rect x="26" y="102" width="40" height="40" rx="3"/>
+              <rect x="78" y="102" width="96" height="26" rx="3"/>
             </svg>
-            <p>A silicon unit cell: diamond cubic, four bonds per atom, and nothing spare to carry current until you dope it.</p>
+            <p>A die floorplan: logic core, two SRAM macros, a PLL, an analogue block and the I/O ring around the edge.</p>
           </div>
-          <span class="dev-hint" id="crysHint">drag to rotate</span>
+          <span class="dev-hint" id="dieHint">drag to rotate</span>
         </div>
+
+        <p class="dev-read" id="dieRead"><b>Floorplan · 9 mm² die</b> · hover a block to read it</p>
 
         <p class="dev-probes"><i></i>The six orbiting probes are links — click one to jump to that section.</p>
 
-        <p class="dev-read" id="crysRead"><b>Silicon · diamond cubic</b> · click any atom to dope it</p>
-
-        <div class="dev-tools" id="crysTools">
-          <button class="sw" id="biasBtn" type="button" aria-pressed="false">
-            <span class="sw-led"></span><span class="sw-name">Bias</span><span class="sw-state">OFF</span>
+        <div class="dev-tools" id="dieTools">
+          <button class="sw on" id="powerBtn" type="button" aria-pressed="true">
+            <span class="sw-led"></span><span class="sw-name">Power</span><span class="sw-state">ON</span>
           </button>
-          <button class="sw" id="heatBtn" type="button" aria-pressed="false">
-            <span class="sw-led"></span><span class="sw-name">Thermal</span><span class="sw-state">0 K</span>
-          </button>
-          <button class="sw sw-plain" id="resetBtn" type="button">
-            <span class="sw-name">Undope</span>
+          <button class="sw" id="xrayBtn" type="button" aria-pressed="false">
+            <span class="sw-led"></span><span class="sw-name">X-ray</span><span class="sw-state">OFF</span>
           </button>
         </div>
       </div>
@@ -225,7 +224,17 @@
         </p>
       </div>
 
-      <div class="how">
+      <ul class="spec reveal">
+        <li><span>Location</span><b>Mirpur 11, Dhaka</b></li>
+        <li><span>Field</span><b>Semiconductor devices · VLSI</b></li>
+        <li><span>Tooling</span><b>Silvaco Atlas · DEVSIM · COMSOL</b></li>
+        <li><span>Teaching</span><b>3 courses · 4 semesters</b></li>
+        <li><span>Honours</span><b>VC's List ×3 · Dean's List ×5</b></li>
+        <li><span>Status</span><b class="live"><i></i>Open to collaboration</b></li>
+      </ul>
+    </div>
+
+    <div class="how">
         <article class="how-card reveal">
           <span class="how-n">01</span>
           <h3>Simulate first</h3>
@@ -241,17 +250,8 @@
           <h3>Then write it up</h3>
           <p>Six Q1 papers so far. A result nobody can reproduce from your methods section is not a result yet.</p>
         </article>
-      </div>
-
-      <ul class="spec reveal">
-        <li><span>Location</span><b>Mirpur 11, Dhaka</b></li>
-        <li><span>Field</span><b>Semiconductor devices · VLSI</b></li>
-        <li><span>Tooling</span><b>Silvaco Atlas · DEVSIM · COMSOL</b></li>
-        <li><span>Teaching</span><b>3 courses · 4 semesters</b></li>
-        <li><span>Honours</span><b>VC's List ×3 · Dean's List ×5</b></li>
-        <li><span>Status</span><b class="live"><i></i>Open to collaboration</b></li>
-      </ul>
     </div>
+
   </div>
 </section>
 
@@ -469,7 +469,17 @@
             <span class="c-name">Electrical Machines</span>
             <span class="c-note">Transformers, DC and induction machines.</span>
           </li>
+          <li>
+            <span class="c-code">FYAT</span>
+            <span class="c-name">First Year Advising</span>
+            <span class="c-note">A year mentoring incoming students through registration, course planning, and the first-year cliff.</span>
+          </li>
         </ul>
+
+        <div class="awards">
+          <span class="award"><i></i>Vice Chancellor's List ×3</span>
+          <span class="award"><i></i>Dean's List ×5</span>
+        </div>
       </div>
 
       <div class="edu reveal">
@@ -500,10 +510,6 @@
           </article>
         </div>
 
-        <div class="awards">
-          <span class="award"><i></i>Vice Chancellor's List ×3</span>
-          <span class="award"><i></i>Dean's List ×5</span>
-        </div>
       </div>
     </div>
   </div>
@@ -717,7 +723,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="js/app.js"></script>
-<script src="js/lattice3d.js"></script>
+<script src="js/die3d.js"></script>
 <script src="js/dog3d.js"></script>
 <script src="js/refs3d.js"></script>
 </body>

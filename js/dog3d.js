@@ -52,14 +52,14 @@
   var CHROME = 0xc2ccd2, CHROME_D = 0x8d9aa2, OPTIC = 0x39b6ff, TONGUE = 0xe98a9a;
 
   function fur(color) {
-    return new THREE.MeshPhongMaterial({ color: color, shininess: 5, specular: 0x2a2014, flatShading: true });
+    return new THREE.MeshPhongMaterial({ color: color, shininess: 4, specular: 0x1d1610 });
   }
   function metal(color, shine) {
     return new THREE.MeshPhongMaterial({ color: color, shininess: shine || 95, specular: 0xf0fbff });
   }
   function lit(color) { return new THREE.MeshBasicMaterial({ color: color }); }
   function box(w, h, d, m) { return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); }
-  function ball(r, m, s) { return new THREE.Mesh(new THREE.SphereGeometry(r, s || 16, s || 13), m); }
+  function ball(r, m, s) { return new THREE.Mesh(new THREE.SphereGeometry(r, s || 24, s || 18), m); }
   function tube(rt, rb, h, m) { return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 14), m); }
 
   var goldM = fur(GOLD), goldD = fur(GOLD_D), creamM = fur(CREAM);
@@ -74,30 +74,26 @@
   dog.add(torso);
 
   /* puppy proportions: short round body, big head */
-  var trunk = ball(0.78, goldM);
-  trunk.scale.set(1.42, 1.02, 1.0);
+  var trunk = ball(0.80, goldM);
+  trunk.scale.set(1.38, 1.00, 0.98);
   torso.add(trunk);
 
-  var rump = ball(0.70, goldM);
-  rump.scale.set(1.0, 1.02, 1.02);
-  rump.position.set(-0.72, -0.05, 0);
-  torso.add(rump);
-
-  var chestBall = ball(0.66, goldM);
-  chestBall.position.set(0.74, -0.02, 0);
+  /* chest and rump stay inside the trunk's cross-section, so the body
+     reads as one form instead of a string of beads */
+  var chestBall = ball(0.62, goldM);
+  chestBall.scale.set(0.96, 0.98, 0.96);
+  chestBall.position.set(0.64, -0.02, 0);
   torso.add(chestBall);
 
-  var bib = ball(0.50, creamM);
-  bib.scale.set(0.9, 1.15, 0.85);
-  bib.position.set(0.92, -0.24, 0);
-  torso.add(bib);
+  var rump = ball(0.64, goldM);
+  rump.scale.set(0.98, 0.98, 0.99);
+  rump.position.set(-0.62, 0.02, 0);
+  torso.add(rump);
 
-  /* A light scruff at the shoulders only. The body stays one smooth
-     silhouette — separate tuft spheres read as lumps, not fur. */
-  var scruff = ball(0.62, goldD, 14);
-  scruff.scale.set(0.62, 1.02, 1.06);
-  scruff.position.set(0.34, 0.12, 0);
-  torso.add(scruff);
+  var bib = ball(0.42, creamM);
+  bib.scale.set(0.72, 1.12, 0.70);
+  bib.position.set(0.86, -0.22, 0);
+  torso.add(bib);
 
   /* ---------- head ---------- */
   var neck = tube(0.34, 0.42, 0.5, goldM);
@@ -174,40 +170,46 @@
   var cyber = new THREE.Group();
   head.add(cyber);
 
-  /* Faceplate: one shell hugging the +Z side of the skull. The seam is a
-     ring traced around the shell's edge, not a slab pushed through it. */
-  var plateA = ball(0.575, chromeM, 22);
-  plateA.scale.set(0.99, 0.97, 0.46);
-  plateA.position.set(0, 0, 0.31);
+  /* A panel over one eye and cheek — the way the reference has it.
+     A shell over the whole side turned the head into a silver blob. */
+  var plateA = ball(0.575, chromeM, 24);
+  plateA.scale.set(0.62, 0.78, 0.42);
+  plateA.position.set(0.16, 0.10, 0.30);
   cyber.add(plateA);
 
-  var cheekPlate = ball(0.40, chromeD, 16);
-  cheekPlate.scale.set(1.05, 0.78, 0.42);
-  cheekPlate.position.set(0.34, -0.18, 0.26);
+  var cheekPlate = ball(0.42, chromeD, 18);
+  cheekPlate.scale.set(0.72, 0.52, 0.40);
+  cheekPlate.position.set(0.40, -0.14, 0.24);
   cyber.add(cheekPlate);
 
-  var seamLine = new THREE.Mesh(new THREE.TorusGeometry(0.555, 0.022, 8, 30), lit(OPTIC));
-  seamLine.position.set(0, 0, 0.055);
+  /* a short lit seam along the panel's edge, not a hoop round the head */
+  var seamLine = box(0.03, 0.62, 0.05, lit(OPTIC));
+  seamLine.position.set(-0.15, 0.08, 0.40);
+  seamLine.rotation.z = 0.16;
   cyber.add(seamLine);
 
-  /* the optic, set into the plate */
-  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.155, 0.05, 10, 22), chromeD);
+  var browPlate = box(0.42, 0.07, 0.06, chromeD);
+  browPlate.position.set(0.22, 0.40, 0.30);
+  browPlate.rotation.z = -0.18;
+  cyber.add(browPlate);
+
+  /* the optic, set into the panel */
+  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.145, 0.045, 10, 22), chromeD);
   opticHousing.position.set(0.30, 0.10, 0.40);
   opticHousing.rotation.y = -0.62;
   cyber.add(opticHousing);
-  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.135, 20), lit(OPTIC));
-  opticLens.position.set(0.335, 0.10, 0.437);
+  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.125, 20), lit(OPTIC));
+  opticLens.position.set(0.328, 0.10, 0.436);
   opticLens.rotation.y = -0.62;
   cyber.add(opticLens);
-  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.058, 16), lit(0xdff4ff));
-  opticCore.position.set(0.348, 0.10, 0.452);
+  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.052, 16), lit(0xdff4ff));
+  opticCore.position.set(0.34, 0.10, 0.449);
   opticCore.rotation.y = -0.62;
   cyber.add(opticCore);
 
-  /* rivets tucked along the seam */
-  for (var rv = 0; rv < 4; rv++) {
-    var rivet = ball(0.028, chromeD, 8);
-    rivet.position.set(-0.22 + rv * 0.16, 0.40 - rv * 0.20, 0.20);
+  for (var rv = 0; rv < 3; rv++) {
+    var rivet = ball(0.024, chromeD, 8);
+    rivet.position.set(-0.08 + rv * 0.10, 0.36 - rv * 0.18, 0.36);
     cyber.add(rivet);
   }
 
@@ -215,12 +217,16 @@
   var earBot = new THREE.Group();
   earBot.position.set(-0.04, 0.24, 0.46);
   head.add(earBot);
-  var earBotM = ball(0.23, chromeD, 12);
-  earBotM.scale.set(0.58, 1.6, 0.78);
-  earBotM.position.y = -0.30;
+  var earBotM = ball(0.24, goldD, 16);
+  earBotM.scale.set(0.62, 1.75, 0.82);
+  earBotM.position.y = -0.34;
   earBot.add(earBotM);
-  var earSeam = box(0.025, 0.34, 0.03, lit(OPTIC));
-  earSeam.position.set(0.10, -0.30, 0.0);
+  var earCuff = ball(0.20, chromeD, 14);
+  earCuff.scale.set(0.76, 0.62, 0.94);
+  earCuff.position.y = -0.66;
+  earBot.add(earCuff);
+  var earSeam = box(0.03, 0.03, 0.16, lit(OPTIC));
+  earSeam.position.set(0.10, -0.70, 0.0);
   earBot.add(earSeam);
   earBot.rotation.x = 0.20;
 
@@ -261,7 +267,7 @@
   tail.position.set(-1.22, 0.10, 0);
   torso.add(tail);
   var seg = [];
-  for (var s = 0; s < 4; s++) {
+  for (var s = 0; s < 3; s++) {
     var sg = new THREE.Group();
     var puff = ball(0.24 - s * 0.02, goldM, 11);
     puff.scale.set(1.1, 0.92, 0.92);
@@ -639,6 +645,7 @@
     opticCore.scale.setScalar(pulse);
     blue.intensity = 0.7 + Math.sin(clock * 3.2) * 0.16;
     seamLine.material.color.setHex(Math.sin(clock * 2) > -0.6 ? OPTIC : 0x1d6a99);
+    earSeam.material.color.setHex(Math.sin(clock * 2 + 1) > 0 ? OPTIC : 0x1d6a99);
 
     /* hearts */
     for (i = 0; i < hearts.length; i++) {

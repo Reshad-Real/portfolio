@@ -37,6 +37,9 @@
 
   function beep(f, d, t, v) { if (B.audio) B.audio.tone(f, d, t, v); }
 
+  /* filled in by the shell below; games call it when a run ends */
+  var gameOver = function () {};
+
   /* ---------- shared state ---------- */
   var score = 0, combo = 1, lives = 0, best = 0;
   var activeKey = null, active = null;
@@ -389,11 +392,12 @@
     }
     function stop(dead) {
       running = false;
-      if (dead) msg('Scattered. Final score ' + score + '.', 'bad');
+      if (dead) gameOver('Scattered by a lattice defect.');
     }
 
     return {
       title: 'Electron Runner',
+      controls: 'Arrow keys, the pad below, or tap the top and bottom of the lane.',
       rule: 'You are a carrier in the channel. Arrow keys or tap to change lane.',
       start: start,
       stop: function () { running = false; },
@@ -602,11 +606,12 @@
     }
     function stop(dead) {
       running = false;
-      if (dead) msg('Substrate breached. Final score ' + score + '.', 'bad');
+      if (dead) gameOver('A gate reached the substrate.');
     }
 
     return {
       title: 'Gate Crash',
+      controls: 'Press 0 or 1, or use the two buttons below the board.',
       rule: 'Falling gates. Give the output of the outlined one before it hits the substrate.',
       start: start,
       stop: function () { running = false; },
@@ -748,8 +753,8 @@
         if (timeLeft <= 0) {
           running = false;
           setCombo(1);
-          msg('Out of time. Final score ' + score + '.', 'bad');
           beep(150, 0.25, 'sawtooth', 0.06);
+          gameOver('The clock ran out mid-board.');
         }
         if (Math.floor(timeLeft * 60) % 30 === 0) power();
       }
@@ -822,6 +827,7 @@
 
     return {
       title: 'Trace Router',
+      controls: 'Click or tap any tile to rotate it a quarter turn.',
       rule: 'Rotate the copper until power from V reaches every pad. The grid grows each round.',
       noLives: true,
       start: start,
@@ -980,7 +986,7 @@
         beep(170, 0.18, 'sawtooth', 0.05);
         ask();
       }
-      if (session <= 0) return stop();
+      if (session <= 0) return stop(true);
     }
 
     function start() {
@@ -992,15 +998,16 @@
       msg('Read the bands. 60 seconds.', '');
       ask();
     }
-    function stop() {
+    function stop(ended) {
       running = false;
       clearInterval(tick);
       clearTimeout(gap);
-      msg('Time. Final score ' + score + '.', '');
+      if (ended) gameOver('Sixty seconds, gone.');
     }
 
     return {
       title: 'Resistor Rush',
+      controls: 'Click the value you think the bands spell out.',
       rule: 'Four bands, four choices, eight seconds. Streaks multiply. It reverses when you get good.',
       noLives: true,
       start: start,
@@ -1022,6 +1029,94 @@
   var instances = {};
 
   function panel(key) { return document.getElementById('panel-' + key); }
+
+  /* ---------- start screen / game over screen ---------- */
+  var overlays = {};
+
+  function overlayFor(key) {
+    if (overlays[key]) return overlays[key];
+    var p = panel(key);
+    if (!p) return null;
+    var ov = el('div', 'g-over');
+    ov.innerHTML =
+      '<div class="g-over-in">' +
+        '<span class="g-over-kicker"></span>' +
+        '<h3 class="g-over-title"></h3>' +
+        '<p class="g-over-text"></p>' +
+        '<div class="g-over-stats" hidden>' +
+          '<span><b class="g-final">0</b>score</span>' +
+          '<span><b class="g-best">0</b>best</span>' +
+        '</div>' +
+        '<button class="btn-arcade" type="button"><span class="ba-glow"></span>' +
+          '<span class="ba-text">Start</span></button>' +
+        '<p class="g-over-hint"></p>' +
+      '</div>';
+    p.appendChild(ov);
+    ov.querySelector('.btn-arcade').addEventListener('click', function () {
+      if (B.audio) B.audio.unlock();
+      launch();
+    });
+    overlays[key] = ov;
+    return ov;
+  }
+
+  function hideOverlay(key) {
+    var ov = overlays[key];
+    if (ov) ov.classList.remove('show');
+  }
+
+  function showOverlay(key, opts) {
+    var ov = overlayFor(key);
+    if (!ov) return;
+    ov.querySelector('.g-over-kicker').textContent = opts.kicker;
+    ov.querySelector('.g-over-title').textContent = opts.title;
+    ov.querySelector('.g-over-text').textContent = opts.text;
+    ov.querySelector('.ba-text').textContent = opts.button;
+    ov.querySelector('.g-over-hint').textContent = opts.hint || '';
+    var stats = ov.querySelector('.g-over-stats');
+    stats.hidden = !opts.stats;
+    if (opts.stats) {
+      ov.querySelector('.g-final').textContent = score;
+      ov.querySelector('.g-best').textContent = best;
+    }
+    ov.classList.toggle('over', !!opts.stats);
+    ov.classList.add('show');
+  }
+
+  function showReady() {
+    if (!active || !activeKey) return;
+    showOverlay(activeKey, {
+      kicker: 'ready',
+      title: active.title,
+      text: active.rule,
+      button: 'Start',
+      hint: active.controls || ''
+    });
+  }
+
+  gameOver = function (reason) {
+    if (!activeKey) return;
+    var beat = score > 0 && score >= best;
+    showOverlay(activeKey, {
+      kicker: beat ? 'new best' : 'game over',
+      title: beat ? 'New best score' : 'Game over',
+      text: reason || '',
+      button: 'Play again',
+      stats: true,
+      hint: active && active.controls ? active.controls : ''
+    });
+    msg(reason || 'Run over.', 'bad');
+    if (B.audio) {
+      B.audio.tone(300, 0.16, 'sawtooth', 0.05);
+      setTimeout(function () { B.audio.tone(200, 0.28, 'sawtooth', 0.045); }, 150);
+    }
+  };
+
+  function launch() {
+    if (!active || !active.start) return;
+    hideOverlay(activeKey);
+    active.start();
+  }
 
   function select(key) {
     if (!FACTORIES[key]) return;
@@ -1055,6 +1150,10 @@
     setCombo(1);
     setLives(active.noLives ? 0 : 3);
     msg('Press start.');
+
+    /* every other panel drops back to its own ready screen */
+    Object.keys(overlays).forEach(function (k) { if (k !== key) hideOverlay(k); });
+    showReady();
   }
 
   if (tabs) {
@@ -1074,7 +1173,7 @@
   if (elStart) {
     elStart.addEventListener('click', function () {
       if (B.audio) B.audio.unlock();
-      if (active && active.start) active.start();
+      launch();
     });
   }
 

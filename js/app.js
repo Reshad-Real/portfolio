@@ -192,8 +192,8 @@
   /* ---------- reveals, counters, dials ---------- */
   (function reveals() {
     var targets = document.querySelectorAll(
-      '.reveal, .paper, .tl, .blockk, .kit, .cert, .ref, .pads li, .dial-item, ' +
-      '.hero-stats li, .course-list li, .tools-grid li, .ap-list li'
+      '.reveal, .paper, .tl, .blockk, .kit, .cert, .ref, .pads li, ' +
+      '.hero-stats li, .course-list li, .tools-grid li, .grade, .chips li, .award'
     );
 
     function countUp(el) {
@@ -229,10 +229,14 @@
         for (var i = 0; i < nums.length; i++) countUp(nums[i]);
         if (el.hasAttribute && el.hasAttribute('data-count')) countUp(el);
 
-        var dials = el.querySelectorAll ? el.querySelectorAll('.dial-fg[data-pct]') : [];
-        for (var d = 0; d < dials.length; d++) {
-          var pct = parseFloat(dials[d].getAttribute('data-pct') || '0');
-          dials[d].style.strokeDashoffset = String(213.6 * (1 - pct / 100));
+        var bars = el.querySelectorAll ? el.querySelectorAll('[data-pct]') : [];
+        for (var d = 0; d < bars.length; d++) {
+          var pct = parseFloat(bars[d].getAttribute('data-pct') || '0');
+          if (bars[d].classList.contains('dial-fg')) {
+            bars[d].style.strokeDashoffset = String(213.6 * (1 - pct / 100));
+          } else {
+            bars[d].style.width = pct + '%';
+          }
         }
         io.unobserve(el);
       });
@@ -244,6 +248,24 @@
     }
   })();
 
+
+  /* ---------- section headings draw their underline in ---------- */
+  (function bands() {
+    var bands = document.querySelectorAll('.band');
+    if (!bands.length) return;
+    if (!('IntersectionObserver' in window)) {
+      for (var i = 0; i < bands.length; i++) bands[i].classList.add('seen');
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('seen');
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.06 });
+    for (var b = 0; b < bands.length; b++) io.observe(bands[b]);
+  })();
 
   /* ---------- pointer tilt on cards ---------- */
   (function tilt() {
@@ -291,7 +313,7 @@
 
   /* ---------- stagger anything that reveals as a group ---------- */
   (function stagger() {
-    var groups = document.querySelectorAll('.tools-grid, .course-list, .ap-list, .pads, .papers, .floor');
+    var groups = document.querySelectorAll('.tools-grid, .course-list, .pads, .papers, .floor, .grades, .chips');
     for (var g = 0; g < groups.length; g++) {
       var kids = groups[g].children;
       for (var k = 0; k < kids.length; k++) {

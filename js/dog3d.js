@@ -1,8 +1,11 @@
 /* ============================================================
-   dog3d.js — BYTE, a brown dog with salvaged parts.
-   Lives in the bottom-right corner. Click him and he barks and
-   offers a choice: pet him, or send him off for a walk.
-   Three clicks in a row and he trots home.
+   dog3d.js — BYTE, a golden retriever puppy with half a chrome face.
+   Sits in the bottom-right corner, facing you. Click him and he
+   barks, then offers a choice. Three clicks and he trots home.
+
+   Poses are two sets of joint angles — SIT and STAND — and every
+   joint lerps between them, so sitting down and getting up read
+   as one motion rather than a snap.
    ============================================================ */
 (function () {
   'use strict';
@@ -25,249 +28,254 @@
     renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
     if (!renderer.getContext()) throw new Error('no gl');
   } catch (e) { hide(); return; }
-
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(SIZE, SIZE, false);
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 60);
-  camera.position.set(0.6, 1.9, 8.4);
-  camera.lookAt(0, 0.55, 0);
+  var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);
+  camera.position.set(0, 0.62, 9.2);
+  camera.lookAt(0, 0, 0);
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x4a4038, 0.86));
-  var sun = new THREE.DirectionalLight(0xfff2e0, 0.85);
-  sun.position.set(3, 6, 5);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x6a5334, 0.9));
+  var sun = new THREE.DirectionalLight(0xfff3df, 0.9);
+  sun.position.set(2.6, 5.5, 5);
   scene.add(sun);
-  var cyan = new THREE.PointLight(0x2fd0e0, 0.5, 9);
-  cyan.position.set(-1.4, 1.4, 1.6);
-  scene.add(cyan);
+  var rimLight = new THREE.DirectionalLight(0xbfe9f5, 0.35);
+  rimLight.position.set(-4, 2, -3);
+  scene.add(rimLight);
+  var blue = new THREE.PointLight(0x39b6ff, 0.7, 7);
+  blue.position.set(0.9, 1.9, 1.5);
+  scene.add(blue);
 
-  /* ---------- palette ---------- */
-  var FUR = 0x7d4a24, FUR_D = 0x5d3517, FUR_L = 0xc39a63, NOSE = 0x211812;
-  var METAL = 0x9aa4a9, METAL_D = 0x6d777c, GLOW = 0x2fd0e0, LED = 0xa3e635;
+  /* ---------- palette: golden retriever ---------- */
+  var GOLD = 0xdda94f, GOLD_D = 0xb9862f, CREAM = 0xf2dcab, NOSE = 0x2a2018;
+  var CHROME = 0xc2ccd2, CHROME_D = 0x8d9aa2, OPTIC = 0x39b6ff, TONGUE = 0xe98a9a;
 
-  function mat(color, shine, spec) {
-    return new THREE.MeshPhongMaterial({
-      color: color, shininess: shine === undefined ? 12 : shine,
-      specular: spec === undefined ? 0x241a12 : spec
-    });
+  function fur(color) {
+    return new THREE.MeshPhongMaterial({ color: color, shininess: 5, specular: 0x2a2014, flatShading: true });
   }
-  function glowMat(color) { return new THREE.MeshBasicMaterial({ color: color }); }
+  function metal(color, shine) {
+    return new THREE.MeshPhongMaterial({ color: color, shininess: shine || 95, specular: 0xf0fbff });
+  }
+  function lit(color) { return new THREE.MeshBasicMaterial({ color: color }); }
   function box(w, h, d, m) { return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); }
-  function ball(r, m, seg) { return new THREE.Mesh(new THREE.SphereGeometry(r, seg || 16, seg || 14), m); }
+  function ball(r, m, s) { return new THREE.Mesh(new THREE.SphereGeometry(r, s || 16, s || 13), m); }
   function tube(rt, rb, h, m) { return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 14), m); }
 
-  var furMat = mat(FUR, 6), furD = mat(FUR_D, 5), furL = mat(FUR_L, 7);
-  var metalMat = mat(METAL, 88, 0xe6f2f5), metalD = mat(METAL_D, 70, 0xbcd2d8);
+  var goldM = fur(GOLD), goldD = fur(GOLD_D), creamM = fur(CREAM);
+  var chromeM = metal(CHROME), chromeD = metal(CHROME_D, 60);
 
-  /* ---------- the dog. Faces +X. ---------- */
+  /* ---------- the dog. Built facing +X. ---------- */
   var dog = new THREE.Group();
-  dog.position.y = -0.30;
+  dog.position.y = 0.50;   /* lifts the model so it sits centred in the canvas */
   scene.add(dog);
 
-  var body = new THREE.Group();
-  dog.add(body);
+  var torso = new THREE.Group();
+  dog.add(torso);
 
-  /* torso: chest deeper than the hips, like an actual dog */
-  var trunk = box(2.15, 1.02, 1.0, furMat);
-  body.add(trunk);
+  /* puppy proportions: short round body, big head */
+  var trunk = ball(0.78, goldM);
+  trunk.scale.set(1.42, 1.02, 1.0);
+  torso.add(trunk);
 
-  var chest = ball(0.60, furMat);
-  chest.scale.set(1.05, 0.96, 0.92);
-  chest.position.set(0.98, -0.02, 0);
-  body.add(chest);
+  var rump = ball(0.70, goldM);
+  rump.scale.set(1.0, 1.02, 1.02);
+  rump.position.set(-0.72, -0.05, 0);
+  torso.add(rump);
 
-  var hips = ball(0.55, furMat);
-  hips.scale.set(1.0, 0.94, 0.94);
-  hips.position.set(-1.02, 0.04, 0);
-  body.add(hips);
+  var chestBall = ball(0.66, goldM);
+  chestBall.position.set(0.74, -0.02, 0);
+  torso.add(chestBall);
 
-  var belly = box(1.9, 0.34, 0.86, furL);
-  belly.position.set(0.05, -0.44, 0);
-  body.add(belly);
+  var bib = ball(0.50, creamM);
+  bib.scale.set(0.9, 1.15, 0.85);
+  bib.position.set(0.92, -0.24, 0);
+  torso.add(bib);
 
-  /* cyber plate riveted onto the near flank */
-  var plate = box(0.92, 0.56, 0.06, metalD);
-  plate.position.set(-0.15, 0.10, 0.52);
-  body.add(plate);
-  var seam = box(0.74, 0.05, 0.03, glowMat(GLOW));
-  seam.position.set(-0.15, 0.10, 0.56);
-  body.add(seam);
-  for (var rv = 0; rv < 4; rv++) {
-    var rivet = ball(0.035, metalMat, 8);
-    rivet.position.set(-0.52 + rv * 0.25, 0.31, 0.55);
-    body.add(rivet);
+  /* fluff: overlapping tufts read as fur without a fur shader */
+  var TUFTS = [
+    [0.55, 0.42, 0.44, 0.30], [0.55, 0.42, -0.44, 0.30],
+    [0.20, 0.58, 0.30, 0.26], [0.20, 0.58, -0.30, 0.26],
+    [-0.30, 0.52, 0.34, 0.28], [-0.30, 0.52, -0.34, 0.28],
+    [-0.85, 0.34, 0.30, 0.26], [-0.85, 0.34, -0.30, 0.26],
+    [0.86, 0.22, 0.40, 0.24], [0.86, 0.22, -0.40, 0.24]
+  ];
+  for (var ti = 0; ti < TUFTS.length; ti++) {
+    var tf = ball(TUFTS[ti][3], goldM, 10);
+    tf.position.set(TUFTS[ti][0], TUFTS[ti][1], TUFTS[ti][2]);
+    torso.add(tf);
   }
 
-  /* neck + head */
-  var neck = tube(0.30, 0.36, 0.66, furMat);
-  neck.position.set(1.16, 0.44, 0);
-  neck.rotation.z = -0.62;
-  body.add(neck);
+  /* ---------- head ---------- */
+  var neck = tube(0.34, 0.42, 0.5, goldM);
+  neck.position.set(1.02, 0.42, 0);
+  neck.rotation.z = -0.5;
+  torso.add(neck);
 
   var head = new THREE.Group();
-  head.position.set(1.52, 0.86, 0);
-  body.add(head);
+  head.position.set(1.28, 0.92, 0);
+  torso.add(head);
 
-  var skull = ball(0.42, furMat);
-  skull.scale.set(1.06, 0.98, 0.94);
+  var skull = ball(0.56, goldM);
+  skull.scale.set(1.0, 0.96, 0.98);
   head.add(skull);
 
-  var brow = box(0.36, 0.16, 0.66, furMat);
-  brow.position.set(0.16, 0.16, 0);
-  head.add(brow);
+  /* forehead fluff */
+  var topFluff = ball(0.30, goldM, 10);
+  topFluff.position.set(-0.06, 0.44, 0);
+  head.add(topFluff);
 
-  var muzzle = box(0.56, 0.31, 0.44, furL);
-  muzzle.position.set(0.52, -0.12, 0);
+  /* short puppy muzzle */
+  var muzzle = ball(0.34, creamM);
+  muzzle.scale.set(1.22, 0.88, 0.96);
+  muzzle.position.set(0.50, -0.14, 0);
   head.add(muzzle);
-  var muzzleTip = ball(0.20, furL);
-  muzzleTip.scale.set(0.9, 0.86, 0.92);
-  muzzleTip.position.set(0.76, -0.11, 0);
-  head.add(muzzleTip);
 
-  var jaw = new THREE.Group();
-  jaw.position.set(0.30, -0.24, 0);
-  head.add(jaw);
-  var jawBox = box(0.48, 0.13, 0.38, furD);
-  jawBox.position.set(0.22, -0.04, 0);
-  jaw.add(jawBox);
-
-  var nose = ball(0.115, mat(NOSE, 60, 0x555555));
-  nose.scale.set(0.9, 0.8, 1.05);
-  nose.position.set(0.90, -0.06, 0);
+  var nose = ball(0.145, metal(NOSE, 70), 14);
+  nose.scale.set(0.86, 0.78, 1.05);
+  nose.position.set(0.80, -0.06, 0);
   head.add(nose);
 
-  /* eyes: one his, one issued to him */
-  var eyeL = ball(0.085, mat(0x140f0a, 90, 0xffffff), 12);
-  eyeL.position.set(0.34, 0.10, 0.25);
-  head.add(eyeL);
+  /* open mouth + tongue, like the photo */
+  var jaw = new THREE.Group();
+  jaw.position.set(0.34, -0.26, 0);
+  head.add(jaw);
+  var mouth = box(0.40, 0.16, 0.40, metal(0x6b3540, 20));
+  mouth.position.set(0.16, -0.06, 0);
+  jaw.add(mouth);
+  var tongue = box(0.26, 0.09, 0.24, fur(TONGUE));
+  tongue.position.set(0.30, -0.20, 0);
+  tongue.rotation.z = 0.30;
+  jaw.add(tongue);
+  var tongueTip = ball(0.13, fur(TONGUE), 10);
+  tongueTip.scale.set(1.0, 0.55, 0.9);
+  tongueTip.position.set(0.42, -0.29, 0);
+  jaw.add(tongueTip);
 
-  var optic = new THREE.Group();
-  optic.position.set(0.34, 0.10, -0.25);
-  head.add(optic);
-  var opticRing = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 8, 18), metalMat);
-  opticRing.rotation.y = Math.PI / 2;
-  optic.add(opticRing);
-  var opticLens = ball(0.075, glowMat(GLOW), 12);
-  optic.add(opticLens);
+  /* the fur-side eye */
+  var eye = ball(0.105, metal(0x171009, 90), 14);
+  eye.position.set(0.40, 0.10, -0.27);
+  head.add(eye);
+  var glint = ball(0.034, lit(0xffffff), 8);
+  glint.position.set(0.47, 0.16, -0.32);
+  head.add(glint);
+  var lid = ball(0.115, goldM, 12);
+  lid.position.set(0.40, 0.24, -0.27);
+  head.add(lid);
 
-  /* lid for blinking */
-  var lidL = box(0.14, 0.10, 0.14, furMat);
-  lidL.position.set(0.34, 0.19, 0.25);
-  head.add(lidL);
+  /* the fur-side ear: long, floppy, hanging */
+  var earFur = new THREE.Group();
+  earFur.position.set(-0.02, 0.20, -0.46);
+  head.add(earFur);
+  var earFurM = ball(0.24, goldD, 12);
+  earFurM.scale.set(0.62, 1.75, 0.82);
+  earFurM.position.y = -0.34;
+  earFur.add(earFurM);
+  var earFurTip = ball(0.20, goldD, 10);
+  earFurTip.scale.set(0.6, 0.9, 0.8);
+  earFurTip.position.y = -0.66;
+  earFur.add(earFurTip);
+  earFur.rotation.x = -0.16;
 
-  /* ears — floppy, one nicked and patched with metal */
-  var earL = new THREE.Group();
-  earL.position.set(-0.02, 0.30, 0.34);
-  head.add(earL);
-  var earLm = box(0.22, 0.52, 0.14, furD);
-  earLm.position.y = -0.22;
-  earL.add(earLm);
-  earL.rotation.z = -0.18;
-  earL.rotation.x = 0.30;
+  /* ---------- the chrome half ---------- */
+  var cyber = new THREE.Group();
+  head.add(cyber);
 
-  var earR = new THREE.Group();
-  earR.position.set(-0.02, 0.30, -0.34);
-  head.add(earR);
-  var earRm = box(0.20, 0.40, 0.13, furD);
-  earRm.position.y = -0.18;
-  earR.add(earRm);
-  var earPatch = box(0.20, 0.18, 0.05, metalD);
-  earPatch.position.set(0, -0.40, 0);
-  earR.add(earPatch);
-  earR.rotation.z = -0.10;
-  earR.rotation.x = -0.34;
+  /* faceplate: shells that hug the +Z side of the skull */
+  var plateA = ball(0.575, chromeM, 18);
+  plateA.scale.set(1.0, 0.97, 0.5);
+  plateA.position.set(0, 0, 0.29);
+  cyber.add(plateA);
 
-  /* antenna */
-  var ant = tube(0.018, 0.026, 0.52, metalMat);
-  ant.position.set(-0.16, 0.52, 0.12);
-  ant.rotation.z = 0.28;
-  head.add(ant);
-  var antTip = ball(0.055, glowMat(LED), 10);
-  antTip.position.set(-0.30, 0.76, 0.12);
-  head.add(antTip);
+  var plateB = box(0.46, 0.62, 0.30, chromeD);
+  plateB.position.set(0.30, -0.06, 0.34);
+  cyber.add(plateB);
 
-  /* collar + tag */
-  var collar = new THREE.Mesh(new THREE.TorusGeometry(0.33, 0.062, 8, 20), mat(0x1d5f68, 40, 0x7fd8e4));
-  collar.position.set(1.22, 0.52, 0);
-  collar.rotation.y = Math.PI / 2;
-  collar.rotation.x = 0.62;
-  body.add(collar);
-  var tag = box(0.15, 0.17, 0.03, metalMat);
-  tag.position.set(1.34, 0.24, 0.10);
-  body.add(tag);
+  var seamLine = box(0.02, 1.02, 0.62, lit(OPTIC));
+  seamLine.position.set(-0.02, 0.02, 0.30);
+  cyber.add(seamLine);
+
+  /* the optic */
+  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.20, 0.055, 10, 22), chromeM);
+  opticHousing.position.set(0.36, 0.10, 0.30);
+  opticHousing.rotation.y = -0.5;
+  cyber.add(opticHousing);
+  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.175, 20), lit(OPTIC));
+  opticLens.position.set(0.42, 0.10, 0.36);
+  opticLens.rotation.y = -0.5;
+  cyber.add(opticLens);
+  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.075, 16), lit(0xdff4ff));
+  opticCore.position.set(0.44, 0.10, 0.385);
+  opticCore.rotation.y = -0.5;
+  cyber.add(opticCore);
+
+  /* rivets along the seam */
+  for (var rv = 0; rv < 4; rv++) {
+    var rivet = ball(0.035, chromeD, 8);
+    rivet.position.set(-0.28 + rv * 0.20, 0.34 - rv * 0.14, 0.36);
+    cyber.add(rivet);
+  }
+
+  /* the chrome-side ear: metal plated, held up */
+  var earBot = new THREE.Group();
+  earBot.position.set(-0.04, 0.24, 0.46);
+  head.add(earBot);
+  var earBotM = ball(0.23, chromeD, 12);
+  earBotM.scale.set(0.58, 1.6, 0.78);
+  earBotM.position.y = -0.30;
+  earBot.add(earBotM);
+  var earSeam = box(0.03, 0.42, 0.20, lit(OPTIC));
+  earSeam.position.set(0.06, -0.30, 0.06);
+  earBot.add(earSeam);
+  earBot.rotation.x = 0.20;
 
   /* ---------- legs ---------- */
-  function makeLeg(x, z, cyber) {
+  function makeLeg(x, z, front) {
     var g = new THREE.Group();
-    g.position.set(x, -0.42, z);
-    body.add(g);
+    g.position.set(x, -0.46, z);
+    torso.add(g);
 
-    var upM = cyber ? metalD : furMat;
-    var loM = cyber ? metalMat : furMat;
-
-    var thigh = box(cyber ? 0.22 : 0.30, 0.52, cyber ? 0.22 : 0.30, upM);
-    thigh.position.y = -0.24;
+    var thigh = tube(front ? 0.20 : 0.26, front ? 0.18 : 0.24, 0.52, goldM);
+    thigh.position.y = -0.26;
     g.add(thigh);
 
     var knee = new THREE.Group();
-    knee.position.y = -0.48;
+    knee.position.y = -0.50;
     g.add(knee);
 
-    if (cyber) {
-      var joint = ball(0.10, glowMat(GLOW), 10);
-      knee.add(joint);
-      var piston = tube(0.05, 0.05, 0.34, metalMat);
-      piston.position.set(0.07, -0.20, 0);
-      knee.add(piston);
-    }
-
-    var shin = box(cyber ? 0.17 : 0.24, 0.44, cyber ? 0.17 : 0.24, loM);
+    var shin = tube(0.16, 0.17, 0.44, goldM);
     shin.position.y = -0.22;
     knee.add(shin);
 
-    var paw = box(0.30, 0.15, 0.34, cyber ? metalMat : furL);
-    paw.position.set(0.04, -0.48, 0);
+    var paw = ball(0.22, creamM, 12);
+    paw.scale.set(1.15, 0.72, 1.0);
+    paw.position.set(0.05, -0.44, 0);
     knee.add(paw);
-    if (cyber) {
-      var toe = box(0.30, 0.05, 0.34, glowMat(GLOW));
-      toe.position.set(0.04, -0.55, 0);
-      knee.add(toe);
-    }
 
-    return { g: g, knee: knee, cyber: !!cyber };
+    return { g: g, knee: knee, paw: paw, front: !!front };
   }
 
-  /* the front near leg is the replacement */
-  var legs = [
-    makeLeg(0.86, 0.36, true),
-    makeLeg(0.86, -0.36, false),
-    makeLeg(-0.86, 0.36, false),
-    makeLeg(-0.86, -0.36, false)
-  ];
+  var legFL = makeLeg(0.70, 0.36, true);
+  var legFR = makeLeg(0.70, -0.36, true);
+  var legRL = makeLeg(-0.72, 0.34, false);
+  var legRR = makeLeg(-0.72, -0.34, false);
+  var legs = [legFL, legFR, legRL, legRR];
 
-  /* ---------- tail ---------- */
+  /* ---------- fluffy tail ---------- */
   var tail = new THREE.Group();
-  tail.position.set(-1.28, 0.26, 0);
-  body.add(tail);
-  var t1 = tube(0.11, 0.14, 0.42, furMat);
-  t1.position.set(-0.14, 0.12, 0);
-  t1.rotation.z = 1.05;
-  tail.add(t1);
-  var tail2 = new THREE.Group();
-  tail2.position.set(-0.28, 0.26, 0);
-  tail.add(tail2);
-  var t2 = tube(0.075, 0.10, 0.38, furMat);
-  t2.position.set(-0.10, 0.14, 0);
-  t2.rotation.z = 0.75;
-  tail2.add(t2);
-  var tTip = tube(0.05, 0.075, 0.24, metalMat);
-  tTip.position.set(-0.22, 0.28, 0);
-  tTip.rotation.z = 0.55;
-  tail2.add(tTip);
-  var tLed = ball(0.045, glowMat(LED), 8);
-  tLed.position.set(-0.29, 0.38, 0);
-  tail2.add(tLed);
+  tail.position.set(-1.22, 0.10, 0);
+  torso.add(tail);
+  var seg = [];
+  for (var s = 0; s < 4; s++) {
+    var sg = new THREE.Group();
+    var puff = ball(0.24 - s * 0.02, goldM, 11);
+    puff.scale.set(1.1, 0.92, 0.92);
+    puff.position.x = -0.20;
+    sg.add(puff);
+    sg.position.x = s === 0 ? 0 : -0.20;
+    if (s === 0) tail.add(sg); else seg[s - 1].add(sg);
+    seg.push(sg);
+  }
 
   /* ---------- hearts ---------- */
   var heartTex = (function () {
@@ -285,22 +293,44 @@
     return new THREE.CanvasTexture(c);
   })();
   var hearts = [];
-  for (var h = 0; h < 8; h++) {
+  for (var h = 0; h < 6; h++) {
     var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: heartTex, transparent: true, opacity: 0, depthTest: false }));
-    sp.scale.set(0.42, 0.42, 1);
+    sp.scale.set(0.4, 0.4, 1);
     sp.visible = false;
     sp.userData = { life: 0, vx: 0, vy: 0 };
     scene.add(sp);
     hearts.push(sp);
   }
 
-  /* ---------- placement on screen ---------- */
+  /* ---------- poses ---------- */
+  /* every value lerps, so sitting down is a motion, not a jump */
+  var POSE = {
+    sit: {
+      torsoRotZ: -0.30, torsoY: -0.30,
+      flHip: 0.10, flKnee: -0.06,
+      rlHip: 1.05, rlKnee: -1.62,
+      tailRotZ: 0.55, headRotZ: 0.10, headY: 0.98
+    },
+    stand: {
+      torsoRotZ: 0.0, torsoY: 0.10,
+      flHip: 0, flKnee: 0,
+      rlHip: 0, rlKnee: 0,
+      tailRotZ: 0.30, headRotZ: 0, headY: 0.92
+    }
+  };
+  var pose = {};
+  for (var k in POSE.sit) pose[k] = POSE.sit[k];
+  var sitAmt = 1;             // 1 = sitting, 0 = standing
+
+  /* ---------- placement ---------- */
   var MARGIN = 14;
   function homeX() { return Math.max(MARGIN, window.innerWidth - SIZE - MARGIN); }
   var pos = { x: homeX(), y: -MARGIN };
   var target = { x: pos.x, y: pos.y };
-  var facing = -1;
-  var faceAngle = -Math.PI / 2 * facing;
+  var facing = 1;
+  var IDLE_YAW = -1.12;                       // three-quarter view, chrome side to camera
+  function walkYaw() { return facing > 0 ? 0 : Math.PI; }
+  var yaw = IDLE_YAW;
 
   function place() {
     canvas.style.transform = 'translate3d(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px,0)';
@@ -328,19 +358,14 @@
 
   /* ---------- state ---------- */
   var state = 'idle';
-  var walkPhase = 0;
-  var speed = 0;
-  var wagBoost = 0;
-  var barkT = 0;
-  var happy = 0;
+  var walkPhase = 0, speed = 0, wagBoost = 0, barkT = 0, happy = 0;
   var blink = 0, nextBlink = 2 + Math.random() * 3;
-  var pauseT = 0;
-  var clock = 0;
+  var pauseT = 0, clock = 0;
 
   var LINES = [
-    'Woof! My front leg is under warranty.',
+    'Woof! Half of me is under warranty.',
     'Woof woof! I run on 3.3 volts and snacks.',
-    'Rrrf! I can smell a floating gate from here.',
+    'Rrrf! I can see infrared out of this eye.',
     'Woof! My tail is clocked at 4 hertz.',
     'Bark! I fetch, but only pointers.',
     'Woof! Scratch behind the metal ear, it conducts.'
@@ -358,11 +383,10 @@
     clearTimeout(say._t);
     say._t = setTimeout(function () { bubble.classList.remove('show'); }, ms || 2600);
   }
-
   function barkSound() {
     if (!B.audio) return;
-    B.audio.tone(430, 0.09, 'square', 0.05);
-    setTimeout(function () { B.audio.tone(330, 0.13, 'square', 0.045); }, 105);
+    B.audio.tone(470, 0.08, 'square', 0.05);
+    setTimeout(function () { B.audio.tone(360, 0.12, 'square', 0.045); }, 100);
   }
   function bark() { barkT = 1; wagBoost = 1; barkSound(); }
 
@@ -388,23 +412,23 @@
   function pet() {
     closeMenu();
     happy = 1;
-    wagBoost = 1.6;
+    wagBoost = 1.8;
     pets++;
     if (B.store) B.store.set('pets', pets);
     if (petOut) petOut.textContent = pets;
     if (B.audio) {
-      B.audio.tone(560, 0.1, 'triangle', 0.05);
-      setTimeout(function () { B.audio.tone(760, 0.14, 'triangle', 0.045); }, 90);
+      B.audio.tone(600, 0.1, 'triangle', 0.05);
+      setTimeout(function () { B.audio.tone(800, 0.14, 'triangle', 0.045); }, 90);
     }
     var made = 0;
     for (var i = 0; i < hearts.length && made < 4; i++) {
-      var s = hearts[i];
-      if (s.userData.life > 0) continue;
-      s.visible = true;
-      s.position.set(0.9 + (Math.random() - 0.5) * 0.6, 1.3, 0.4);
-      s.userData.life = 1;
-      s.userData.vx = (Math.random() - 0.5) * 0.028;
-      s.userData.vy = 0.026 + Math.random() * 0.018;
+      var sp2 = hearts[i];
+      if (sp2.userData.life > 0) continue;
+      sp2.visible = true;
+      sp2.position.set(0.6 + (Math.random() - 0.5) * 0.7, 1.5, 0.5);
+      sp2.userData.life = 1;
+      sp2.userData.vx = (Math.random() - 0.5) * 0.028;
+      sp2.userData.vy = 0.026 + Math.random() * 0.018;
       made++;
     }
     say(LINES[Math.floor(Math.random() * LINES.length)]);
@@ -415,7 +439,6 @@
     target.x = MARGIN + Math.random() * (maxX - MARGIN);
     target.y = -MARGIN - Math.random() * Math.min(120, window.innerHeight * 0.16);
   }
-
   function goWalk() {
     closeMenu();
     state = 'walking';
@@ -423,14 +446,13 @@
     say(WALK_LINES[Math.floor(Math.random() * WALK_LINES.length)]);
     newWanderTarget();
   }
-
   function goHome() {
     closeMenu();
     state = 'returning';
     target.x = homeX();
     target.y = -MARGIN;
     say('Woof. Heading back to my corner.', 2200);
-    if (B.audio) B.audio.tone(390, 0.12, 'triangle', 0.045);
+    if (B.audio) B.audio.tone(400, 0.12, 'triangle', 0.045);
   }
 
   if (menu) {
@@ -448,15 +470,13 @@
     });
   }
 
-  /* ---------- clicks on the dog ---------- */
+  /* ---------- clicks ---------- */
   var clickTimes = [];
-
   function onDogClick() {
     var now = Date.now();
     clickTimes.push(now);
-    clickTimes = clickTimes.filter(function (t) { return now - t < TRIPLE_MS; });
+    clickTimes = clickTimes.filter(function (tt) { return now - tt < TRIPLE_MS; });
 
-    /* the bark is immediate — it should feel like he heard you */
     bark();
     clearTimeout(pendingMenu);
 
@@ -465,16 +485,11 @@
       goHome();
       return;
     }
-
-    /* stop him where he stands so the menu lines up with him */
     if (state === 'walking' || state === 'returning') {
       state = 'idle';
       target.x = pos.x;
       target.y = pos.y;
     }
-
-    /* hold the menu back a beat, so clicks two and three of a
-       triple-click don't flash it open and shut */
     closeMenu();
     pendingMenu = setTimeout(openMenu, 280);
   }
@@ -483,7 +498,6 @@
   canvas.addEventListener('keydown', function (ev) {
     if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); onDogClick(); }
   });
-
   document.addEventListener('click', function (ev) {
     if (!menu || menu.hidden) return;
     if (menu.contains(ev.target) || canvas.contains(ev.target)) return;
@@ -508,20 +522,21 @@
   }
   paintToggle();
 
-  /* ---------- theme ---------- */
   if (B.onTheme) {
     B.onTheme(function (c) {
-      var dark = !!c.dark;
-      sun.intensity = dark ? 0.62 : 0.85;
-      furMat.color.setHex(dark ? 0x6b3f1f : FUR);
-      furD.color.setHex(dark ? 0x4d2b12 : FUR_D);
-      furL.color.setHex(dark ? 0xa98351 : FUR_L);
+      sun.intensity = c.dark ? 0.66 : 0.9;
+      rimLight.intensity = c.dark ? 0.5 : 0.35;
+      goldM.color.setHex(c.dark ? 0xc9963f : GOLD);
+      goldD.color.setHex(c.dark ? 0xa2762a : GOLD_D);
+      creamM.color.setHex(c.dark ? 0xdcc79a : CREAM);
     });
   }
 
   /* ---------- loop ---------- */
   var running = true;
   document.addEventListener('visibilitychange', function () { running = !document.hidden; });
+
+  function lerp(a, b, n) { return a + (b - a) * n; }
 
   function frame() {
     requestAnimationFrame(frame);
@@ -556,64 +571,88 @@
       if (Math.abs(dx) > 1) { pos.x += dx * 0.06; place(); }
     }
 
-    var wantAngle = -Math.PI / 2 * facing;
-    var diff = wantAngle - faceAngle;
+    var moving = speed > 0.25;
+
+    /* sit when idle, stand to walk */
+    sitAmt = lerp(sitAmt, moving ? 0 : 1, 0.08);
+    var src = POSE.stand, dst = POSE.sit;
+    for (var key in dst) pose[key] = lerp(src[key], dst[key], sitAmt);
+
+    /* face the camera when sitting, face the way you walk when moving */
+    var wantYaw = moving ? walkYaw() : IDLE_YAW;
+    var diff = wantYaw - yaw;
     while (diff > Math.PI) diff -= Math.PI * 2;
     while (diff < -Math.PI) diff += Math.PI * 2;
-    faceAngle += diff * 0.14;
-    dog.rotation.y = faceAngle;
+    yaw += diff * 0.10;
+    dog.rotation.y = yaw;
 
-    var moving = speed > 0.25;
-    walkPhase += moving ? 0.055 + speed * 0.045 : 0.012;
+    /* gait */
+    walkPhase += moving ? 0.06 + speed * 0.05 : 0.01;
     happy *= 0.975;
     wagBoost *= 0.965;
     barkT *= 0.90;
 
-    var stride = moving ? 0.62 : 0.05;
+    var stride = moving ? 0.60 * (1 - sitAmt) : 0;
     for (var i = 0; i < legs.length; i++) {
+      var L = legs[i];
       var ph = walkPhase + (i === 0 || i === 3 ? 0 : Math.PI);
-      var sw = Math.sin(ph) * stride;
-      legs[i].g.rotation.z = sw;
-      legs[i].knee.rotation.z = Math.max(0, Math.sin(ph + 0.9)) * stride * 0.9;
+      var swing = Math.sin(ph) * stride;
+      var base = L.front ? pose.flHip : pose.rlHip;
+      var baseK = L.front ? pose.flKnee : pose.rlKnee;
+      L.g.rotation.z = base + swing;
+      L.knee.rotation.z = baseK + Math.max(0, Math.sin(ph + 0.9)) * stride * 0.85;
     }
 
-    body.position.y = reduced ? 0 : Math.abs(Math.sin(walkPhase)) * (moving ? 0.06 : 0.018);
-    body.rotation.z = moving ? Math.sin(walkPhase * 2) * 0.018 : Math.sin(clock * 1.3) * 0.008;
+    torso.rotation.z = pose.torsoRotZ;
+    torso.position.y = pose.torsoY +
+      (reduced ? 0 : Math.abs(Math.sin(walkPhase)) * (moving ? 0.05 : 0.012));
 
-    var breath = 1 + Math.sin(clock * 1.9) * (moving ? 0.004 : 0.012);
-    trunk.scale.set(1, breath, breath);
+    /* breathing */
+    var breath = 1 + Math.sin(clock * 1.8) * (moving ? 0.004 : 0.014);
+    trunk.scale.set(1.42, 1.02 * breath, 1.0 * breath);
 
-    head.rotation.z = -barkT * 0.42 + (moving ? Math.sin(walkPhase * 2 + 0.5) * 0.03 : 0);
-    head.rotation.y = moving ? 0 : Math.sin(clock * 0.55) * 0.30;
-    head.position.y = 0.86 + Math.sin(clock * 1.9) * 0.012 + happy * 0.05;
-    jaw.rotation.z = barkT * 0.55 + happy * 0.12;
+    /* head: bob, look about, snap up on a bark */
+    head.position.y = pose.headY + Math.sin(clock * 1.8) * 0.012 + happy * 0.05;
+    head.rotation.z = pose.headRotZ - barkT * 0.34 + (moving ? Math.sin(walkPhase * 2 + 0.5) * 0.03 : 0);
+    head.rotation.y = moving ? 0 : Math.sin(clock * 0.5) * 0.22;
+    jaw.rotation.z = 0.10 + barkT * 0.55 + happy * 0.14;
+    tongue.rotation.z = 0.30 + Math.sin(clock * 3) * 0.06 + happy * 0.2;
 
-    earL.rotation.x = 0.30 + Math.sin(walkPhase * 2) * (moving ? 0.22 : 0.04) - happy * 0.3;
-    earR.rotation.x = -0.34 - Math.sin(walkPhase * 2) * (moving ? 0.20 : 0.035) + happy * 0.28;
+    /* ears swing */
+    earFur.rotation.x = -0.16 + Math.sin(walkPhase * 2) * (moving ? 0.22 : 0.035) - happy * 0.12;
+    earBot.rotation.x = 0.20 - Math.sin(walkPhase * 2) * (moving ? 0.18 : 0.03) + happy * 0.10;
 
-    var wag = 0.30 + wagBoost * 0.9 + (moving ? 0.25 : 0);
-    tail.rotation.y = Math.sin(clock * (5 + wagBoost * 7)) * wag;
-    tail2.rotation.y = Math.sin(clock * (5 + wagBoost * 7) - 0.5) * wag * 0.7;
+    /* tail: a fluffy chain, each segment lagging the one before */
+    var wag = 0.34 + wagBoost * 0.9 + (moving ? 0.22 : 0);
+    tail.rotation.z = pose.tailRotZ;
+    for (var sI = 0; sI < seg.length; sI++) {
+      seg[sI].rotation.y = Math.sin(clock * (5 + wagBoost * 6) - sI * 0.6) * wag * (0.5 + sI * 0.2);
+      seg[sI].rotation.z = sI === 0 ? 0 : 0.20;
+    }
 
+    /* blink */
     nextBlink -= 0.016;
     if (nextBlink <= 0) { blink = 1; nextBlink = 2.4 + Math.random() * 3.4; }
     blink *= 0.80;
-    lidL.scale.y = 1 + blink * 2.6;
-    lidL.position.y = 0.19 - blink * 0.09;
-    eyeL.scale.y = Math.max(0.08, 1 - blink * 1.1) * (1 - happy * 0.55);
-    opticLens.scale.setScalar(1 + Math.sin(clock * 3.4) * 0.10 + barkT * 0.3);
-    antTip.material.color.setHex(Math.sin(clock * 3) > 0 ? LED : 0x4d7a12);
-    tLed.material.color.setHex(Math.sin(clock * 3 + 1) > 0 ? LED : 0x4d7a12);
-    cyan.intensity = 0.5 + Math.sin(clock * 3.4) * 0.12;
+    lid.position.y = 0.24 - blink * 0.16;
+    eye.scale.y = Math.max(0.1, 1 - blink * 1.05) * (1 - happy * 0.4);
+    glint.visible = blink < 0.4;
 
+    /* optic pulse */
+    var pulse = 1 + Math.sin(clock * 3.2) * 0.10 + barkT * 0.28;
+    opticCore.scale.setScalar(pulse);
+    blue.intensity = 0.7 + Math.sin(clock * 3.2) * 0.16;
+    seamLine.material.color.setHex(Math.sin(clock * 2) > -0.5 ? OPTIC : 0x1d6a99);
+
+    /* hearts */
     for (i = 0; i < hearts.length; i++) {
-      var s = hearts[i];
-      if (s.userData.life <= 0) { s.visible = false; continue; }
-      s.userData.life -= 0.016;
-      s.position.x += s.userData.vx;
-      s.position.y += s.userData.vy;
-      s.material.opacity = Math.max(0, Math.min(1, s.userData.life)) * 0.95;
-      s.scale.setScalar(0.30 + (1 - s.userData.life) * 0.22);
+      var hs = hearts[i];
+      if (hs.userData.life <= 0) { hs.visible = false; continue; }
+      hs.userData.life -= 0.016;
+      hs.position.x += hs.userData.vx;
+      hs.position.y += hs.userData.vy;
+      hs.material.opacity = Math.max(0, Math.min(1, hs.userData.life)) * 0.95;
+      hs.scale.setScalar(0.28 + (1 - hs.userData.life) * 0.22);
     }
 
     renderer.render(scene, camera);
@@ -621,4 +660,11 @@
   requestAnimationFrame(frame);
 
   setTimeout(function () { if (on) say('Woof! Click me.', 3200); }, 2600);
+
+  /* exposed for the geometry tests */
+  canvas.__dog = {
+    scene: scene, camera: camera, dog: dog, head: head, legs: legs,
+    nose: nose, skull: skull, opticLens: opticLens, plateA: plateA,
+    setSit: function (v) { sitAmt = v; }
+  };
 })();

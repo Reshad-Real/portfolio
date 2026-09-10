@@ -41,6 +41,10 @@ panel on the right of the hero. It never takes over the screen.
   carriers scatter harder.
 - **Undope** puts every atom back.
 
+Six **probes orbit the crystal**, one per section of the site. Hover one and it lights up
+and offers the jump; click it and the page travels there. They are real navigation, not
+decoration.
+
 If WebGL is unavailable, a static bond diagram takes its place.
 
 ## BYTE
@@ -70,6 +74,12 @@ Four games at `arcade.html`. Best scores are kept in `localStorage`, per game.
 Every game opens on a **start screen** naming it and listing its controls, and ends on a
 **game over screen** with the final score, your best, and what killed the run. Beat your
 record and the screen says so.
+
+Each cabinet themes both screens itself — its own accent colour, background pattern,
+animated artwork and wording. Electron Runner opens on a streaking carrier and ends on a
+flatline; Gate Crash opens on a falling gate and ends on a cracked substrate; Trace Router
+opens on a powered trace and ends on a broken one; Resistor Rush opens on live bands and
+ends on a burnt resistor. The ending keeps the palette but never repeats the start.
 
 - **Electron Runner** — you are a carrier in the channel. Three lanes, rising speed.
   Dodge lattice defects, collect charge, grab the rare boost for temporary immunity.

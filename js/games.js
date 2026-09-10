@@ -1032,6 +1032,66 @@
 
   /* ---------- start screen / game over screen ---------- */
   var overlays = {};
+  /* ---------- per-cabinet artwork for the start / end screens ---------- */
+  var THEMES = {
+    runner: {
+      accent: 'lime', kicker: 'lane clear', overKicker: 'scattered',
+      startTitle: 'Electron Runner', overTitle: 'Carrier lost',
+      art: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-runner">' +
+        '<path class="lane" d="M8 22h184M8 45h184M8 68h184"/>' +
+        '<g class="streak"><circle cx="46" cy="45" r="9"/>' +
+        '<path class="tail" d="M36 45H10"/></g>' +
+        '<path class="hazard" d="M136 36l18 18M154 36l-18 18"/>' +
+        '<circle class="pickup" cx="104" cy="22" r="6"/></svg>',
+      overArt: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-runner over">' +
+        '<path class="lane" d="M8 22h184M8 45h184M8 68h184"/>' +
+        '<path class="flat" d="M8 45h60l8-20 10 40 9-20h97"/>' +
+        '<g class="shards"><path d="M96 30l10 10M106 30l-10 10M118 52l9 9M127 52l-9 9"/></g></svg>'
+    },
+    gate: {
+      accent: 'teal', kicker: 'gates inbound', overKicker: 'substrate breached',
+      startTitle: 'Gate Crash', overTitle: 'Substrate breached',
+      art: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-gate">' +
+        '<g class="drop"><path class="gate" d="M74 18h14a20 20 0 0 1 0 40H74z"/>' +
+        '<path class="pin" d="M60 28h14M60 48h14M112 38h16"/></g>' +
+        '<path class="floorline" d="M12 78h176"/>' +
+        '<text class="bit" x="40" y="70">0</text><text class="bit" x="156" y="70">1</text></svg>',
+      overArt: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-gate over">' +
+        '<path class="floorline" d="M12 68h176"/>' +
+        '<path class="crack" d="M100 68l-8 16M100 68l6 16M100 68l-20 10M100 68l22 8"/>' +
+        '<path class="gate fallen" d="M78 44h14a16 16 0 0 1 0 24H78z"/></svg>'
+    },
+    router: {
+      accent: 'copper', kicker: 'board unpowered', overKicker: 'clock expired',
+      startTitle: 'Trace Router', overTitle: 'Out of time',
+      art: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-router">' +
+        '<path class="trace live" d="M20 70h30V26h40"/>' +
+        '<path class="trace" d="M90 26h34v44h36"/>' +
+        '<circle class="pad live" cx="20" cy="70" r="6"/>' +
+        '<circle class="pad" cx="90" cy="26" r="6"/><circle class="pad" cx="124" cy="70" r="6"/>' +
+        '<circle class="pad" cx="160" cy="70" r="6"/></svg>',
+      overArt: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-router over">' +
+        '<path class="trace" d="M20 70h30V26h26"/><path class="trace" d="M104 26h20v44h36"/>' +
+        '<path class="break" d="M78 18l10 16M88 18l-10 16"/>' +
+        '<circle class="pad" cx="20" cy="70" r="6"/><circle class="pad" cx="160" cy="70" r="6"/></svg>'
+    },
+    resistor: {
+      accent: 'teal', kicker: 'bands ready', overKicker: 'time',
+      startTitle: 'Resistor Rush', overTitle: "Time's up",
+      art: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-res">' +
+        '<path class="lead" d="M6 45h30M164 45h30"/>' +
+        '<rect class="bodyr" x="36" y="26" width="128" height="38" rx="17"/>' +
+        '<rect class="bnd b1" x="56" y="26" width="12" height="38"/>' +
+        '<rect class="bnd b2" x="78" y="26" width="12" height="38"/>' +
+        '<rect class="bnd b3" x="100" y="26" width="12" height="38"/>' +
+        '<rect class="bnd b4" x="136" y="26" width="10" height="38"/></svg>',
+      overArt: '<svg viewBox="0 0 200 90" aria-hidden="true" class="art-res over">' +
+        '<path class="lead" d="M6 45h30M164 45h30"/>' +
+        '<rect class="bodyr burnt" x="36" y="26" width="128" height="38" rx="17"/>' +
+        '<path class="smoke" d="M84 22c0-10 12-10 12-20M104 22c0-12 14-10 14-22M120 24c0-8 10-9 10-18"/></svg>'
+    }
+  };
+
 
   function overlayFor(key) {
     if (overlays[key]) return overlays[key];
@@ -1040,6 +1100,7 @@
     var ov = el('div', 'g-over');
     ov.innerHTML =
       '<div class="g-over-in">' +
+        '<div class="g-art"></div>' +
         '<span class="g-over-kicker"></span>' +
         '<h3 class="g-over-title"></h3>' +
         '<p class="g-over-text"></p>' +
@@ -1068,6 +1129,10 @@
   function showOverlay(key, opts) {
     var ov = overlayFor(key);
     if (!ov) return;
+    var th = THEMES[key] || {};
+    ov.setAttribute('data-cab', key);
+    ov.setAttribute('data-accent', th.accent || 'teal');
+    ov.querySelector('.g-art').innerHTML = (opts.stats ? th.overArt : th.art) || '';
     ov.querySelector('.g-over-kicker').textContent = opts.kicker;
     ov.querySelector('.g-over-title').textContent = opts.title;
     ov.querySelector('.g-over-text').textContent = opts.text;
@@ -1085,9 +1150,10 @@
 
   function showReady() {
     if (!active || !activeKey) return;
+    var th = THEMES[activeKey] || {};
     showOverlay(activeKey, {
-      kicker: 'ready',
-      title: active.title,
+      kicker: th.kicker || 'ready',
+      title: th.startTitle || active.title,
       text: active.rule,
       button: 'Start',
       hint: active.controls || ''
@@ -1096,10 +1162,11 @@
 
   gameOver = function (reason) {
     if (!activeKey) return;
+    var th = THEMES[activeKey] || {};
     var beat = score > 0 && score >= best;
     showOverlay(activeKey, {
-      kicker: beat ? 'new best' : 'game over',
-      title: beat ? 'New best score' : 'Game over',
+      kicker: beat ? 'new best' : (th.overKicker || 'game over'),
+      title: beat ? 'New best score' : (th.overTitle || 'Game over'),
       text: reason || '',
       button: 'Play again',
       stats: true,

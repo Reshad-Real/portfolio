@@ -145,6 +145,106 @@
     }
   }
 
+  /* ============================================================
+     Orbiting probes. Each one is a live link into the page: hover to
+     light it up, click to travel to that section.
+     ============================================================ */
+  var orbits = new THREE.Group();
+  scene.add(orbits);
+
+  var SECTIONS = [
+    { id: 'about',    label: 'About',    tint: 0x0aa3b0 },
+    { id: 'work',     label: 'Work',     tint: 0xa35f31 },
+    { id: 'papers',   label: 'Papers',   tint: 0x6dbb1c },
+    { id: 'research', label: 'Research', tint: 0x0aa3b0 },
+    { id: 'teaching', label: 'Teaching', tint: 0xa35f31 },
+    { id: 'contact',  label: 'Contact',  tint: 0x6dbb1c }
+  ];
+
+  function makeLabel(text, color) {
+    var c = document.createElement('canvas');
+    c.width = 320; c.height = 84;
+    var g = c.getContext('2d');
+    if (g) {
+      g.clearRect(0, 0, 320, 84);
+      g.font = '600 44px Inter, system-ui, sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillStyle = color;
+      g.fillText(text, 160, 46);
+    }
+    var tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  var ORB_R = 3.15;
+  var probes = [];
+
+  for (var pi = 0; pi < SECTIONS.length; pi++) {
+    var def = SECTIONS[pi];
+    var g = new THREE.Group();
+    orbits.add(g);
+
+    var core = new THREE.Mesh(
+      new THREE.SphereGeometry(0.19, 14, 12),
+      new THREE.MeshBasicMaterial({ color: def.tint })
+    );
+    g.add(core);
+
+    var ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.34, 0.028, 8, 22),
+      new THREE.MeshBasicMaterial({ color: def.tint, transparent: true, opacity: 0.75 })
+    );
+    g.add(ring);
+
+    var halo = new THREE.Mesh(
+      new THREE.SphereGeometry(0.42, 12, 10),
+      new THREE.MeshBasicMaterial({ color: def.tint, transparent: true, opacity: 0.13 })
+    );
+    g.add(halo);
+
+    var labelSp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeLabel(def.label, '#0d1618'), transparent: true, depthTest: false, opacity: 0.9
+    }));
+    labelSp.scale.set(1.5, 0.39, 1);
+    labelSp.position.y = 0.62;
+    g.add(labelSp);
+
+    probes.push({
+      def: def, group: g, core: core, ring: ring, halo: halo, label: labelSp,
+      a: (pi / SECTIONS.length) * Math.PI * 2,
+      speed: 0.16 + (pi % 3) * 0.035,
+      incline: -0.5 + (pi % 4) * 0.30,
+      hoverT: 0, pulse: Math.random() * 6.28
+    });
+  }
+
+  function placeProbes() {
+    for (var i = 0; i < probes.length; i++) {
+      var p = probes[i];
+      var x = Math.cos(p.a) * ORB_R;
+      var z = Math.sin(p.a) * ORB_R;
+      var y = Math.sin(p.a * 1.0 + p.incline) * ORB_R * 0.36;
+      p.group.position.set(x, y, z);
+    }
+  }
+  placeProbes();
+
+  function goToSection(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (B.audio) {
+      B.audio.tone(660, 0.09, 'triangle', 0.05);
+      setTimeout(function () { B.audio.tone(880, 0.13, 'triangle', 0.045); }, 80);
+    }
+    try {
+      el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    } catch (e) {
+      window.location.hash = '#' + id;
+    }
+  }
+
   /* ---------- state ---------- */
   var bias = false, heat = false;
   var yaw = 0.5, pitch = 0.22, yawV = 0, pitchV = 0;
@@ -239,23 +339,47 @@
   }
   function meshes() {
     var out = [];
-    for (var i = 0; i < atoms.length; i++) out.push(atoms[i].mesh);
+    for (var i = 0; i < probes.length; i++) { out.push(probes[i].core); out.push(probes[i].halo); }
+    for (i = 0; i < atoms.length; i++) out.push(atoms[i].mesh);
     return out;
+  }
+  function probeFor(mesh) {
+    for (var i = 0; i < probes.length; i++) {
+      if (probes[i].core === mesh || probes[i].halo === mesh) return probes[i];
+    }
+    return null;
   }
   function atomFor(mesh) {
     for (var i = 0; i < atoms.length; i++) if (atoms[i].mesh === mesh) return atoms[i];
     return null;
   }
+  var hoveredProbe = null;
+
   function pick(clicked) {
     ray.setFromCamera(pointer, camera);
     var hits = ray.intersectObjects(meshes(), false);
-    var found = hits.length ? atomFor(hits[0].object) : null;
+    var obj = hits.length ? hits[0].object : null;
+    var probe = obj ? probeFor(obj) : null;
+    var found = probe ? null : (obj ? atomFor(obj) : null);
+
+    if (probe !== hoveredProbe) {
+      hoveredProbe = probe;
+      if (probe && readout) {
+        readout.innerHTML = '<b>Go to ' + probe.def.label + '</b> · click this probe to jump there';
+      } else if (!probe) {
+        say(hovered);
+      }
+    }
     if (found !== hovered) {
       hovered = found;
-      canvas.style.cursor = found ? 'pointer' : 'grab';
-      say(found);
+      if (!probe) say(found);
     }
-    if (clicked && found) dope(found);
+    canvas.style.cursor = (probe || found) ? 'pointer' : 'grab';
+
+    if (clicked) {
+      if (probe) goToSection(probe.def.id);
+      else if (found) dope(found);
+    }
   }
 
   canvas.addEventListener('pointerdown', function (ev) {
@@ -345,6 +469,13 @@
     edges.material.color.setHex(dark ? 0x3f5459 : 0x9aa8ad);
     edges.material.opacity = dark ? 0.4 : 0.28;
     key.intensity = dark ? 0.68 : 0.85;
+    var ink = dark ? '#e9f4f5' : '#0d1618';
+    for (var pj = 0; pj < probes.length; pj++) {
+      var old = probes[pj].label.material.map;
+      probes[pj].label.material.map = makeLabel(probes[pj].def.label, ink);
+      probes[pj].label.material.needsUpdate = true;
+      if (old && old.dispose) old.dispose();
+    }
   }
   if (B.onTheme) B.onTheme(applyTheme);
   applyTheme();
@@ -418,12 +549,33 @@
       c.mesh.scale.setScalar(pulse);
     }
 
+    /* orbiting probes */
+    for (i = 0; i < probes.length; i++) {
+      var pr = probes[i];
+      if (!reduced) pr.a += 0.0016 + pr.speed * 0.0022;
+      pr.pulse += 0.03;
+      var isHov = hoveredProbe === pr;
+      pr.hoverT += ((isHov ? 1 : 0) - pr.hoverT) * 0.16;
+
+      var beat = 1 + Math.sin(pr.pulse) * 0.10 + pr.hoverT * 0.55;
+      pr.core.scale.setScalar(beat);
+      pr.halo.scale.setScalar(1 + Math.sin(pr.pulse * 0.8) * 0.16 + pr.hoverT * 0.5);
+      pr.halo.material.opacity = 0.11 + pr.hoverT * 0.22;
+      pr.ring.rotation.z += 0.01 + pr.hoverT * 0.06;
+      pr.ring.rotation.x = Math.PI / 2.6 + Math.sin(pr.pulse * 0.5) * 0.3;
+      pr.ring.scale.setScalar(1 + pr.hoverT * 0.35);
+      pr.label.material.opacity = 0.62 + pr.hoverT * 0.38;
+      pr.label.scale.set(1.5 + pr.hoverT * 0.34, 0.39 + pr.hoverT * 0.09, 1);
+    }
+    placeProbes();
+
     renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
 
-  if (hint) hint.textContent = 'drag to rotate · click an atom';
+  if (hint) hint.textContent = 'drag · click an atom to dope · click a probe to jump';
 
   /* exposed for the geometry tests */
-  canvas.__lattice = { scene: scene, camera: camera, cell: cell, atoms: atoms, carriers: carriers };
+  canvas.__lattice = { scene: scene, camera: camera, cell: cell, atoms: atoms,
+    carriers: carriers, probes: probes, orbits: orbits };
 })();

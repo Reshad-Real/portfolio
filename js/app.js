@@ -192,7 +192,7 @@
   /* ---------- reveals, counters, dials ---------- */
   (function reveals() {
     var targets = document.querySelectorAll(
-      '.reveal, .paper, .tl, .blockk, .kit, .cert, .ref, .pads li, ' +
+      '.reveal, .paper, .tl, .blockk, .kit, .cert, .ref, .pads li, .how-card, .strip-list li, ' +
       '.hero-stats li, .course-list li, .tools-grid li, .grade, .chips li, .award'
     );
 
@@ -248,6 +248,28 @@
     }
   })();
 
+
+  /* ---------- the hero arrives in sequence ---------- */
+  (function heroIn() {
+    var hero = document.querySelector('.hero-copy');
+    if (!hero) return;
+    var bits = hero.querySelectorAll('.hero-kicker, h1, .hero-role, .hero-lede, .hero-cta, .hero-stats');
+    var panel = document.querySelector('.hero-device');
+    for (var i = 0; i < bits.length; i++) {
+      if (!reduced) bits[i].classList.add('rise');
+      bits[i].style.setProperty('--d', (90 + i * 95) + 'ms');
+    }
+    if (panel && !reduced) {
+      panel.classList.add('rise');
+      panel.style.setProperty('--d', '260ms');
+    }
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        for (var j = 0; j < bits.length; j++) bits[j].classList.add('rise-in');
+        if (panel) panel.classList.add('rise-in');
+      });
+    });
+  })();
 
   /* ---------- section headings draw their underline in ---------- */
   (function bands() {
@@ -313,7 +335,7 @@
 
   /* ---------- stagger anything that reveals as a group ---------- */
   (function stagger() {
-    var groups = document.querySelectorAll('.tools-grid, .course-list, .pads, .papers, .floor, .grades, .chips');
+    var groups = document.querySelectorAll('.tools-grid, .course-list, .pads, .papers, .floor, .grades, .chips, .how, .strip-list, .ptags');
     for (var g = 0; g < groups.length; g++) {
       var kids = groups[g].children;
       for (var k = 0; k < kids.length; k++) {

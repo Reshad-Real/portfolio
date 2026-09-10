@@ -17,7 +17,7 @@
 
   var B = window.Bench || {};
   var reduced = !!B.reduced;
-  var SIZE = 260;
+  var SIZE = 205;
   var HALF = SIZE / 2;
 
   function hide() { canvas.style.display = 'none'; if (menu) menu.hidden = true; }
@@ -33,7 +33,7 @@
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);
-  camera.position.set(0, 0.62, 9.2);
+  camera.position.set(0, 0.62, 10.0);
   camera.lookAt(0, 0, 0);
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0x6a5334, 0.9));
@@ -67,7 +67,7 @@
 
   /* ---------- the dog. Built facing +X. ---------- */
   var dog = new THREE.Group();
-  dog.position.y = 0.50;   /* lifts the model so it sits centred in the canvas */
+  dog.position.y = -0.06;  /* tuned against the geometry test so he sits centred */
   scene.add(dog);
 
   var torso = new THREE.Group();
@@ -92,19 +92,12 @@
   bib.position.set(0.92, -0.24, 0);
   torso.add(bib);
 
-  /* fluff: overlapping tufts read as fur without a fur shader */
-  var TUFTS = [
-    [0.55, 0.42, 0.44, 0.30], [0.55, 0.42, -0.44, 0.30],
-    [0.20, 0.58, 0.30, 0.26], [0.20, 0.58, -0.30, 0.26],
-    [-0.30, 0.52, 0.34, 0.28], [-0.30, 0.52, -0.34, 0.28],
-    [-0.85, 0.34, 0.30, 0.26], [-0.85, 0.34, -0.30, 0.26],
-    [0.86, 0.22, 0.40, 0.24], [0.86, 0.22, -0.40, 0.24]
-  ];
-  for (var ti = 0; ti < TUFTS.length; ti++) {
-    var tf = ball(TUFTS[ti][3], goldM, 10);
-    tf.position.set(TUFTS[ti][0], TUFTS[ti][1], TUFTS[ti][2]);
-    torso.add(tf);
-  }
+  /* A light scruff at the shoulders only. The body stays one smooth
+     silhouette — separate tuft spheres read as lumps, not fur. */
+  var scruff = ball(0.62, goldD, 14);
+  scruff.scale.set(0.62, 1.02, 1.06);
+  scruff.position.set(0.34, 0.12, 0);
+  torso.add(scruff);
 
   /* ---------- head ---------- */
   var neck = tube(0.34, 0.42, 0.5, goldM);
@@ -181,38 +174,40 @@
   var cyber = new THREE.Group();
   head.add(cyber);
 
-  /* faceplate: shells that hug the +Z side of the skull */
-  var plateA = ball(0.575, chromeM, 18);
-  plateA.scale.set(1.0, 0.97, 0.5);
-  plateA.position.set(0, 0, 0.29);
+  /* Faceplate: one shell hugging the +Z side of the skull. The seam is a
+     ring traced around the shell's edge, not a slab pushed through it. */
+  var plateA = ball(0.575, chromeM, 22);
+  plateA.scale.set(0.99, 0.97, 0.46);
+  plateA.position.set(0, 0, 0.31);
   cyber.add(plateA);
 
-  var plateB = box(0.46, 0.62, 0.30, chromeD);
-  plateB.position.set(0.30, -0.06, 0.34);
-  cyber.add(plateB);
+  var cheekPlate = ball(0.40, chromeD, 16);
+  cheekPlate.scale.set(1.05, 0.78, 0.42);
+  cheekPlate.position.set(0.34, -0.18, 0.26);
+  cyber.add(cheekPlate);
 
-  var seamLine = box(0.02, 1.02, 0.62, lit(OPTIC));
-  seamLine.position.set(-0.02, 0.02, 0.30);
+  var seamLine = new THREE.Mesh(new THREE.TorusGeometry(0.555, 0.022, 8, 30), lit(OPTIC));
+  seamLine.position.set(0, 0, 0.055);
   cyber.add(seamLine);
 
-  /* the optic */
-  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.20, 0.055, 10, 22), chromeM);
-  opticHousing.position.set(0.36, 0.10, 0.30);
-  opticHousing.rotation.y = -0.5;
+  /* the optic, set into the plate */
+  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.155, 0.05, 10, 22), chromeD);
+  opticHousing.position.set(0.30, 0.10, 0.40);
+  opticHousing.rotation.y = -0.62;
   cyber.add(opticHousing);
-  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.175, 20), lit(OPTIC));
-  opticLens.position.set(0.42, 0.10, 0.36);
-  opticLens.rotation.y = -0.5;
+  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.135, 20), lit(OPTIC));
+  opticLens.position.set(0.335, 0.10, 0.437);
+  opticLens.rotation.y = -0.62;
   cyber.add(opticLens);
-  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.075, 16), lit(0xdff4ff));
-  opticCore.position.set(0.44, 0.10, 0.385);
-  opticCore.rotation.y = -0.5;
+  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.058, 16), lit(0xdff4ff));
+  opticCore.position.set(0.348, 0.10, 0.452);
+  opticCore.rotation.y = -0.62;
   cyber.add(opticCore);
 
-  /* rivets along the seam */
+  /* rivets tucked along the seam */
   for (var rv = 0; rv < 4; rv++) {
-    var rivet = ball(0.035, chromeD, 8);
-    rivet.position.set(-0.28 + rv * 0.20, 0.34 - rv * 0.14, 0.36);
+    var rivet = ball(0.028, chromeD, 8);
+    rivet.position.set(-0.22 + rv * 0.16, 0.40 - rv * 0.20, 0.20);
     cyber.add(rivet);
   }
 
@@ -224,8 +219,8 @@
   earBotM.scale.set(0.58, 1.6, 0.78);
   earBotM.position.y = -0.30;
   earBot.add(earBotM);
-  var earSeam = box(0.03, 0.42, 0.20, lit(OPTIC));
-  earSeam.position.set(0.06, -0.30, 0.06);
+  var earSeam = box(0.025, 0.34, 0.03, lit(OPTIC));
+  earSeam.position.set(0.10, -0.30, 0.0);
   earBot.add(earSeam);
   earBot.rotation.x = 0.20;
 
@@ -306,9 +301,9 @@
   /* every value lerps, so sitting down is a motion, not a jump */
   var POSE = {
     sit: {
-      torsoRotZ: -0.30, torsoY: -0.30,
+      torsoRotZ: 0.26, torsoY: -0.14,
       flHip: 0.10, flKnee: -0.06,
-      rlHip: 1.05, rlKnee: -1.62,
+      rlHip: 0.92, rlKnee: -1.34,
       tailRotZ: 0.55, headRotZ: 0.10, headY: 0.98
     },
     stand: {
@@ -321,6 +316,7 @@
   var pose = {};
   for (var k in POSE.sit) pose[k] = POSE.sit[k];
   var sitAmt = 1;             // 1 = sitting, 0 = standing
+  var sitOverride = null;     // tests pin a pose through this
 
   /* ---------- placement ---------- */
   var MARGIN = 14;
@@ -574,7 +570,7 @@
     var moving = speed > 0.25;
 
     /* sit when idle, stand to walk */
-    sitAmt = lerp(sitAmt, moving ? 0 : 1, 0.08);
+    sitAmt = lerp(sitAmt, sitOverride === null ? (moving ? 0 : 1) : sitOverride, 0.08);
     var src = POSE.stand, dst = POSE.sit;
     for (var key in dst) pose[key] = lerp(src[key], dst[key], sitAmt);
 
@@ -642,7 +638,7 @@
     var pulse = 1 + Math.sin(clock * 3.2) * 0.10 + barkT * 0.28;
     opticCore.scale.setScalar(pulse);
     blue.intensity = 0.7 + Math.sin(clock * 3.2) * 0.16;
-    seamLine.material.color.setHex(Math.sin(clock * 2) > -0.5 ? OPTIC : 0x1d6a99);
+    seamLine.material.color.setHex(Math.sin(clock * 2) > -0.6 ? OPTIC : 0x1d6a99);
 
     /* hearts */
     for (i = 0; i < hearts.length; i++) {
@@ -665,6 +661,7 @@
   canvas.__dog = {
     scene: scene, camera: camera, dog: dog, head: head, legs: legs,
     nose: nose, skull: skull, opticLens: opticLens, plateA: plateA,
-    setSit: function (v) { sitAmt = v; }
+    setSit: function (v) { sitOverride = v; sitAmt = v; },
+    freeSit: function () { sitOverride = null; }
   };
 })();

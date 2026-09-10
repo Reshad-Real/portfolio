@@ -68,9 +68,17 @@
     shoulders.position.y = -1.22;
     person.add(shoulders);
 
-    var collar = box(0.44, 0.14, 0.36, mat(o.collar, 12, 0x333a3c));
-    collar.position.set(0, -0.74, 0.16);
-    person.add(collar);
+    var collarM = mat(o.collar, 12, 0x333a3c);
+    var collarRing = new THREE.Mesh(new THREE.TorusGeometry(0.235, 0.05, 8, 22), collarM);
+    collarRing.position.set(0, -0.70, 0.02);
+    collarRing.rotation.x = Math.PI / 2 - 0.22;
+    person.add(collarRing);
+    var vL = box(0.05, 0.30, 0.04, collarM);
+    vL.position.set(-0.11, -0.86, 0.28); vL.rotation.z = 0.42;
+    person.add(vL);
+    var vR = box(0.05, 0.30, 0.04, collarM);
+    vR.position.set(0.11, -0.86, 0.28); vR.rotation.z = -0.42;
+    person.add(vR);
 
     var neck = tube(0.17, 0.21, 0.36, skinM);
     neck.position.y = -0.70;
@@ -113,33 +121,34 @@
     var browL = box(0.17, 0.038, 0.05, browM); browL.position.set(-0.165, 0.155, 0.385); head.add(browL);
     var browR = box(0.17, 0.038, 0.05, browM); browR.position.set(0.165, 0.155, 0.385); head.add(browR);
 
-    /* ---- hair: a cap that sits ON the skull and never in front of it ----
-       For the older figure the cap is smaller and pushed back, which is
-       what reads as a receding hairline. No skin-coloured patch on top. */
+    /* ---- hair ----
+       One shell that follows the skull, plus a band around the sides and
+       back. Nothing is a loose box hanging off a temple, and nothing
+       reaches further forward than the brow. */
     var hair = new THREE.Group();
     head.add(hair);
 
-    var cap = ball(0.465, hairM, 20);
-    cap.scale.set(0.98, o.hairH, 0.96);
+    var cap = ball(0.472, hairM, 24);
+    cap.scale.set(0.99, o.hairH, 0.99);
     cap.position.set(0, o.hairY, o.hairZ);
     hair.add(cap);
 
-    var backHair = ball(0.40, hairM, 16);
-    backHair.scale.set(0.96, 0.72, 0.62);
-    backHair.position.set(0, 0.04, -0.24);
+    /* sides and back, as a shell that follows the skull rather than a
+       torus arc — an arc's bounding volume kept reaching past the nose */
+    var sides = ball(0.472, hairM, 20);
+    sides.scale.set(o.sideS[0], o.sideS[1], o.sideS[2]);
+    sides.position.set(0, o.sideY, o.sideZ);
+    hair.add(sides);
+
+    var backHair = ball(0.44, hairM, 18);
+    backHair.scale.set(0.94, o.backH, 0.58);
+    backHair.position.set(0, 0.06, -0.22);
     hair.add(backHair);
 
-    /* sideburns / temple hair, kept behind the eye plane */
-    var sideL = box(0.07, o.sideH, 0.30, hairM);
-    sideL.position.set(-0.40, 0.06, -0.06);
-    hair.add(sideL);
-    var sideR = box(0.07, o.sideH, 0.30, hairM);
-    sideR.position.set(0.40, 0.06, -0.06);
-    hair.add(sideR);
-
     if (o.fringe) {
-      var fringe = box(0.60, 0.12, 0.16, hairM);
-      fringe.position.set(0, 0.36, 0.26);
+      var fringe = ball(0.40, hairM, 16);
+      fringe.scale.set(1.02, 0.42, 0.72);
+      fringe.position.set(0, 0.30, 0.13);
       hair.add(fringe);
     }
 
@@ -148,13 +157,16 @@
     if (o.beard) {
       beard = new THREE.Group();
       head.add(beard);
-      var cheek = ball(0.345, mat(o.beardColor, 7), 18);
-      cheek.scale.set(0.96, 0.80, 0.94);
-      cheek.position.set(0, -0.30, -0.02);
+      var beardM = mat(o.beardColor, 6);
+      var cheek = ball(0.335, beardM, 20);
+      cheek.scale.set(0.98, 0.74, 0.92);
+      cheek.position.set(0, -0.31, -0.01);
       beard.add(cheek);
-      var chin = box(0.24, 0.13, 0.14, mat(o.beardColor, 7));
-      chin.position.set(0, -0.42, 0.28);
-      beard.add(chin);
+      /* carve the mouth back out of the beard */
+      var lipGap = ball(0.10, skinM, 12);
+      lipGap.scale.set(1.5, 0.62, 0.7);
+      lipGap.position.set(0, -0.255, 0.30);
+      beard.add(lipGap);
     }
 
     /* ---- glasses ---- */
@@ -199,13 +211,15 @@
     older: {
       skin: 0xa9784f, hair: 0xc3c9cc, brow: 0xa8afb2, shirt: 0x34474f,
       collar: 0xe8eef0, accent: 0x0c7b86, beardColor: 0xc3c9cc,
-      hairH: 0.50, hairY: 0.24, hairZ: -0.10, sideH: 0.30,
+      hairH: 0.46, hairY: 0.235, hairZ: -0.13,
+      sideS: [1.02, 0.60, 0.88], sideY: 0.01, sideZ: -0.12, backH: 0.60,
       glasses: true, beard: true, fringe: false
     },
     younger: {
       skin: 0xb07a4e, hair: 0x2b1e16, brow: 0x2b1e16, shirt: 0x1d5f68,
       collar: 0xf2f6f7, accent: 0x6dbb1c, beardColor: 0x35251a,
-      hairH: 0.74, hairY: 0.15, hairZ: -0.02, sideH: 0.42,
+      hairH: 0.72, hairY: 0.145, hairZ: -0.03,
+      sideS: [1.03, 0.84, 0.96], sideY: 0.04, sideZ: -0.08, backH: 0.78,
       glasses: false, beard: true, fringe: true
     }
   };

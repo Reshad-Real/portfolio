@@ -1,96 +1,115 @@
-# Md. Reshad Al Muttaki — The Bench
+# reshad.bench
 
-An electronics-themed portfolio for **Md. Reshad Al Muttaki** — VLSI and semiconductor device
-researcher at BRAC University.
+The portfolio of **Md. Reshad Al Muttaki** — VLSI and semiconductor device engineer,
+Research Fellow at BRAC CREST.
 
-🌐 **Live:** https://reshad-real.github.io/portfolio/
+Live: https://reshad-real.github.io/portfolio/
 
-Vanilla HTML, CSS, and JavaScript. One external dependency: three.js from a CDN, for the two
-3D scenes. No build step.
+---
 
-## The idea
+## What's here
 
-The site is a lab bench. The light theme — the default — is a white PCB under bright lab
-lighting. The dark theme is the same board under blacklight. Section markers use silkscreen
-reference designators (U1, U2, J1) because that is what a board actually labels its parts with.
+Two pages, no build step, no framework. Open `index.html` and it runs.
 
-## What's on it
-
-**An interactive 3D board in the hero.** A populated PCB with copper traces, chips, caps,
-resistors, and indicator LEDs. Drag it to spin it, hover a chip to read what it stands for,
-click one to fire a signal packet down the traces. Falls back to a plain page if the device
-has no WebGL.
-
-**BYTE, the cyber-dog.** A 3D cartoon dog that follows your cursor around the whole site.
-It walks, leans into turns, wags, blinks, perks its ears when you get close, and naps if you
-stop moving for a while. Click it to pet it — it wags harder, throws hearts, and says
-something. The boop count is kept on your device and shown in the footer. Hide it with the
-Dog button in the header.
-
-**Four playable games.** Under *The bench arcade*:
-
-| Game | What you do |
+| File | What it does |
 |---|---|
-| Logic Gate Lab | Flip input switches until the output LED goes high. Circuits get deeper as you go. 60 seconds. |
-| Trace Router | Rotate every copper trace until the whole board is powered from the V pad. The grid grows 5×5 → 8×8. |
-| Resistor Rush | Read the colour bands before the clock runs out. Streaks pay more; later rounds run the question backwards. |
-| Signal Sequence | Repeat the pattern the board plays back. One extra step each round, two extra pads after round 7. |
+| `index.html` | The portfolio itself |
+| `arcade.html` | The games, on their own page |
+| `styles.css` | All styling. Light is the default theme; dark is opt-in |
+| `js/app.js` | Theme, navigation, scroll reveals, counters, card tilt |
+| `js/device3d.js` | The hero: an interactive 3D AlGaN/GaN FinFET |
+| `js/dog3d.js` | BYTE, the cyborg dog |
+| `js/refs3d.js` | The two 3D figures on the reference cards |
+| `js/games.js` | The four arcade games |
 
-Each game keeps a best score on your device and has its own sound, which you can switch off.
+Three.js r128 is pulled from a CDN. Everything else is hand-written.
 
-**Light and dark themes.** Light is the default and is applied before first paint, so there is
-no flash. Your choice is remembered.
+---
 
-## Files
+## The hero
 
-```
-portfolio/
-├── index.html        # the whole page
-├── styles.css        # design tokens, both themes, layout, game styling
-├── js/
-│   ├── app.js        # boot sequence, theme, nav, reveals, shared audio + storage helpers
-│   ├── hero3d.js     # the interactive board
-│   ├── dog3d.js      # BYTE
-│   └── games.js      # all four games behind one shell
-├── lab.html          # the older Silicon Lab, still linked from the nav
-├── lab.js            # its logic
-├── style.css         # its styles — leave this one alone, lab.html depends on it
-├── CV_Reshad.pdf
-└── README.md
-```
+Not a decoration — it's the device from the actual research. A **5 nm AlGaN/GaN
+AS³-FinFET**: silicon handle, GaN buffer, AlGaN barrier, three fins, a wrap-around
+gate, and source/drain contacts, with carriers streaming through the 2DEG.
 
-`styles.css` (new) and `style.css` (old) are different files on purpose, so replacing the home
-page does not break the Silicon Lab.
+- **Drag** to rotate.
+- **Hover** any layer to read what it is.
+- **Click** a layer to isolate it; everything else dims.
+- **Gate bias** opens and closes the channel. Switch it off and the carriers stall, the
+  channel glow dies, and the drain current falls to zero.
+- **Exploded** separates the stack so you can see the layer order.
 
-## Run locally
+It lives in a panel on the right of the hero. It never takes over the screen.
 
-```bash
-git clone https://github.com/Reshad-Real/portfolio.git
-cd portfolio
-python -m http.server 8000    # then open http://localhost:8000
-```
+If WebGL is unavailable, a static diagram takes its place.
 
-Opening `index.html` directly works too.
+---
 
-## Deploy
+## BYTE
 
-Settings → Pages → Deploy from a branch → `main` / root. Live in a minute or two.
+A brown dog with parts that aren't his: a prosthetic front leg with a lit knee joint, a
+glowing optic in one eye, a riveted plate on his flank, a patched ear, an antenna, and a
+metal tail tip.
 
-## Customising
+He sits in the bottom-right corner and stays there.
 
-- **Colours:** the tokens live in `:root` and `[data-theme="dark"]` at the top of `styles.css`.
-  Everything else reads from them, including the 3D scenes.
-- **Chips on the board:** `chipDefs` in `js/hero3d.js` — id, position, label, and the line that
-  shows in the readout.
-- **What BYTE says:** the `LINES` array in `js/dog3d.js`.
-- **Game difficulty:** each game is a self-contained factory in `js/games.js`. Session length,
-  grid growth, and scoring are all near the top of their function.
-- **Content:** all of it is plain markup in `index.html`.
+- **Click him** — he barks, then offers a menu.
+- **Pet him** — hearts, a wagging tail, and a line of nonsense. The count is remembered.
+- **Take a walk** — he barks and wanders off along the bottom of the page, picking
+  new destinations at random and turning to face the way he's going.
+- **Click him again** while he's out and the menu comes back, so you can pet him
+  wherever he's got to.
+- **Click him three times** and he trots back to his corner under his own steam.
 
-## Accessibility and performance
+Hide him from the **Dog** button in the header.
 
-- Keyboard reachable throughout, including the logic-gate switches; visible focus rings.
-- `prefers-reduced-motion` is respected — the boot sequence, reveals, idle spin, and float all stop.
-- The hero scene pauses when it scrolls out of view or the tab is hidden. The dog renders into a
-  240px canvas moved with a CSS transform rather than a full-screen layer, and never intercepts a click.
-- Pixel ratio is capped at 2. No WebGL means a graceful fallback, not a broken page.
+---
+
+## The arcade
+
+Four games at `arcade.html`. Best scores are kept in `localStorage`, per game.
+
+- **Electron Runner** — you are a carrier in the channel. Three lanes, rising speed.
+  Dodge lattice defects, collect charge, grab the rare boost for temporary immunity.
+  Three lives. Arrow keys, the on-screen pad, or tap the top/bottom half of the canvas.
+- **Gate Crash** — logic gates fall toward the substrate. Answer the output of the
+  outlined one with `0` or `1` before it lands. New gate types unlock as you level;
+  everything falls faster. Three lives.
+- **Trace Router** — rotate copper until power from `V` reaches every pad. The grid
+  grows 5×5 → 8×8, and there's a clock.
+- **Resistor Rush** — read the colour bands against an eight-second timer. Streaks
+  multiply your score, and past 90 points it starts running backwards, giving you the
+  value and asking for the bands.
+
+---
+
+## Themes
+
+Light by default. The toggle in the header switches to dark and the choice is saved.
+Both 3D scenes and all four games re-read their colours on the switch.
+
+---
+
+## Icons
+
+Every icon is hand-drawn SVG in a sprite at the top of each page — including the ones
+next to LinkedIn, GitHub and Google Scholar. They're original glyphs, not the official
+brand marks, so nothing here is anyone's trademark. Swap in real ones if you'd rather:
+replace the matching `<symbol>` and everything picks it up.
+
+---
+
+## Accessibility
+
+- Keyboard reachable throughout; visible focus rings.
+- The 3D device takes arrow keys; BYTE responds to Enter and Space.
+- `prefers-reduced-motion` cuts the marquee, reveals, idle motion and scrambling.
+- Live regions for BYTE's speech and the game messages.
+
+---
+
+## Deploying
+
+Settings → Pages → Deploy from a branch → `main` → `/ (root)`.
+
+© 2026 Md. Reshad Al Muttaki

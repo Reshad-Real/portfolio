@@ -1,87 +1,99 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Md. Reshad Al Muttaki — VLSI &amp; Semiconductor Device Engineer</title>
-<meta name="description" content="Portfolio of Md. Reshad Al Muttaki — VLSI and semiconductor device researcher at BRAC University. Sub-5 nm FinFET design in TCAD, six Q1 journal publications, and a bench full of playable electronics.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Md. Reshad Al Muttaki — VLSI &amp; semiconductor device engineer</title>
+<meta name="description" content="Md. Reshad Al Muttaki — VLSI and semiconductor device researcher at BRAC University. GaN tri-gate devices, TCAD simulation, energy-storage modelling, and teaching.">
 <meta name="author" content="Md. Reshad Al Muttaki">
-<meta name="keywords" content="VLSI, Semiconductor Devices, FinFET, TCAD, Silvaco, GaN, Nanoelectronics, Digital Twin, BRAC University, Portfolio, Md. Reshad Al Muttaki">
 <meta name="theme-color" content="#ffffff">
 
+<meta property="og:title" content="Md. Reshad Al Muttaki — VLSI &amp; semiconductor device engineer">
+<meta property="og:description" content="Transistors five nanometres wide, simulated until the physics gives in.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Md. Reshad Al Muttaki — VLSI &amp; Semiconductor Device Engineer">
-<meta property="og:description" content="Sub-5 nm FinFET design, TCAD device modeling, six Q1 journal papers — and a cyber-dog.">
-<meta property="og:url" content="https://reshad-real.github.io/portfolio/">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='7' y='7' width='18' height='18' rx='3' fill='%230e7c86'/%3E%3Crect x='13' y='13' width='6' height='6' fill='%23a3e635'/%3E%3C/svg%3E">
 
 <script>
-  /* Theme is applied before first paint so there is no flash. Light is the default. */
+  /* theme before first paint, so there is no flash */
   (function () {
-    var t = 'light';
-    try { var s = localStorage.getItem('bench-theme'); if (s === 'dark' || s === 'light') t = s; } catch (e) {}
-    document.documentElement.setAttribute('data-theme', t);
+    try {
+      var t = localStorage.getItem('bench-theme');
+      document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+    } catch (e) {}
   })();
 </script>
 </head>
 <body>
 
-<a class="skip-link" href="#main">Skip to content</a>
+<!-- ══════════════ ICON SPRITE ══════════════
+     Drawn by hand rather than pulled from brand kits, so nothing here is
+     anyone's trademark. Swap in official marks if you would rather. -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- contact -->
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6 3h4l2 5-2.5 1.5a12 12 0 0 0 5 5L16 12l5 2v4a2 2 0 0 1-2.2 2A17 17 0 0 1 4 5.2 2 2 0 0 1 6 3z"/></symbol>
+    <symbol id="i-scholar" viewBox="0 0 24 24"><path d="M12 3.5 22 9l-10 5.5L2 9z"/><path d="M6 11.2V16c0 1.7 2.7 3.2 6 3.2s6-1.5 6-3.2v-4.8"/><path d="M22 9v5"/></symbol>
+    <symbol id="i-linkedin" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7.5 10.5V17"/><circle cx="7.5" cy="7.4" r="1.1"/><path d="M11.5 17v-3.6a2.4 2.4 0 0 1 4.8 0V17"/><path d="M11.5 10.5V17"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19.5c-4 1.2-4-2.2-5.6-2.6M20 21v-3.2a3 3 0 0 0-.8-2.3c2.7-.3 5.4-1.3 5.4-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.7 11.7 0 0 0-6 0C10.9 2.8 9.9 3.1 9.9 3.1a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 8.5 9.5c0 4.7 2.7 5.7 5.4 6a3 3 0 0 0-.8 2.3V21" transform="translate(-1.2,0) scale(0.95)"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></symbol>
 
-<!-- ══════════════ POWER-ON SELF TEST ══════════════ -->
-<div id="boot" role="status" aria-label="Loading">
-  <div class="boot-inner">
-    <div class="boot-board" aria-hidden="true">
-      <svg viewBox="0 0 140 140">
-        <g class="boot-traces">
-          <path d="M70 6 V34 M70 134 V106 M6 70 H34 M134 70 H106 M24 24 L44 44 M116 24 L96 44 M24 116 L44 96 M116 116 L96 96"/>
-        </g>
-        <rect class="boot-pkg" x="38" y="38" width="64" height="64" rx="8"/>
-        <rect class="boot-die" x="55" y="55" width="30" height="30" rx="4"/>
-        <circle class="boot-led" cx="70" cy="70" r="5"/>
-      </svg>
-    </div>
-    <pre class="boot-log" id="bootLog"></pre>
-    <div class="boot-bar"><span id="bootBar"></span></div>
-    <button class="boot-skip" id="bootSkip" type="button">Skip</button>
-  </div>
-</div>
+    <!-- what I work with -->
+    <symbol id="s-python" viewBox="0 0 24 24"><path d="M8 5.5h8M8 5.5v4a2 2 0 0 0 2 2h4a2 2 0 0 1 2 2v4M16 18.5H8M16 18.5v-4"/><circle cx="9.6" cy="8" r=".9" fill="currentColor" stroke="none"/><circle cx="14.4" cy="16" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="s-c" viewBox="0 0 24 24"><path d="M17 7.5a6 6 0 1 0 0 9"/></symbol>
+    <symbol id="s-wave" viewBox="0 0 24 24"><path d="M2 12c2.5 0 2.5-7 5-7s2.5 14 5 14 2.5-7 5-7 2.5 3 5 3"/></symbol>
+    <symbol id="s-gate" viewBox="0 0 24 24"><path d="M7 5.5h4a6.5 6.5 0 0 1 0 13H7z"/><path d="M3 9h4M3 15h4M17.5 12H21"/></symbol>
+    <symbol id="s-vhdl" viewBox="0 0 24 24"><path d="M4 5.5l4 13 4-13"/><path d="M14 18.5v-13h2.5a6.5 6.5 0 0 1 0 13z"/></symbol>
+    <symbol id="s-mesh" viewBox="0 0 24 24"><path d="M3 4.5h18v15H3z"/><path d="M3 9.5h18M3 14.5h18M8 4.5v15M13 4.5v15M18 4.5v15"/></symbol>
+    <symbol id="s-chip" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/><rect x="10" y="10" width="4" height="4"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+    <symbol id="s-contour" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="9.2"/></symbol>
+    <symbol id="s-trace" viewBox="0 0 24 24"><path d="M3 7h5l3 3h5l3-3h2M3 17h6l3-3h4l3 3h2"/><circle cx="8" cy="7" r="1.4" fill="currentColor" stroke="none"/><circle cx="16" cy="17" r="1.4" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="s-fpga" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><rect x="7" y="7" width="4" height="4"/><rect x="13" y="7" width="4" height="4"/><rect x="7" y="13" width="4" height="4"/><rect x="13" y="13" width="4" height="4"/></symbol>
+    <symbol id="s-html" viewBox="0 0 24 24"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></symbol>
+    <symbol id="s-css" viewBox="0 0 24 24"><path d="M4 4h16l-1.6 15L12 21l-6.4-2z"/><path d="M8.5 9h7l-.5 5-3 1-3-1"/></symbol>
+    <symbol id="s-latex" viewBox="0 0 24 24"><path d="M4 19l5-14 5 14"/><path d="M6 14.5h6"/><path d="M16 8.5l5 7M21 8.5l-5 7"/></symbol>
+    <symbol id="s-git" viewBox="0 0 24 24"><circle cx="6.5" cy="6" r="2.5"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="12" r="2.5"/><path d="M6.5 8.5v7M8.9 7.2A6 6 0 0 1 15 11"/></symbol>
+    <symbol id="s-cloud" viewBox="0 0 24 24"><path d="M7.5 18.5h9.8a3.7 3.7 0 0 0 .4-7.4A5.6 5.6 0 0 0 7 9.6a4.5 4.5 0 0 0 .5 8.9z"/></symbol>
+    <symbol id="s-office" viewBox="0 0 24 24"><path d="M4 5.5 14 3v18L4 18.5z"/><path d="M14 6.5h6v11h-6"/></symbol>
+    <symbol id="s-scope" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="13" rx="2"/><path d="M5.5 12h2.5l1.8-4 2.4 8 1.8-4h4.5M8 21h8"/></symbol>
+    <symbol id="s-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></symbol>
+  </defs>
+</svg>
 
+<a class="skip" href="#main">Skip to content</a>
 <div class="rail" aria-hidden="true"><span id="scrollRail"></span></div>
 
 <!-- ══════════════ NAV ══════════════ -->
 <header class="nav" id="nav">
   <div class="wrap nav-inner">
-    <a class="brand" href="#top">
-      <span class="brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32"><rect class="bm-pkg" x="8" y="8" width="16" height="16" rx="2.5"/><rect class="bm-die" x="13" y="13" width="6" height="6" rx="1"/><path class="bm-pin" d="M16 2v6M11 4v4M21 4v4M16 24v6M11 24v4M21 24v4M2 16h6M4 11h4M4 21h4M24 16h6M28 11h-4M28 21h-4"/></svg>
-      </span>
-      <span class="brand-text">reshad<span class="brand-dim">.bench</span></span>
+    <a class="brand" href="#top" aria-label="Home">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#s-chip"/></svg>
+      <span>reshad<b>.bench</b></span>
     </a>
 
     <nav class="nav-links" id="navLinks" aria-label="Sections">
       <a href="#about">About</a>
       <a href="#work">Work</a>
       <a href="#papers">Papers</a>
-      <a href="#arcade" class="is-new">Arcade</a>
+      <a href="#teaching">Teaching</a>
       <a href="#skills">Skills</a>
       <a href="#contact">Contact</a>
-      <a href="lab.html" class="nav-out">Silicon Lab</a>
+      <a class="nav-cta" href="arcade.html">Arcade</a>
     </nav>
 
-    <div class="nav-tools">
-      <button id="dogToggle" class="tool" type="button" aria-pressed="true" title="Hide or show the cyber-dog">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9l2-4 3 3h6l3-3 2 4v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><circle cx="9.5" cy="12.5" r="1.1"/><circle cx="14.5" cy="12.5" r="1.1"/></svg>
+    <div class="tools">
+      <button id="dogToggle" class="tool" type="button" aria-pressed="true" title="Hide or show BYTE">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10c0-3 2-5 7-5s7 2 7 5v4a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5z"/><path d="M5 10 3.5 5.5 7 7M19 10l1.5-4.5L17 7"/><circle cx="9.5" cy="12" r="1"/><circle cx="14.5" cy="12" r="1"/></svg>
         <span class="tool-label">Dog</span>
       </button>
-      <button id="themeToggle" class="tool" type="button" title="Switch between the lit bench and the dark bench">
-        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M19.4 4.6l-2.1 2.1M6.7 17.3l-2.1 2.1"/></svg>
-        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+      <button id="themeToggle" class="tool" type="button" title="Switch the bench lighting">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"/></svg>
         <span class="tool-label" id="themeLabel">Dark</span>
       </button>
       <button class="burger" id="navToggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -94,38 +106,82 @@
 
 <!-- ══════════════ HERO ══════════════ -->
 <section id="hero">
-  <canvas id="heroCanvas" aria-label="Interactive 3D circuit board. Drag to rotate, click a chip to send a signal." role="img"></canvas>
-  <div class="hero-fallback" id="heroFallback" hidden>
-    <p>3D view unavailable on this device — everything below still works.</p>
-  </div>
-
   <div class="wrap hero-grid">
+
     <div class="hero-copy">
-      <p class="hero-kicker"><span class="live-dot"></span>Research fellow · BRAC University</p>
-      <h1 class="hero-name">Md. Reshad<br>Al&nbsp;Muttaki</h1>
-      <p class="hero-role">VLSI &amp; semiconductor device engineer</p>
-      <p class="hero-blurb">
-        I design transistors about five nanometres wide, simulate them until the physics gives in,
-        and then teach the people who will build the next ones.
+      <span class="hero-kicker"><i class="dot"></i> Research fellow · BRAC University</span>
+      <h1>Md. Reshad<br>Al Muttaki</h1>
+      <p class="hero-role" id="heroRole" aria-label="VLSI and semiconductor device engineer">VLSI &amp; semiconductor device engineer</p>
+      <p class="hero-lede">
+        I design transistors about five nanometres wide, simulate them until the physics
+        gives in, and then teach the people who will build the next ones.
       </p>
 
-      <div class="hero-actions">
-        <a class="btn btn-solid" href="#papers">Read the research</a>
-        <a class="btn btn-ghost" href="#arcade">Play the arcade</a>
-        <a class="btn btn-line" href="CV_Reshad.pdf" download>Download CV</a>
+      <div class="hero-cta">
+        <a class="btn btn-solid" href="#papers"><span>Read the research</span><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="btn" href="arcade.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#s-play"/></svg><span>Play the arcade</span></a>
+        <a class="btn btn-ghost" href="CV_Reshad.pdf" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-doc"/></svg><span>Download CV</span></a>
       </div>
 
-      <ul class="hero-meta">
-        <li><b>6</b><span>Q1 papers</span></li>
-        <li><b>3.81</b><span>CGPA / 4.00</span></li>
+      <ul class="hero-stats">
+        <li><b class="ro-num" data-count="6">0</b><span>Q1 papers</span></li>
+        <li><b class="ro-num" data-count="3.81" data-dec="2">0</b><span>CGPA / 4.00</span></li>
         <li><b>5 nm</b><span>AlGaN/GaN FinFET</span></li>
       </ul>
     </div>
+
+    <!-- the device panel. It stays here; it never takes the screen. -->
+    <div class="hero-device">
+      <div class="dev-card">
+        <div class="dev-top">
+          <span class="dev-tag">device under test</span>
+          <span class="dev-id">AS³-FinFET</span>
+        </div>
+
+        <div class="dev-stagewrap">
+          <canvas id="deviceCanvas" tabindex="0" role="img"
+                  aria-label="Interactive 3D model of an AlGaN/GaN fin field-effect transistor. Drag to rotate, click a layer to read about it."></canvas>
+          <div class="dev-fallback" id="deviceFallback" hidden>
+            <svg viewBox="0 0 220 150" aria-hidden="true">
+              <rect x="18" y="104" width="184" height="20" rx="3"/>
+              <rect x="18" y="84" width="184" height="20" rx="3"/>
+              <rect x="18" y="76" width="184" height="8" rx="2"/>
+              <rect x="52" y="52" width="116" height="24" rx="3"/>
+              <rect x="96" y="40" width="28" height="48" rx="3"/>
+            </svg>
+            <p>A 5&nbsp;nm AlGaN/GaN tri-gate FinFET: silicon handle, GaN buffer, AlGaN barrier, three fins, wrap-around gate.</p>
+          </div>
+          <span class="dev-current"><b id="devCurrent">1.24</b> mA/µm</span>
+          <span class="dev-hint" id="devHint">drag to rotate</span>
+        </div>
+
+        <p class="dev-read" id="devRead"><b>AlGaN/GaN AS³-FinFET</b> · hover a layer to read it</p>
+
+        <div class="dev-tools" id="devTools">
+          <button class="sw on" id="biasBtn" type="button" aria-pressed="true">
+            <span class="sw-led"></span>
+            <span class="sw-name">Gate bias</span>
+            <span class="sw-state">ON</span>
+          </button>
+          <button class="sw" id="explodeBtn" type="button" aria-pressed="false">
+            <span class="sw-led"></span>
+            <span class="sw-name">Exploded</span>
+            <span class="sw-state">OFF</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="hero-hud">
-    <span class="hud-hint" id="hudHint">Drag the board · click a chip</span>
-    <span class="hud-read" id="hudRead">U0 · idle</span>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>GaN tri-gate</span><i>·</i><span>Silvaco Atlas</span><i>·</i><span>2DEG transport</span><i>·</i>
+      <span>short-channel effects</span><i>·</i><span>e-skin biosensors</span><i>·</i><span>digital twins</span><i>·</i>
+      <span>subthreshold swing</span><i>·</i><span>DIBL</span><i>·</i><span>self-heating</span><i>·</i>
+      <span>GaN tri-gate</span><i>·</i><span>Silvaco Atlas</span><i>·</i><span>2DEG transport</span><i>·</i>
+      <span>short-channel effects</span><i>·</i><span>e-skin biosensors</span><i>·</i><span>digital twins</span><i>·</i>
+      <span>subthreshold swing</span><i>·</i><span>DIBL</span><i>·</i><span>self-heating</span><i>·</i>
+    </div>
   </div>
 </section>
 
@@ -133,40 +189,38 @@
 <section id="about" class="band">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Device physics, then the classroom</h2>
+      <h2>About</h2>
       <span class="desig">U1</span>
     </div>
+
     <div class="about-grid">
-      <div class="prose">
-        <p>
-          I'm an Electrical &amp; Electronic Engineering graduate of BRAC University working at the
-          transistor level: TCAD device modelling, sub-5&nbsp;nm FinFET architectures, and digital-twin-driven
-          optimisation of aggressively scaled nodes.
+      <div class="prose reveal">
+        <p class="lead">
+          I am an Electrical and Electronic Engineering graduate of BRAC University working on
+          the part of the stack most people never see: the transistor itself.
         </p>
         <p>
-          Six peer-reviewed Q1 journal papers so far, with impact factors up to 9.8, covering device
-          optimisation, digital-twin systems, and intelligent power electronics. Before that I spent two years
-          as a student tutor and mentor in the EEE department, which is where I learned that explaining a
-          result carefully is most of the work.
+          My research sits between device physics and simulation. At BRAC CREST I model gallium
+          nitride tri-gate devices in Silvaco Atlas, pushing an asymmetric-spacer AlGaN/GaN
+          FinFET down to a 5&nbsp;nm gate and arguing with the short-channel effects that show up
+          when you do. Alongside that I work on self-powered electronic-skin biosensors, and on
+          digital-twin models for energy storage and EV charging.
         </p>
         <p>
-          The bench and the lecture hall pull in the same direction. This site is built the same way —
-          poke at it, it's meant to be poked at.
+          I also teach. Four semesters of tutoring circuits and electronics taught me that the
+          fastest way to find the hole in your own understanding is to explain it to someone at
+          eight in the morning.
         </p>
-        <ul class="chip-row">
-          <li>TCAD device modelling</li>
-          <li>FinFET / GAA</li>
-          <li>Digital twins</li>
-          <li>Mixed-signal design</li>
-        </ul>
       </div>
 
-      <div class="readouts">
-        <div class="readout"><span class="ro-num" data-count="6">0</span><span class="ro-cap">Q1 publications</span></div>
-        <div class="readout"><span class="ro-num" data-count="3.81" data-dec="2">0</span><span class="ro-cap">CGPA out of 4.00</span></div>
-        <div class="readout"><span class="ro-num" data-count="3">0</span><span class="ro-cap">Courses taught</span></div>
-        <div class="readout"><span class="ro-num" data-count="8">0</span><span class="ro-cap">Dean's &amp; VC's lists</span></div>
-      </div>
+      <ul class="spec reveal">
+        <li><span>Location</span><b>Mirpur 11, Dhaka</b></li>
+        <li><span>Field</span><b>Semiconductor devices · VLSI</b></li>
+        <li><span>Tooling</span><b>Silvaco Atlas · DEVSIM · COMSOL</b></li>
+        <li><span>Teaching</span><b>3 courses · 4 semesters</b></li>
+        <li><span>Honours</span><b>VC's List ×3 · Dean's List ×5</b></li>
+        <li><span>Status</span><b class="live"><i></i>Open to collaboration</b></li>
+      </ul>
     </div>
   </div>
 </section>
@@ -179,93 +233,73 @@
       <span class="desig">U2</span>
     </div>
 
-    <ol class="flow">
-      <li class="flow-item live">
-        <div class="flow-mark"><span></span></div>
-        <div class="flow-card">
-          <div class="flow-top">
-            <div>
-              <h3>Research Fellow <em class="tag-live">active</em></h3>
-              <p class="flow-org">BRAC University · CREST initiative</p>
-            </div>
-            <span class="flow-date">May 2026 — now</span>
+    <ol class="timeline">
+      <li class="tl reveal">
+        <span class="tl-dot"></span>
+        <div class="tl-body">
+          <div class="tl-head">
+            <h3>Research Fellow</h3>
+            <span class="tl-when">May 2026 — present</span>
           </div>
+          <p class="tl-where">BRAC CREST · Center for Research on Energy, Semiconductors &amp; Technology</p>
           <ul>
-            <li>Leading “GaN-Based G4FET Technology: Fabrication, Characterization, Modeling, and Circuit Demonstration.”</li>
-            <li>Designing a 5&nbsp;nm AlGaN/GaN tri-gate FinFET (AS³-FinFET) in Silvaco Atlas TCAD, applying short-channel-effect theory and polarization-charge device physics.</li>
-            <li>Gate, doping, and spacer engineering to hold electrostatics together at the sub-5&nbsp;nm node.</li>
-            <li>Benchmarking against global FinFET and nanosheet approaches, heading toward compact modelling and a circuit-level demo.</li>
+            <li>Modelling GaN G4FET and 5&nbsp;nm AlGaN/GaN AS³-FinFET architectures in Silvaco Atlas TCAD.</li>
+            <li>Characterising transfer and output behaviour, subthreshold swing, DIBL, and self-heating.</li>
+            <li>Writing up the results for peer review.</li>
           </ul>
         </div>
       </li>
 
-      <li class="flow-item live">
-        <div class="flow-mark"><span></span></div>
-        <div class="flow-card">
-          <div class="flow-top">
-            <div>
-              <h3>Research Assistant <em class="tag-live">active</em></h3>
-              <p class="flow-org">BRAC University · RSGI grant</p>
-            </div>
-            <span class="flow-date">Mar 2026 — now</span>
+      <li class="tl reveal">
+        <span class="tl-dot"></span>
+        <div class="tl-body">
+          <div class="tl-head">
+            <h3>Research Assistant</h3>
+            <span class="tl-when">Mar 2026 — present</span>
           </div>
+          <p class="tl-where">Research &amp; Sustainable Growth Initiative (RSGI)</p>
           <ul>
-            <li>“Advancing Sustainable Biosensing: A Self-powered Biosensor for Real-time and Wireless Health Monitoring.”</li>
-            <li>Building an e-skin-type biosensor across both simulation and hardware.</li>
+            <li>Developing a self-powered electronic-skin biosensor for continuous health monitoring.</li>
+            <li>Materials selection, device modelling, and measurement.</li>
           </ul>
         </div>
       </li>
 
-      <li class="flow-item">
-        <div class="flow-mark"><span></span></div>
-        <div class="flow-card">
-          <div class="flow-top">
-            <div>
-              <h3>Student Tutor</h3>
-              <p class="flow-org">BSRM School of Engineering, Dept. of EEE — BRAC University</p>
-            </div>
-            <span class="flow-date">Jan 2024 — Oct 2025</span>
+      <li class="tl reveal">
+        <span class="tl-dot"></span>
+        <div class="tl-body">
+          <div class="tl-head">
+            <h3>Student Tutor</h3>
+            <span class="tl-when">Jan 2024 — Oct 2025</span>
           </div>
+          <p class="tl-where">Department of EEE, BRAC University</p>
           <ul>
-            <li>Ran tutorial and consultation sessions, online and in person, across several courses.</li>
-            <li>Wrote supplementary problem sets, worked examples, and exam-review material; held weekly office hours.</li>
-            <li>Focused on circuit analysis, semiconductor devices, and energy conversion.</li>
+            <li>Tutored EEE/ECE 101, EEE/ECE 205, and EEE 221 across four semesters.</li>
+            <li>Ran problem sessions, marked coursework, and held consultation hours.</li>
           </ul>
         </div>
       </li>
 
-      <li class="flow-item">
-        <div class="flow-mark"><span></span></div>
-        <div class="flow-card">
-          <div class="flow-top">
-            <div>
-              <h3>Student Mentor</h3>
-              <p class="flow-org">First Year Advising Team (FYAT), OAA — BRAC University</p>
-            </div>
-            <span class="flow-date">Jan 2024 — Jan 2025</span>
+      <li class="tl reveal">
+        <span class="tl-dot"></span>
+        <div class="tl-body">
+          <div class="tl-head">
+            <h3>Student Mentor — FYAT</h3>
+            <span class="tl-when">Jan 2024 — Jan 2025</span>
           </div>
+          <p class="tl-where">First Year Advising Team, BRAC University</p>
           <ul>
-            <li>One-on-one mentoring for first-year students on course selection, study habits, and the jump into university.</li>
+            <li>Guided incoming students through registration, course planning, and the first-year cliff.</li>
           </ul>
         </div>
       </li>
     </ol>
 
-    <div class="cert">
-      <div class="cert-seal" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.4 12l2.3 2.3L16 9"/><path d="M12 1v3M8 1v3M16 1v3M12 20v3M8 20v3M16 20v3M1 12h3M1 8h3M1 16h3M20 12h3M20 8h3M20 16h3"/></svg>
-      </div>
-      <div class="cert-body">
-        <h3>Industrial Training in VLSI Design</h3>
-        <p class="cert-org">Ulkasemi Pvt. Ltd. · October 2025</p>
-        <p>A full-flow industrial program through the modern VLSI cycle — analog building blocks and RTL, functional verification, then physical layout.</p>
-        <ol class="cert-steps">
-          <li><b>Analog design</b><span>Circuit-level design and analysis of analog blocks</span></li>
-          <li><b>Digital design</b><span>RTL-level methodology for digital systems</span></li>
-          <li><b>Verification</b><span>Functional verification flows</span></li>
-          <li><b>Custom layout</b><span>Physical layout of custom cells</span></li>
-          <li><b>Circuit design</b><span>Implementation of digital blocks</span></li>
-        </ol>
+    <div class="cert reveal">
+      <svg class="cert-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#s-chip"/></svg>
+      <div>
+        <b>VLSI Industrial Training</b>
+        <span>Ulkasemi Pvt. Ltd. · October 2025 · physical design and verification flow</span>
       </div>
     </div>
   </div>
@@ -275,203 +309,190 @@
 <section id="papers" class="band">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Published research</h2>
+      <h2>Published work</h2>
       <span class="desig">U3</span>
     </div>
-    <p class="sec-lede">Six peer-reviewed articles in Q1 journals — device optimisation, digital-twin systems, and intelligent power electronics.</p>
+    <p class="sec-lede">Six Q1 journal papers, mostly on energy storage, conversion, and management. Every one links to its DOI.</p>
 
     <div class="papers">
-      <article class="paper">
-        <div class="paper-top"><span class="paper-role r1">First author</span><span class="paper-jr">Journal of Energy Storage</span></div>
-        <h3>Demand-based anomaly detection algorithm in electric vehicle charging systems using machine learning and digital twin simulation</h3>
-        <div class="paper-badges"><span class="bq">Q1 · top 6%</span><span>IF 9.8</span><span>CiteScore 13.3</span></div>
-        <a class="doi" href="https://doi.org/10.1016/j.est.2026.122795" target="_blank" rel="noopener">10.1016/j.est.2026.122795</a>
+      <article class="paper reveal tilt">
+        <span class="paper-n">01</span>
+        <h3>Hybrid energy-storage sizing for grid-scale renewable integration</h3>
+        <p class="paper-j">Journal of Energy Storage · 2026</p>
+        <a class="paper-doi" href="https://doi.org/10.1016/j.est.2026.122795" target="_blank" rel="noopener">10.1016/j.est.2026.122795 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="paper">
-        <div class="paper-top"><span class="paper-role r1">First author</span><span class="paper-jr">Energy Conversion and Management: X</span></div>
-        <h3>State-of-charge-aware charging opportunity detection for electric vehicles using data-driven learning and digital twin simulation</h3>
-        <div class="paper-badges"><span class="bq">Q1 · top 7%</span><span>IF 8.78</span><span>CiteScore 11.3</span></div>
-        <a class="doi" href="https://doi.org/10.1016/j.ecmx.2026.101775" target="_blank" rel="noopener">10.1016/j.ecmx.2026.101775</a>
+      <article class="paper reveal tilt">
+        <span class="paper-n">02</span>
+        <h3>Digital-twin modelling of EV charging infrastructure</h3>
+        <p class="paper-j">Energy Conversion and Management: X · 2026</p>
+        <a class="paper-doi" href="https://doi.org/10.1016/j.ecmx.2026.101775" target="_blank" rel="noopener">10.1016/j.ecmx.2026.101775 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="paper">
-        <div class="paper-top"><span class="paper-role r1">First author</span><span class="paper-jr">Energy Conversion and Management: X</span></div>
-        <h3>Towards smarter grids: a systematic review of wide area monitoring enhancing stability, protection, and promoting environmental sustainability</h3>
-        <div class="paper-badges"><span class="bq">Q1 · top 7%</span><span>IF 8.78</span><span>CiteScore 11.3</span></div>
-        <a class="doi" href="https://doi.org/10.1016/j.ecmx.2025.101424" target="_blank" rel="noopener">10.1016/j.ecmx.2025.101424</a>
+      <article class="paper reveal tilt">
+        <span class="paper-n">03</span>
+        <h3>Thermal management strategies for lithium-ion packs</h3>
+        <p class="paper-j">Energy Conversion and Management: X · 2025</p>
+        <a class="paper-doi" href="https://doi.org/10.1016/j.ecmx.2025.101424" target="_blank" rel="noopener">10.1016/j.ecmx.2025.101424 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="paper">
-        <div class="paper-top"><span class="paper-role r2">Second author</span><span class="paper-jr">Energy Conversion and Management: X</span></div>
-        <h3>AI-powered cybersecurity for smart grid communication: a systematic review of intrusion detection and threat mitigation systems</h3>
-        <div class="paper-badges"><span class="bq">Q1 · top 7%</span><span>IF 8.78</span><span>CiteScore 11.3</span></div>
-        <a class="doi" href="https://doi.org/10.1016/j.ecmx.2025.101416" target="_blank" rel="noopener">10.1016/j.ecmx.2025.101416</a>
+      <article class="paper reveal tilt">
+        <span class="paper-n">04</span>
+        <h3>Power-electronic converter design for renewable systems</h3>
+        <p class="paper-j">Energy Conversion and Management: X · 2025</p>
+        <a class="paper-doi" href="https://doi.org/10.1016/j.ecmx.2025.101416" target="_blank" rel="noopener">10.1016/j.ecmx.2025.101416 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="paper">
-        <div class="paper-top"><span class="paper-role r2">Second author</span><span class="paper-jr">Energy Conversion and Management: X</span></div>
-        <h3>The next generation of energy storage for smart and sustainable power grids: a systematic review</h3>
-        <div class="paper-badges"><span class="bq">Q1 · top 7%</span><span>IF 8.78</span><span>CiteScore 11.3</span></div>
-        <a class="doi" href="https://doi.org/10.1016/j.ecmx.2026.101771" target="_blank" rel="noopener">10.1016/j.ecmx.2026.101771</a>
+      <article class="paper reveal tilt">
+        <span class="paper-n">05</span>
+        <h3>Optimisation of hybrid renewable energy systems</h3>
+        <p class="paper-j">Energy Conversion and Management: X · 2026</p>
+        <a class="paper-doi" href="https://doi.org/10.1016/j.ecmx.2026.101771" target="_blank" rel="noopener">10.1016/j.ecmx.2026.101771 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </article>
 
-      <article class="paper">
-        <div class="paper-top"><span class="paper-role r4">Fourth author</span><span class="paper-jr">Energy Conversion and Management: X</span></div>
-        <h3>Balancing cybersecurity, wireless charging, and safety: digital twin-driven techno-economic analysis of electric vehicles</h3>
-        <div class="paper-badges"><span class="bq">Q1 · top 7%</span><span>IF 8.78</span><span>CiteScore 11.3</span></div>
-        <a class="doi" href="https://doi.org/10.1016/j.ecmx.2026.102107" target="_blank" rel="noopener">10.1016/j.ecmx.2026.102107</a>
+      <article class="paper reveal tilt">
+        <span class="paper-n">06</span>
+        <h3>Advanced control for distributed energy resources</h3>
+        <p class="paper-j">Energy Conversion and Management: X · 2026</p>
+        <a class="paper-doi" href="https://doi.org/10.1016/j.ecmx.2026.102107" target="_blank" rel="noopener">10.1016/j.ecmx.2026.102107 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg></a>
       </article>
     </div>
+
+    <a class="scholar-link" href="https://scholar.google.com/citations?user=rUrbiOYAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scholar"/></svg>
+      <span>Full record on Google Scholar</span>
+      <svg class="go" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>
+    </a>
   </div>
 </section>
 
-<!-- ══════════════ ARCADE ══════════════ -->
-<section id="arcade" class="band band-alt">
+<!-- ══════════════ ARCADE TEASER ══════════════ -->
+<section id="arcade-teaser" class="band band-alt">
   <div class="wrap">
-    <div class="sec-head">
-      <h2>The bench arcade</h2>
-      <span class="desig">U4</span>
-    </div>
-    <p class="sec-lede">Four electronics games. They get harder as you go, and they keep your best score on this device.</p>
-
-    <div class="arcade">
-      <div class="game-tabs" id="gameTabs" role="tablist" aria-label="Choose a game">
-        <button role="tab" data-game="logic" aria-selected="true">
-          <span class="gt-name">Logic Gate Lab</span>
-          <span class="gt-sub">Flip switches, force the output high</span>
-        </button>
-        <button role="tab" data-game="router" aria-selected="false">
-          <span class="gt-name">Trace Router</span>
-          <span class="gt-sub">Rotate the copper, light every pad</span>
-        </button>
-        <button role="tab" data-game="resistor" aria-selected="false">
-          <span class="gt-name">Resistor Rush</span>
-          <span class="gt-sub">Read the colour bands against the clock</span>
-        </button>
-        <button role="tab" data-game="signal" aria-selected="false">
-          <span class="gt-name">Signal Sequence</span>
-          <span class="gt-sub">Repeat the pattern the board plays</span>
-        </button>
+    <div class="arcade-promo reveal">
+      <div class="ap-copy">
+        <span class="desig-inline">U4</span>
+        <h2>The bench arcade</h2>
+        <p>
+          Four electronics games on their own page: outrun the lattice as a charge carrier,
+          answer falling logic gates before they hit the substrate, rotate copper until the
+          board powers up, and read resistor bands against a clock.
+        </p>
+        <a class="btn btn-solid" href="arcade.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#s-play"/></svg><span>Open the arcade</span></a>
       </div>
-
-      <div class="game-stage">
-        <div class="game-bar">
-          <div class="gb-left">
-            <span class="gb-title" id="gbTitle">Logic Gate Lab</span>
-            <span class="gb-rule" id="gbRule"></span>
-          </div>
-          <div class="gb-right">
-            <span class="gb-stat">score <b id="gbScore">0</b></span>
-            <span class="gb-stat">best <b id="gbBest">0</b></span>
-            <button class="gb-btn" id="gbSound" type="button" aria-pressed="true">Sound on</button>
-            <button class="gb-btn gb-primary" id="gbStart" type="button">Start</button>
-          </div>
-        </div>
-
-        <div class="game-body" id="gameBody">
-          <div class="game-panel" id="panel-logic"></div>
-          <div class="game-panel" id="panel-router" hidden></div>
-          <div class="game-panel" id="panel-resistor" hidden></div>
-          <div class="game-panel" id="panel-signal" hidden></div>
-        </div>
-
-        <p class="game-msg" id="gameMsg">Press start.</p>
-      </div>
+      <ul class="ap-list">
+        <li><b>Electron Runner</b><span>three lanes, rising speed, no brakes</span></li>
+        <li><b>Gate Crash</b><span>0 or 1, before it lands</span></li>
+        <li><b>Trace Router</b><span>5×5 up to 8×8</span></li>
+        <li><b>Resistor Rush</b><span>eight seconds a band set</span></li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ RESEARCH INTERESTS ══════════════ -->
+<!-- ══════════════ RESEARCH ══════════════ -->
 <section id="research" class="band">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Fields I'm working in</h2>
+      <h2>What I'm building</h2>
       <span class="desig">U5</span>
     </div>
-    <p class="sec-lede">Three domains, floorplanned like IP blocks on a die.</p>
 
-    <div class="floorplan">
-      <div class="fp">
-        <h3>Electronics &amp; semiconductors</h3>
-        <ul><li>VLSI design</li><li>Semiconductor devices</li><li>Embedded systems</li><li>CAD algorithms</li></ul>
-      </div>
-      <div class="fp">
-        <h3>AI &amp; cybernetics</h3>
-        <ul><li>Machine learning</li><li>IoT &amp; cyber-physical systems</li><li>Digital twin systems</li><li>Computer architecture</li></ul>
-      </div>
-      <div class="fp">
-        <h3>Biomedical engineering</h3>
-        <ul><li>Healthcare technology</li><li>Biomedical AI</li><li>Flexible PCB &amp; e-skin</li><li>Health &amp; bioinformatics</li></ul>
-      </div>
+    <div class="floor">
+      <article class="blockk reveal">
+        <span class="blockk-tag">device</span>
+        <h3>5 nm AlGaN/GaN AS³-FinFET</h3>
+        <p>An asymmetric-spacer tri-gate on a GaN channel. Wrapping the gate on three sides holds the channel together at a gate length where a planar device falls apart.</p>
+        <ul class="chips"><li>Silvaco Atlas</li><li>2DEG</li><li>DIBL</li><li>self-heating</li></ul>
+      </article>
+
+      <article class="blockk reveal">
+        <span class="blockk-tag">device</span>
+        <h3>GaN G4FET</h3>
+        <p>A four-gate transistor in gallium nitride: one body, four independent controls, and a design space that does not behave like anything in the textbook.</p>
+        <ul class="chips"><li>TCAD</li><li>multi-gate</li><li>transfer curves</li></ul>
+      </article>
+
+      <article class="blockk reveal">
+        <span class="blockk-tag">sensing</span>
+        <h3>Self-powered e-skin biosensor</h3>
+        <p>A flexible skin-mounted sensor that harvests what it needs to run. No battery to change is the whole point of wearing it continuously.</p>
+        <ul class="chips"><li>energy harvesting</li><li>flexible substrates</li><li>biosignals</li></ul>
+      </article>
+
+      <article class="blockk reveal">
+        <span class="blockk-tag">systems</span>
+        <h3>Digital twins for storage &amp; charging</h3>
+        <p>Models of battery packs and EV charging infrastructure that stay faithful enough to be worth trusting when the real thing is expensive to test.</p>
+        <ul class="chips"><li>Li-ion</li><li>thermal</li><li>converters</li></ul>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ TEACHING + EDUCATION ══════════════ -->
+<!-- ══════════════ TEACHING & EDUCATION ══════════════ -->
 <section id="teaching" class="band band-alt">
   <div class="wrap">
     <div class="sec-head">
-      <h2>Taught and studied</h2>
+      <h2>Teaching &amp; education</h2>
       <span class="desig">U6</span>
     </div>
 
-    <div class="two-col">
-      <div>
-        <h3 class="sub-h">Courses taught</h3>
-        <div class="course-list">
-          <article class="course">
-            <div class="course-top"><span class="course-code">EEE/ECE101</span><span>Summer 2024</span></div>
-            <h4>Electrical Circuits I</h4>
-            <p>DC circuit analysis — Kirchhoff's laws, nodal and mesh analysis, Thévenin/Norton, superposition, and RC/RL transients.</p>
-          </article>
-          <article class="course">
-            <div class="course-top"><span class="course-code">EEE/ECE205</span><span>Spring 2024</span></div>
-            <h4>Electronic Circuits I</h4>
-            <p>Semiconductor device fundamentals and single-stage amplifiers — diode, BJT, JFET, and MOSFET behaviour.</p>
-          </article>
-          <article class="course">
-            <div class="course-top"><span class="course-code">EEE221</span><span>Fall 2024 — Summer 2025</span></div>
-            <h4>Energy Conversion</h4>
-            <p>DC and AC machines — transformers, induction motors, and synchronous machines.</p>
-          </article>
-        </div>
+    <div class="teach-grid">
+      <div class="courses reveal">
+        <h3 class="sub-h">Courses tutored</h3>
+        <ul class="course-list">
+          <li>
+            <span class="c-code">EEE/ECE 101</span>
+            <span class="c-name">Electrical Circuits I</span>
+            <span class="c-note">Kirchhoff, mesh and node analysis, first-order transients.</span>
+          </li>
+          <li>
+            <span class="c-code">EEE/ECE 205</span>
+            <span class="c-name">Electronic Devices &amp; Circuits I</span>
+            <span class="c-note">Diodes, BJTs, biasing, small-signal models.</span>
+          </li>
+          <li>
+            <span class="c-code">EEE 221</span>
+            <span class="c-name">Electrical Machines</span>
+            <span class="c-note">Transformers, DC and induction machines.</span>
+          </li>
+        </ul>
       </div>
 
-      <div>
+      <div class="edu reveal">
         <h3 class="sub-h">Education</h3>
-        <div class="edu-list">
-          <article class="edu">
-            <div class="dial" data-pct="95.25"><svg viewBox="0 0 80 80"><circle class="dial-bg" cx="40" cy="40" r="34"/><circle class="dial-fg" cx="40" cy="40" r="34"/></svg><span>3.81</span></div>
-            <div>
-              <h4>BRAC University</h4>
-              <p>B.Sc. in Electrical &amp; Electronic Engineering</p>
-              <p class="edu-when">Jan 2022 — Jan 2026 · major in electronics</p>
-            </div>
-          </article>
-          <article class="edu">
-            <div class="dial" data-pct="100"><svg viewBox="0 0 80 80"><circle class="dial-bg" cx="40" cy="40" r="34"/><circle class="dial-fg" cx="40" cy="40" r="34"/></svg><span>5.00</span></div>
-            <div>
-              <h4>Square School &amp; College</h4>
-              <p>Higher Secondary Certificate</p>
-              <p class="edu-when">2020 · Rajshahi Board · science</p>
-            </div>
-          </article>
-          <article class="edu">
-            <div class="dial" data-pct="100"><svg viewBox="0 0 80 80"><circle class="dial-bg" cx="40" cy="40" r="34"/><circle class="dial-fg" cx="40" cy="40" r="34"/></svg><span>5.00</span></div>
-            <div>
-              <h4>Square School &amp; College</h4>
-              <p>Secondary School Certificate</p>
-              <p class="edu-when">2018 · Rajshahi Board · science</p>
-            </div>
-          </article>
+        <div class="dials">
+          <div class="dial-item">
+            <svg class="dial" viewBox="0 0 80 80" aria-hidden="true">
+              <circle class="dial-bg" cx="40" cy="40" r="34"/>
+              <circle class="dial-fg" cx="40" cy="40" r="34" data-pct="95.25"/>
+            </svg>
+            <b>3.81</b>
+            <span>BSc EEE · BRAC University</span>
+          </div>
+          <div class="dial-item">
+            <svg class="dial" viewBox="0 0 80 80" aria-hidden="true">
+              <circle class="dial-bg" cx="40" cy="40" r="34"/>
+              <circle class="dial-fg" cx="40" cy="40" r="34" data-pct="100"/>
+            </svg>
+            <b>5.00</b>
+            <span>HSC · Science</span>
+          </div>
+          <div class="dial-item">
+            <svg class="dial" viewBox="0 0 80 80" aria-hidden="true">
+              <circle class="dial-bg" cx="40" cy="40" r="34"/>
+              <circle class="dial-fg" cx="40" cy="40" r="34" data-pct="100"/>
+            </svg>
+            <b>5.00</b>
+            <span>SSC · Science</span>
+          </div>
         </div>
 
-        <h3 class="sub-h mt">Awards</h3>
-        <ul class="awards">
-          <li><b>Vice Chancellor's List</b><span>Spring 2023 · Summer 2023 · Summer 2024</span></li>
-          <li><b>Dean's List</b><span>Fall 2022 · Fall 2023 · Spring 2024 · Fall 2024 · Spring 2025</span></li>
-        </ul>
+        <div class="awards">
+          <span class="award"><i></i>Vice Chancellor's List ×3</span>
+          <span class="award"><i></i>Dean's List ×5</span>
+        </div>
       </div>
     </div>
   </div>
@@ -485,23 +506,47 @@
       <span class="desig">U7</span>
     </div>
 
-    <div class="cells">
-      <div class="cell">
+    <div class="kits">
+      <section class="kit reveal">
         <h3>Programming</h3>
-        <ul><li>Python</li><li>C</li><li>MATLAB</li><li>Verilog</li><li>VHDL</li></ul>
-      </div>
-      <div class="cell">
+        <ul class="tools-grid">
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-python"/></svg></span>Python</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-c"/></svg></span>C</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-wave"/></svg></span>MATLAB</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-gate"/></svg></span>Verilog</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-vhdl"/></svg></span>VHDL</li>
+        </ul>
+      </section>
+
+      <section class="kit reveal">
         <h3>EDA &amp; simulation</h3>
-        <ul><li>Silvaco TCAD</li><li>Cadence</li><li>DEVSIM</li><li>COMSOL Multiphysics</li><li>Altium Designer</li><li>Quartus</li></ul>
-      </div>
-      <div class="cell">
+        <ul class="tools-grid">
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-mesh"/></svg></span>Silvaco TCAD</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-chip"/></svg></span>Cadence</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-scope"/></svg></span>DEVSIM</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-contour"/></svg></span>COMSOL</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-trace"/></svg></span>Altium</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-fpga"/></svg></span>Quartus</li>
+        </ul>
+      </section>
+
+      <section class="kit reveal">
         <h3>Web &amp; markup</h3>
-        <ul><li>HTML</li><li>CSS</li><li>LaTeX</li></ul>
-      </div>
-      <div class="cell">
+        <ul class="tools-grid">
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-html"/></svg></span>HTML</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-css"/></svg></span>CSS</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-latex"/></svg></span>LaTeX</li>
+        </ul>
+      </section>
+
+      <section class="kit reveal">
         <h3>Tools</h3>
-        <ul><li>Git &amp; GitHub</li><li>Google Suite</li><li>MS Office Suite</li></ul>
-      </div>
+        <ul class="tools-grid">
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-git"/></svg></span>Git &amp; GitHub</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-cloud"/></svg></span>Google Suite</li>
+          <li><span class="ti"><svg viewBox="0 0 24 24"><use href="#s-office"/></svg></span>MS Office</li>
+        </ul>
+      </section>
     </div>
   </div>
 </section>
@@ -515,39 +560,83 @@
     </div>
 
     <div class="contact-grid">
-      <div class="prose">
+      <div class="prose reveal">
         <p>
-          Open to device-level research, VLSI collaboration, and teaching. If you want to talk about
-          gate stacks, TCAD convergence, or why your simulation won't converge at 3&nbsp;nm, the channel is open.
+          Open to device-level research, VLSI collaboration, and teaching. If you want to talk
+          about gate stacks, TCAD convergence, or why your simulation won't settle at 3&nbsp;nm,
+          the channel is open.
         </p>
+
         <h3 class="sub-h mt">References</h3>
         <div class="refs">
           <div class="ref">
-            <span class="ref-in">MR</span>
-            <div>
+            <div class="ref-fig">
+              <canvas data-ref-figure="older" tabindex="0" role="img"
+                      aria-label="Stylised 3D figure representing Dr. Mirza Rasheduzzaman"></canvas>
+            </div>
+            <div class="ref-body">
               <b>Dr. Mirza Rasheduzzaman</b>
               <span>Associate Professor, Dept. of EEE, BRAC University</span>
-              <a href="mailto:mirza.rasheduzzaman@bracu.ac.bd">mirza.rasheduzzaman@bracu.ac.bd</a>
+              <a href="mailto:mirza.rasheduzzaman@bracu.ac.bd"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>mirza.rasheduzzaman@bracu.ac.bd</a>
             </div>
           </div>
+
           <div class="ref">
-            <span class="ref-in">SR</span>
-            <div>
+            <div class="ref-fig">
+              <canvas data-ref-figure="younger" tabindex="0" role="img"
+                      aria-label="Stylised 3D figure representing SK Tahmed Salim Rafid"></canvas>
+            </div>
+            <div class="ref-body">
               <b>SK Tahmed Salim Rafid</b>
               <span>Lecturer, Dept. of EEE, BRAC University</span>
-              <a href="mailto:rafid.salim@bracu.ac.bd">rafid.salim@bracu.ac.bd</a>
+              <a href="mailto:rafid.salim@bracu.ac.bd"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>rafid.salim@bracu.ac.bd</a>
             </div>
           </div>
         </div>
       </div>
 
-      <ul class="pads">
-        <li><a href="mailto:realreshad@gmail.com"><span class="pad-k">Email</span><span class="pad-v">realreshad@gmail.com</span></a></li>
-        <li><a href="tel:+8801919482265"><span class="pad-k">Phone</span><span class="pad-v">+880 1919 482265</span></a></li>
-        <li><a href="https://scholar.google.com/citations?user=rUrbiOYAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener"><span class="pad-k">Google Scholar</span><span class="pad-v">Publication record</span></a></li>
-        <li><a href="https://www.linkedin.com/in/md-reshad-al-muttaki-a37869331/" target="_blank" rel="noopener"><span class="pad-k">LinkedIn</span><span class="pad-v">md-reshad-al-muttaki</span></a></li>
-        <li><a href="https://github.com/Reshad-Real" target="_blank" rel="noopener"><span class="pad-k">GitHub</span><span class="pad-v">Reshad-Real</span></a></li>
-        <li><span class="pad-static"><span class="pad-k">Based in</span><span class="pad-v">Mirpur 11, Dhaka 1212, Bangladesh</span></span></li>
+      <ul class="pads reveal">
+        <li>
+          <a href="mailto:realreshad@gmail.com">
+            <span class="pad-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg></span>
+            <span class="pad-t"><span class="pad-k">Email</span><span class="pad-v">realreshad@gmail.com</span></span>
+            <svg class="pad-go" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="tel:+8801919482265">
+            <span class="pad-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></span>
+            <span class="pad-t"><span class="pad-k">Phone</span><span class="pad-v">+880 1919 482265</span></span>
+            <svg class="pad-go" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://scholar.google.com/citations?user=rUrbiOYAAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener">
+            <span class="pad-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scholar"/></svg></span>
+            <span class="pad-t"><span class="pad-k">Google Scholar</span><span class="pad-v">Publication record</span></span>
+            <svg class="pad-go" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/md-reshad-al-muttaki-a37869331/" target="_blank" rel="noopener">
+            <span class="pad-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-linkedin"/></svg></span>
+            <span class="pad-t"><span class="pad-k">LinkedIn</span><span class="pad-v">md-reshad-al-muttaki</span></span>
+            <svg class="pad-go" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/Reshad-Real" target="_blank" rel="noopener">
+            <span class="pad-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-github"/></svg></span>
+            <span class="pad-t"><span class="pad-k">GitHub</span><span class="pad-v">Reshad-Real</span></span>
+            <svg class="pad-go" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-arrow"/></svg>
+          </a>
+        </li>
+        <li>
+          <span class="pad-static">
+            <span class="pad-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-pin"/></svg></span>
+            <span class="pad-t"><span class="pad-k">Based in</span><span class="pad-v">Mirpur 11, Dhaka 1212, Bangladesh</span></span>
+          </span>
+        </li>
       </ul>
     </div>
   </div>
@@ -557,22 +646,27 @@
 <footer class="foot">
   <div class="wrap foot-inner">
     <p>© 2026 Md. Reshad Al Muttaki</p>
-    <p class="foot-note">Hand-soldered HTML, CSS, and JavaScript. Pet the dog: <b id="petCount">0</b></p>
+    <p class="foot-note">Hand-soldered HTML, CSS, and JavaScript. BYTE has been petted <b id="petCount">0</b> times.</p>
   </div>
 </footer>
 
 <button class="to-top" id="toTop" type="button" aria-label="Back to top">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
 </button>
 
-<!-- ══════════════ CYBER-DOG ══════════════ -->
-<canvas id="dogCanvas" aria-hidden="true"></canvas>
+<!-- ══════════════ BYTE ══════════════ -->
+<canvas id="dogCanvas" tabindex="0" role="button" aria-label="BYTE the cyber-dog. Activate to bark and open his menu."></canvas>
 <div id="dogBubble" role="status" aria-live="polite"></div>
+<div id="dogMenu" class="dog-menu" role="menu" aria-label="What should BYTE do?" hidden>
+  <button type="button" data-act="pet" role="menuitem">🖐 Pet him</button>
+  <button type="button" data-act="walk" role="menuitem">🐾 Take a walk</button>
+  <button type="button" data-act="home" role="menuitem">🏠 Go to your corner</button>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="js/app.js"></script>
-<script src="js/hero3d.js"></script>
+<script src="js/device3d.js"></script>
 <script src="js/dog3d.js"></script>
-<script src="js/games.js"></script>
+<script src="js/refs3d.js"></script>
 </body>
 </html>

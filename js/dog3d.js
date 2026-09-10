@@ -1,470 +1,624 @@
 /* ============================================================
-   dog3d.js — BYTE, the cyber-dog
-   Follows the pointer around the whole page, can be petted,
-   naps when you stop moving, and remembers how many boops it got.
-   Rendered in a small fixed canvas that is moved with a CSS transform,
-   so it costs almost nothing and never blocks a click.
+   dog3d.js — BYTE, a brown dog with salvaged parts.
+   Lives in the bottom-right corner. Click him and he barks and
+   offers a choice: pet him, or send him off for a walk.
+   Three clicks in a row and he trots home.
    ============================================================ */
 (function () {
   'use strict';
 
   var canvas = document.getElementById('dogCanvas');
   var bubble = document.getElementById('dogBubble');
-  var toggle = document.getElementById('dogToggle');
-  var counter = document.getElementById('petCount');
-  var B = window.Bench || {};
+  var menu = document.getElementById('dogMenu');
   if (!canvas) return;
 
-  var SIZE = 240;         // canvas box in CSS pixels
+  var B = window.Bench || {};
+  var reduced = !!B.reduced;
+  var SIZE = 260;
   var HALF = SIZE / 2;
-  var PET_RADIUS = 78;    // how close the pointer must be to count as a pet
 
-  var pets = parseInt((B.store ? B.store.get('pets', '0') : '0'), 10) || 0;
-  if (counter) counter.textContent = String(pets);
-
-  var visible = (B.store ? B.store.get('dog', '1') : '1') !== '0';
-
-  if (!window.THREE) {
-    canvas.style.display = 'none';
-    if (toggle) toggle.style.display = 'none';
-    return;
-  }
-  var THREE = window.THREE;
+  function hide() { canvas.style.display = 'none'; if (menu) menu.hidden = true; }
+  if (!window.THREE) { hide(); return; }
 
   var renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
-  } catch (e) {
-    canvas.style.display = 'none';
-    if (toggle) toggle.style.display = 'none';
-    return;
-  }
+    if (!renderer.getContext()) throw new Error('no gl');
+  } catch (e) { hide(); return; }
+
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(SIZE, SIZE, false);
-  if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.OrthographicCamera(-HALF, HALF, HALF, -HALF, -400, 400);
-  camera.position.set(0, 0, 100);
-  camera.lookAt(0, 0, 0);
+  var camera = new THREE.PerspectiveCamera(34, 1, 0.1, 60);
+  camera.position.set(0.6, 1.9, 8.4);
+  camera.lookAt(0, 0.55, 0);
 
-  var C = (B.colors ? B.colors() : null) || { teal: '#0c7b86', tealB: '#0aa3b0', copper: '#a35f31', lime: '#6dbb1c', dark: false };
-
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x33484f, 1.05));
-  var sun = new THREE.DirectionalLight(0xffffff, 0.95);
-  sun.position.set(3, 6, 8);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x4a4038, 0.86));
+  var sun = new THREE.DirectionalLight(0xfff2e0, 0.85);
+  sun.position.set(3, 6, 5);
   scene.add(sun);
-  var glow = new THREE.PointLight(new THREE.Color(C.tealB), 1.2, 260);
-  glow.position.set(-40, 30, 60);
-  scene.add(glow);
+  var cyan = new THREE.PointLight(0x2fd0e0, 0.5, 9);
+  cyan.position.set(-1.4, 1.4, 1.6);
+  scene.add(cyan);
 
-  /* ---------- materials ---------- */
-  var M = {
-    shell: new THREE.MeshStandardMaterial({ color: 0xf3f7f8, roughness: 0.55, metalness: 0.12 }),
-    shell2: new THREE.MeshStandardMaterial({ color: 0xd9e3e6, roughness: 0.6, metalness: 0.15 }),
-    dark: new THREE.MeshStandardMaterial({ color: 0x27343a, roughness: 0.5, metalness: 0.3 }),
-    accent: new THREE.MeshStandardMaterial({
-      color: new THREE.Color(C.tealB), emissive: new THREE.Color(C.tealB),
-      emissiveIntensity: 0.55, roughness: 0.35
-    }),
-    eye: new THREE.MeshStandardMaterial({
-      color: new THREE.Color(C.tealB), emissive: new THREE.Color(C.tealB),
-      emissiveIntensity: 1.5, roughness: 0.2
-    }),
-    warm: new THREE.MeshStandardMaterial({
-      color: new THREE.Color(C.copper), emissive: new THREE.Color(C.copper),
-      emissiveIntensity: 0.5, roughness: 0.4
-    })
-  };
+  /* ---------- palette ---------- */
+  var FUR = 0x7d4a24, FUR_D = 0x5d3517, FUR_L = 0xc39a63, NOSE = 0x211812;
+  var METAL = 0x9aa4a9, METAL_D = 0x6d777c, GLOW = 0x2fd0e0, LED = 0xa3e635;
 
-  /* ---------- build BYTE ---------- */
+  function mat(color, shine, spec) {
+    return new THREE.MeshPhongMaterial({
+      color: color, shininess: shine === undefined ? 12 : shine,
+      specular: spec === undefined ? 0x241a12 : spec
+    });
+  }
+  function glowMat(color) { return new THREE.MeshBasicMaterial({ color: color }); }
+  function box(w, h, d, m) { return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); }
+  function ball(r, m, seg) { return new THREE.Mesh(new THREE.SphereGeometry(r, seg || 16, seg || 14), m); }
+  function tube(rt, rb, h, m) { return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 14), m); }
+
+  var furMat = mat(FUR, 6), furD = mat(FUR_D, 5), furL = mat(FUR_L, 7);
+  var metalMat = mat(METAL, 88, 0xe6f2f5), metalD = mat(METAL_D, 70, 0xbcd2d8);
+
+  /* ---------- the dog. Faces +X. ---------- */
   var dog = new THREE.Group();
-  dog.scale.setScalar(34);
+  dog.position.y = -0.30;
   scene.add(dog);
 
-  var rig = new THREE.Group();       // everything that bobs
-  dog.add(rig);
+  var body = new THREE.Group();
+  dog.add(body);
 
-  // torso
-  var torso = new THREE.Mesh(new THREE.BoxGeometry(1.55, 0.95, 1.0), M.shell);
-  torso.position.set(0, 0.95, 0);
-  rig.add(torso);
+  /* torso: chest deeper than the hips, like an actual dog */
+  var trunk = box(2.15, 1.02, 1.0, furMat);
+  body.add(trunk);
 
-  // belly plate
-  var belly = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.36, 1.02), M.shell2);
-  belly.position.set(-0.05, 0.72, 0);
-  rig.add(belly);
+  var chest = ball(0.60, furMat);
+  chest.scale.set(1.05, 0.96, 0.92);
+  chest.position.set(0.98, -0.02, 0);
+  body.add(chest);
 
-  // back vent light
-  var vent = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.06, 0.5), M.accent);
-  vent.position.set(-0.1, 1.44, 0);
-  rig.add(vent);
+  var hips = ball(0.55, furMat);
+  hips.scale.set(1.0, 0.94, 0.94);
+  hips.position.set(-1.02, 0.04, 0);
+  body.add(hips);
 
-  // head group (turns toward the pointer)
+  var belly = box(1.9, 0.34, 0.86, furL);
+  belly.position.set(0.05, -0.44, 0);
+  body.add(belly);
+
+  /* cyber plate riveted onto the near flank */
+  var plate = box(0.92, 0.56, 0.06, metalD);
+  plate.position.set(-0.15, 0.10, 0.52);
+  body.add(plate);
+  var seam = box(0.74, 0.05, 0.03, glowMat(GLOW));
+  seam.position.set(-0.15, 0.10, 0.56);
+  body.add(seam);
+  for (var rv = 0; rv < 4; rv++) {
+    var rivet = ball(0.035, metalMat, 8);
+    rivet.position.set(-0.52 + rv * 0.25, 0.31, 0.55);
+    body.add(rivet);
+  }
+
+  /* neck + head */
+  var neck = tube(0.30, 0.36, 0.66, furMat);
+  neck.position.set(1.16, 0.44, 0);
+  neck.rotation.z = -0.62;
+  body.add(neck);
+
   var head = new THREE.Group();
-  head.position.set(0.72, 1.45, 0);
-  rig.add(head);
+  head.position.set(1.52, 0.86, 0);
+  body.add(head);
 
-  var skull = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.88, 0.9), M.shell);
+  var skull = ball(0.42, furMat);
+  skull.scale.set(1.06, 0.98, 0.94);
   head.add(skull);
 
-  var snout = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.4, 0.55), M.shell2);
-  snout.position.set(0.62, -0.16, 0);
-  head.add(snout);
+  var brow = box(0.36, 0.16, 0.66, furMat);
+  brow.position.set(0.16, 0.16, 0);
+  head.add(brow);
 
-  var nose = new THREE.Mesh(new THREE.SphereGeometry(0.13, 12, 10), M.dark);
-  nose.position.set(0.9, -0.1, 0);
+  var muzzle = box(0.56, 0.31, 0.44, furL);
+  muzzle.position.set(0.52, -0.12, 0);
+  head.add(muzzle);
+  var muzzleTip = ball(0.20, furL);
+  muzzleTip.scale.set(0.9, 0.86, 0.92);
+  muzzleTip.position.set(0.76, -0.11, 0);
+  head.add(muzzleTip);
+
+  var jaw = new THREE.Group();
+  jaw.position.set(0.30, -0.24, 0);
+  head.add(jaw);
+  var jawBox = box(0.48, 0.13, 0.38, furD);
+  jawBox.position.set(0.22, -0.04, 0);
+  jaw.add(jawBox);
+
+  var nose = ball(0.115, mat(NOSE, 60, 0x555555));
+  nose.scale.set(0.9, 0.8, 1.05);
+  nose.position.set(0.90, -0.06, 0);
   head.add(nose);
 
-  // eyes
-  var eyes = [];
-  [-1, 1].forEach(function (s) {
-    var e = new THREE.Mesh(new THREE.SphereGeometry(0.17, 14, 12), M.eye);
-    e.position.set(0.42, 0.12, s * 0.28);
-    head.add(e);
-    eyes.push(e);
-  });
+  /* eyes: one his, one issued to him */
+  var eyeL = ball(0.085, mat(0x140f0a, 90, 0xffffff), 12);
+  eyeL.position.set(0.34, 0.10, 0.25);
+  head.add(eyeL);
 
-  // ears
-  var ears = [];
-  [-1, 1].forEach(function (s) {
-    var pivot = new THREE.Group();
-    pivot.position.set(-0.1, 0.42, s * 0.3);
-    var earGeo = new THREE.ConeGeometry(0.22, 0.55, 4);
-    earGeo.translate(0, 0.27, 0);
-    var ear = new THREE.Mesh(earGeo, M.shell2);
-    ear.rotation.y = Math.PI / 4;
-    pivot.add(ear);
-    var tip = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), M.accent);
-    tip.position.y = 0.56;
-    pivot.add(tip);
-    pivot.rotation.z = s * 0 + 0.16;
-    head.add(pivot);
-    ears.push(pivot);
-  });
+  var optic = new THREE.Group();
+  optic.position.set(0.34, 0.10, -0.25);
+  head.add(optic);
+  var opticRing = new THREE.Mesh(new THREE.TorusGeometry(0.12, 0.035, 8, 18), metalMat);
+  opticRing.rotation.y = Math.PI / 2;
+  optic.add(opticRing);
+  var opticLens = ball(0.075, glowMat(GLOW), 12);
+  optic.add(opticLens);
 
-  // antenna
-  var ant = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.5, 8), M.dark);
-  ant.position.set(-0.28, 0.66, 0);
+  /* lid for blinking */
+  var lidL = box(0.14, 0.10, 0.14, furMat);
+  lidL.position.set(0.34, 0.19, 0.25);
+  head.add(lidL);
+
+  /* ears — floppy, one nicked and patched with metal */
+  var earL = new THREE.Group();
+  earL.position.set(-0.02, 0.30, 0.34);
+  head.add(earL);
+  var earLm = box(0.22, 0.52, 0.14, furD);
+  earLm.position.y = -0.22;
+  earL.add(earLm);
+  earL.rotation.z = -0.18;
+  earL.rotation.x = 0.30;
+
+  var earR = new THREE.Group();
+  earR.position.set(-0.02, 0.30, -0.34);
+  head.add(earR);
+  var earRm = box(0.20, 0.40, 0.13, furD);
+  earRm.position.y = -0.18;
+  earR.add(earRm);
+  var earPatch = box(0.20, 0.18, 0.05, metalD);
+  earPatch.position.set(0, -0.40, 0);
+  earR.add(earPatch);
+  earR.rotation.z = -0.10;
+  earR.rotation.x = -0.34;
+
+  /* antenna */
+  var ant = tube(0.018, 0.026, 0.52, metalMat);
+  ant.position.set(-0.16, 0.52, 0.12);
+  ant.rotation.z = 0.28;
   head.add(ant);
-  var antTip = new THREE.Mesh(new THREE.SphereGeometry(0.1, 10, 8), M.warm);
-  antTip.position.set(-0.28, 0.94, 0);
+  var antTip = ball(0.055, glowMat(LED), 10);
+  antTip.position.set(-0.30, 0.76, 0.12);
   head.add(antTip);
 
-  // collar
-  var collar = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.08, 8, 22), M.accent);
-  collar.position.set(0.5, 1.16, 0);
+  /* collar + tag */
+  var collar = new THREE.Mesh(new THREE.TorusGeometry(0.33, 0.062, 8, 20), mat(0x1d5f68, 40, 0x7fd8e4));
+  collar.position.set(1.22, 0.52, 0);
   collar.rotation.y = Math.PI / 2;
-  collar.rotation.x = 0.25;
-  rig.add(collar);
-  var tag = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.05), M.warm);
-  tag.position.set(0.62, 0.82, 0);
-  rig.add(tag);
+  collar.rotation.x = 0.62;
+  body.add(collar);
+  var tag = box(0.15, 0.17, 0.03, metalMat);
+  tag.position.set(1.34, 0.24, 0.10);
+  body.add(tag);
 
-  // legs — geometry shifted so each leg swings from the hip
-  var legs = [];
-  [[0.45, 0.32], [0.45, -0.32], [-0.45, 0.32], [-0.45, -0.32]].forEach(function (p, i) {
-    var geo = new THREE.BoxGeometry(0.24, 0.62, 0.24);
-    geo.translate(0, -0.31, 0);
-    var leg = new THREE.Mesh(geo, i < 2 ? M.shell2 : M.shell2);
-    leg.position.set(p[0], 0.52, p[1]);
-    rig.add(leg);
-    var paw = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.14, 0.28), M.dark);
-    paw.position.set(0, -0.6, 0);
-    leg.add(paw);
-    legs.push({ mesh: leg, phase: (i === 0 || i === 3) ? 0 : Math.PI });
-  });
+  /* ---------- legs ---------- */
+  function makeLeg(x, z, cyber) {
+    var g = new THREE.Group();
+    g.position.set(x, -0.42, z);
+    body.add(g);
 
-  // tail
+    var upM = cyber ? metalD : furMat;
+    var loM = cyber ? metalMat : furMat;
+
+    var thigh = box(cyber ? 0.22 : 0.30, 0.52, cyber ? 0.22 : 0.30, upM);
+    thigh.position.y = -0.24;
+    g.add(thigh);
+
+    var knee = new THREE.Group();
+    knee.position.y = -0.48;
+    g.add(knee);
+
+    if (cyber) {
+      var joint = ball(0.10, glowMat(GLOW), 10);
+      knee.add(joint);
+      var piston = tube(0.05, 0.05, 0.34, metalMat);
+      piston.position.set(0.07, -0.20, 0);
+      knee.add(piston);
+    }
+
+    var shin = box(cyber ? 0.17 : 0.24, 0.44, cyber ? 0.17 : 0.24, loM);
+    shin.position.y = -0.22;
+    knee.add(shin);
+
+    var paw = box(0.30, 0.15, 0.34, cyber ? metalMat : furL);
+    paw.position.set(0.04, -0.48, 0);
+    knee.add(paw);
+    if (cyber) {
+      var toe = box(0.30, 0.05, 0.34, glowMat(GLOW));
+      toe.position.set(0.04, -0.55, 0);
+      knee.add(toe);
+    }
+
+    return { g: g, knee: knee, cyber: !!cyber };
+  }
+
+  /* the front near leg is the replacement */
+  var legs = [
+    makeLeg(0.86, 0.36, true),
+    makeLeg(0.86, -0.36, false),
+    makeLeg(-0.86, 0.36, false),
+    makeLeg(-0.86, -0.36, false)
+  ];
+
+  /* ---------- tail ---------- */
   var tail = new THREE.Group();
-  tail.position.set(-0.78, 1.2, 0);
-  rig.add(tail);
-  var tailGeo = new THREE.CylinderGeometry(0.07, 0.11, 0.62, 8);
-  tailGeo.translate(0, 0.31, 0);
-  var tailSeg = new THREE.Mesh(tailGeo, M.shell2);
-  tailSeg.rotation.z = 0.9;
-  tail.add(tailSeg);
-  var tailTip = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), M.accent);
-  tailTip.position.set(-0.48, 0.36, 0);
-  tail.add(tailTip);
+  tail.position.set(-1.28, 0.26, 0);
+  body.add(tail);
+  var t1 = tube(0.11, 0.14, 0.42, furMat);
+  t1.position.set(-0.14, 0.12, 0);
+  t1.rotation.z = 1.05;
+  tail.add(t1);
+  var tail2 = new THREE.Group();
+  tail2.position.set(-0.28, 0.26, 0);
+  tail.add(tail2);
+  var t2 = tube(0.075, 0.10, 0.38, furMat);
+  t2.position.set(-0.10, 0.14, 0);
+  t2.rotation.z = 0.75;
+  tail2.add(t2);
+  var tTip = tube(0.05, 0.075, 0.24, metalMat);
+  tTip.position.set(-0.22, 0.28, 0);
+  tTip.rotation.z = 0.55;
+  tail2.add(tTip);
+  var tLed = ball(0.045, glowMat(LED), 8);
+  tLed.position.set(-0.29, 0.38, 0);
+  tail2.add(tLed);
 
-  /* ---------- heart particles ---------- */
+  /* ---------- hearts ---------- */
   var heartTex = (function () {
     var c = document.createElement('canvas');
     c.width = c.height = 64;
     var g = c.getContext('2d');
-    g.clearRect(0, 0, 64, 64);
-    g.fillStyle = '#ff5d7a';
-    g.beginPath();
-    g.moveTo(32, 54);
-    g.bezierCurveTo(4, 34, 10, 10, 32, 22);
-    g.bezierCurveTo(54, 10, 60, 34, 32, 54);
-    g.fill();
+    if (g) {
+      g.fillStyle = '#e2557a';
+      g.beginPath();
+      g.moveTo(32, 54);
+      g.bezierCurveTo(2, 34, 10, 8, 32, 22);
+      g.bezierCurveTo(54, 8, 62, 34, 32, 54);
+      g.fill();
+    }
     return new THREE.CanvasTexture(c);
   })();
   var hearts = [];
-  function spawnHeart() {
-    var mat = new THREE.MeshBasicMaterial({ map: heartTex, transparent: true, depthWrite: false });
-    var m = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), mat);
-    m.position.set((Math.random() - 0.5) * 30, 30 + Math.random() * 10, 40);
-    scene.add(m);
-    hearts.push({ mesh: m, mat: mat, life: 0, vx: (Math.random() - 0.5) * 18, vy: 42 + Math.random() * 22 });
+  for (var h = 0; h < 8; h++) {
+    var sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: heartTex, transparent: true, opacity: 0, depthTest: false }));
+    sp.scale.set(0.42, 0.42, 1);
+    sp.visible = false;
+    sp.userData = { life: 0, vx: 0, vy: 0 };
+    scene.add(sp);
+    hearts.push(sp);
   }
 
+  /* ---------- placement on screen ---------- */
+  var MARGIN = 14;
+  function homeX() { return Math.max(MARGIN, window.innerWidth - SIZE - MARGIN); }
+  var pos = { x: homeX(), y: -MARGIN };
+  var target = { x: pos.x, y: pos.y };
+  var facing = -1;
+  var faceAngle = -Math.PI / 2 * facing;
+
+  function place() {
+    canvas.style.transform = 'translate3d(' + pos.x.toFixed(1) + 'px,' + pos.y.toFixed(1) + 'px,0)';
+    if (menu && !menu.hidden) positionMenu();
+    if (bubble) {
+      var bl = Math.max(8, Math.min(window.innerWidth - 240, pos.x + 10));
+      bubble.style.transform = 'translate3d(' + bl.toFixed(1) + 'px,' + (pos.y - SIZE + 40).toFixed(1) + 'px,0)';
+    }
+  }
+  function positionMenu() {
+    if (!menu) return;
+    var mw = menu.offsetWidth || 172;
+    var left = pos.x + HALF - mw / 2;
+    left = Math.max(8, Math.min(window.innerWidth - mw - 8, left));
+    menu.style.transform = 'translate3d(' + left.toFixed(1) + 'px,' + (pos.y - SIZE + 88).toFixed(1) + 'px,0)';
+  }
+  place();
+
+  window.addEventListener('resize', function () {
+    var maxX = Math.max(MARGIN, window.innerWidth - SIZE - MARGIN);
+    if (state === 'idle') { pos.x = homeX(); target.x = pos.x; }
+    pos.x = Math.min(pos.x, maxX);
+    place();
+  });
+
   /* ---------- state ---------- */
-  var w = window.innerWidth, h = window.innerHeight;
-  var px = w - 170, py = h - 190;          // dog position, screen space
-  var tx = px, ty = py;                    // target
-  var vx = 0, vy = 0;
-  var facing = -1, faceAngle = Math.PI + 0.5;
-  var walk = 0, wag = 0, wagSpeed = 3;
-  var idleTime = 0, sleeping = false;
-  var petPulse = 0, near = false, hinted = false;
-  var pointerSeen = false;
-  var wanderT = 0;
+  var state = 'idle';
+  var walkPhase = 0;
+  var speed = 0;
+  var wagBoost = 0;
+  var barkT = 0;
+  var happy = 0;
+  var blink = 0, nextBlink = 2 + Math.random() * 3;
+  var pauseT = 0;
+  var clock = 0;
 
   var LINES = [
-    'Boop received.',
-    'My tail runs off a 555 timer.',
-    'Woof. That is 3.3 volts of love.',
-    'I fetch packets, not sticks.',
-    'Good human. Low noise floor.',
-    'Scratch behind the heatsink.',
-    'I sniff out floating nodes.',
-    'My bark is 50 ohm terminated.',
-    'Powered by one very happy cell.',
-    'Recharging. Do not unplug.'
+    'Woof! My front leg is under warranty.',
+    'Woof woof! I run on 3.3 volts and snacks.',
+    'Rrrf! I can smell a floating gate from here.',
+    'Woof! My tail is clocked at 4 hertz.',
+    'Bark! I fetch, but only pointers.',
+    'Woof! Scratch behind the metal ear, it conducts.'
   ];
-  var SLEEP_LINES = ['z z z', 'sleep mode · 0.1 mA', 'dreaming of clean signals'];
+  var WALK_LINES = ['Woof! Off I go.', 'Bark! Patrolling the bench.', 'Woof woof! Back in a bit.'];
+
+  var pets = parseInt((B.store ? B.store.get('pets', '0') : '0'), 10) || 0;
+  var petOut = document.getElementById('petCount');
+  if (petOut) petOut.textContent = pets;
 
   function say(text, ms) {
-    if (!bubble || !visible) return;
+    if (!bubble) return;
     bubble.textContent = text;
     bubble.classList.add('show');
     clearTimeout(say._t);
-    say._t = setTimeout(function () { bubble.classList.remove('show'); }, ms || 2400);
+    say._t = setTimeout(function () { bubble.classList.remove('show'); }, ms || 2600);
   }
 
-  /* ---------- pointer tracking ---------- */
-  function setTarget(x, y) {
-    pointerSeen = true;
-    tx = x + 84;
-    ty = y + 74;
-    var m = 70;
-    tx = Math.max(m, Math.min(w - m, tx));
-    ty = Math.max(80, Math.min(h - m, ty));
-    idleTime = 0;
-    if (sleeping) {
-      sleeping = false;
-      say('Awake. What did I miss?', 1800);
-    }
+  function barkSound() {
+    if (!B.audio) return;
+    B.audio.tone(430, 0.09, 'square', 0.05);
+    setTimeout(function () { B.audio.tone(330, 0.13, 'square', 0.045); }, 105);
   }
+  function bark() { barkT = 1; wagBoost = 1; barkSound(); }
 
-  window.addEventListener('pointermove', function (e) {
-    if (e.pointerType === 'touch') return;
-    setTarget(e.clientX, e.clientY);
-    checkNear(e.clientX, e.clientY);
-  }, { passive: true });
+  /* ---------- menu ---------- */
+  var pendingMenu = 0;
+  var TRIPLE_MS = 900;
 
-  window.addEventListener('touchstart', function (e) {
-    if (!e.touches || !e.touches.length) return;
-    var t = e.touches[0];
-    setTarget(t.clientX, t.clientY);
-    if (dist(t.clientX, t.clientY) < PET_RADIUS + 20) pet();
-  }, { passive: true });
-
-  function dist(x, y) {
-    var dx = x - px, dy = y - (py - 34);
-    return Math.sqrt(dx * dx + dy * dy);
+  function openMenu() {
+    if (!menu) return;
+    menu.hidden = false;
+    positionMenu();
+    menu.classList.add('show');
+    var first = menu.querySelector('button');
+    if (first) { try { first.focus({ preventScroll: true }); } catch (e) { first.focus(); } }
   }
-
-  function checkNear(x, y) {
-    var d = dist(x, y);
-    var now = d < PET_RADIUS;
-    if (now && !near && !hinted) {
-      hinted = true;
-      say('Click to pet me.', 2600);
-    }
-    near = now;
+  function closeMenu() {
+    if (!menu) return;
+    clearTimeout(pendingMenu);
+    menu.classList.remove('show');
+    menu.hidden = true;
   }
 
   function pet() {
-    if (!visible) return;
+    closeMenu();
+    happy = 1;
+    wagBoost = 1.6;
     pets++;
     if (B.store) B.store.set('pets', pets);
-    if (counter) counter.textContent = String(pets);
-    petPulse = 1;
-    wagSpeed = 22;
-    for (var i = 0; i < 4; i++) spawnHeart();
+    if (petOut) petOut.textContent = pets;
     if (B.audio) {
-      B.audio.tone(660, 0.09, 'square', 0.05);
-      setTimeout(function () { B.audio.tone(880, 0.11, 'square', 0.05); }, 90);
+      B.audio.tone(560, 0.1, 'triangle', 0.05);
+      setTimeout(function () { B.audio.tone(760, 0.14, 'triangle', 0.045); }, 90);
     }
-    if (pets === 10) say('Ten boops. Maximum happiness reached.', 3200);
-    else if (pets === 50) say('Fifty boops. You are my favourite node.', 3200);
-    else say(LINES[Math.floor(Math.random() * LINES.length)], 2400);
+    var made = 0;
+    for (var i = 0; i < hearts.length && made < 4; i++) {
+      var s = hearts[i];
+      if (s.userData.life > 0) continue;
+      s.visible = true;
+      s.position.set(0.9 + (Math.random() - 0.5) * 0.6, 1.3, 0.4);
+      s.userData.life = 1;
+      s.userData.vx = (Math.random() - 0.5) * 0.028;
+      s.userData.vy = 0.026 + Math.random() * 0.018;
+      made++;
+    }
+    say(LINES[Math.floor(Math.random() * LINES.length)]);
   }
 
-  window.addEventListener('click', function (e) {
-    if (!visible) return;
-    var t = e.target;
-    // never steal a click that was meant for something on the page
-    if (t && t.closest && t.closest('a, button, input, select, textarea, canvas, [role="tab"]')) return;
-    if (dist(e.clientX, e.clientY) < PET_RADIUS) pet();
-  });
-
-  /* ---------- toggle ---------- */
-  function applyVisible() {
-    canvas.classList.toggle('off', !visible);
-    if (toggle) toggle.setAttribute('aria-pressed', visible ? 'true' : 'false');
-    if (!visible && bubble) bubble.classList.remove('show');
+  function newWanderTarget() {
+    var maxX = Math.max(MARGIN, window.innerWidth - SIZE - MARGIN);
+    target.x = MARGIN + Math.random() * (maxX - MARGIN);
+    target.y = -MARGIN - Math.random() * Math.min(120, window.innerHeight * 0.16);
   }
-  applyVisible();
-  if (toggle) {
-    toggle.addEventListener('click', function () {
-      visible = !visible;
-      if (B.store) B.store.set('dog', visible ? '1' : '0');
-      applyVisible();
-      if (visible) say('Back online.', 1800);
+
+  function goWalk() {
+    closeMenu();
+    state = 'walking';
+    bark();
+    say(WALK_LINES[Math.floor(Math.random() * WALK_LINES.length)]);
+    newWanderTarget();
+  }
+
+  function goHome() {
+    closeMenu();
+    state = 'returning';
+    target.x = homeX();
+    target.y = -MARGIN;
+    say('Woof. Heading back to my corner.', 2200);
+    if (B.audio) B.audio.tone(390, 0.12, 'triangle', 0.045);
+  }
+
+  if (menu) {
+    menu.addEventListener('click', function (ev) {
+      var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
+      if (!b) return;
+      var act = b.getAttribute('data-act');
+      if (act === 'pet') pet();
+      else if (act === 'walk') goWalk();
+      else if (act === 'home') goHome();
+      else closeMenu();
+    });
+    menu.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape') { closeMenu(); try { canvas.focus(); } catch (e) {} }
     });
   }
+
+  /* ---------- clicks on the dog ---------- */
+  var clickTimes = [];
+
+  function onDogClick() {
+    var now = Date.now();
+    clickTimes.push(now);
+    clickTimes = clickTimes.filter(function (t) { return now - t < TRIPLE_MS; });
+
+    /* the bark is immediate — it should feel like he heard you */
+    bark();
+    clearTimeout(pendingMenu);
+
+    if (clickTimes.length >= 3) {
+      clickTimes.length = 0;
+      goHome();
+      return;
+    }
+
+    /* stop him where he stands so the menu lines up with him */
+    if (state === 'walking' || state === 'returning') {
+      state = 'idle';
+      target.x = pos.x;
+      target.y = pos.y;
+    }
+
+    /* hold the menu back a beat, so clicks two and three of a
+       triple-click don't flash it open and shut */
+    closeMenu();
+    pendingMenu = setTimeout(openMenu, 280);
+  }
+
+  canvas.addEventListener('click', onDogClick);
+  canvas.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); onDogClick(); }
+  });
+
+  document.addEventListener('click', function (ev) {
+    if (!menu || menu.hidden) return;
+    if (menu.contains(ev.target) || canvas.contains(ev.target)) return;
+    closeMenu();
+  });
+
+  /* ---------- show / hide ---------- */
+  var on = (B.store ? B.store.get('dog', '1') : '1') !== '0';
+  var toggle = document.getElementById('dogToggle');
+  function paintToggle() {
+    canvas.style.display = on ? '' : 'none';
+    if (!on) { closeMenu(); if (bubble) bubble.classList.remove('show'); }
+    if (toggle) toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+  }
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      on = !on;
+      if (B.store) B.store.set('dog', on ? '1' : '0');
+      paintToggle();
+      if (on) { say('Woof! Back on duty.', 2000); bark(); }
+    });
+  }
+  paintToggle();
 
   /* ---------- theme ---------- */
   if (B.onTheme) {
     B.onTheme(function (c) {
-      C = c;
-      M.shell.color.set(c.dark ? 0x223038 : 0xf3f7f8);
-      M.shell2.color.set(c.dark ? 0x1a262c : 0xd9e3e6);
-      M.accent.color.set(c.tealB); M.accent.emissive.set(c.tealB);
-      M.eye.color.set(c.tealB); M.eye.emissive.set(c.tealB);
-      M.warm.color.set(c.copper); M.warm.emissive.set(c.copper);
-      glow.color.set(c.tealB);
-      glow.intensity = c.dark ? 2.1 : 1.2;
-      sun.intensity = c.dark ? 0.5 : 0.95;
+      var dark = !!c.dark;
+      sun.intensity = dark ? 0.62 : 0.85;
+      furMat.color.setHex(dark ? 0x6b3f1f : FUR);
+      furD.color.setHex(dark ? 0x4d2b12 : FUR_D);
+      furL.color.setHex(dark ? 0xa98351 : FUR_L);
     });
   }
 
-  window.addEventListener('resize', function () {
-    w = window.innerWidth; h = window.innerHeight;
-    px = Math.min(px, w - 60); py = Math.min(py, h - 60);
-  });
-
-  /* ---------- shortest-path angle lerp ---------- */
-  function angleLerp(from, to, t) {
-    var d = ((to - from + Math.PI) % (Math.PI * 2)) - Math.PI;
-    if (d < -Math.PI) d += Math.PI * 2;
-    return from + d * t;
-  }
-
   /* ---------- loop ---------- */
-  var clock = new THREE.Clock();
-  var paused = false;
-  document.addEventListener('visibilitychange', function () { paused = document.hidden; });
+  var running = true;
+  document.addEventListener('visibilitychange', function () { running = !document.hidden; });
 
   function frame() {
     requestAnimationFrame(frame);
-    var dt = Math.min(0.05, clock.getDelta());
-    if (paused || !visible) return;
-    var t = clock.elapsedTime;
+    if (!running || !on) return;
+    clock += 0.016;
 
-    idleTime += dt;
+    var dx = target.x - pos.x;
+    var dy = target.y - pos.y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
 
-    // with no mouse (touch devices) BYTE patrols the bottom of the screen
-    if (!pointerSeen) {
-      wanderT += dt * 0.25;
-      tx = w * 0.5 + Math.sin(wanderT) * (w * 0.32);
-      ty = h - 120;
-    } else if (idleTime > 16 && !sleeping) {
-      sleeping = true;
-      say(SLEEP_LINES[Math.floor(Math.random() * SLEEP_LINES.length)], 3000);
+    if (state === 'walking' || state === 'returning') {
+      if (dist < 6) {
+        if (state === 'returning') {
+          state = 'idle';
+          pos.x = target.x; pos.y = target.y;
+          say('Woof.', 1400);
+        } else {
+          pauseT -= 0.016;
+          if (pauseT <= 0) { newWanderTarget(); pauseT = 0.5 + Math.random() * 1.4; }
+        }
+        speed += (0 - speed) * 0.12;
+      } else {
+        var want = state === 'returning' ? 2.6 : 1.9;
+        speed += (want - speed) * 0.06;
+        pos.x += (dx / dist) * speed;
+        pos.y += (dy / dist) * speed;
+        if (Math.abs(dx) > 4) facing = dx > 0 ? 1 : -1;
+      }
+      place();
+    } else {
+      speed += (0 - speed) * 0.14;
+      if (Math.abs(dx) > 1) { pos.x += dx * 0.06; place(); }
     }
 
-    // spring toward the target
-    var k = sleeping ? 1.4 : 4.2;
-    var ax = (tx - px) * k, ay = (ty - py) * k;
-    vx += ax * dt; vy += ay * dt;
-    vx *= 0.86; vy *= 0.86;
-    px += vx * dt; py += vy * dt;
-
-    var speed = Math.sqrt(vx * vx + vy * vy);
-
-    // face the direction of travel
-    if (Math.abs(vx) > 22) facing = vx > 0 ? 1 : -1;
-    var wanted = facing > 0 ? -0.5 : (Math.PI + 0.5);
-    faceAngle = angleLerp(faceAngle, wanted, Math.min(1, dt * 6));
+    var wantAngle = -Math.PI / 2 * facing;
+    var diff = wantAngle - faceAngle;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    faceAngle += diff * 0.14;
     dog.rotation.y = faceAngle;
 
-    // move the canvas box, not the whole viewport
-    canvas.style.transform = 'translate3d(' + (px - HALF) + 'px,' + (py - HALF) + 'px,0)';
+    var moving = speed > 0.25;
+    walkPhase += moving ? 0.055 + speed * 0.045 : 0.012;
+    happy *= 0.975;
+    wagBoost *= 0.965;
+    barkT *= 0.90;
 
-    if (bubble && bubble.classList.contains('show')) {
-      bubble.style.left = px + 'px';
-      bubble.style.top = (py - 74) + 'px';
-    }
-
-    // gait
-    var moving = speed > 30;
-    walk += dt * (moving ? Math.min(16, 4 + speed * 0.035) : 0);
-    var swing = moving ? 0.62 : 0;
+    var stride = moving ? 0.62 : 0.05;
     for (var i = 0; i < legs.length; i++) {
-      legs[i].mesh.rotation.z = Math.sin(walk + legs[i].phase) * swing;
+      var ph = walkPhase + (i === 0 || i === 3 ? 0 : Math.PI);
+      var sw = Math.sin(ph) * stride;
+      legs[i].g.rotation.z = sw;
+      legs[i].knee.rotation.z = Math.max(0, Math.sin(ph + 0.9)) * stride * 0.9;
     }
 
-    // body bob and lean
-    petPulse = Math.max(0, petPulse - dt * 1.4);
-    var bob = moving ? Math.abs(Math.sin(walk * 1.0)) * 0.07 : Math.sin(t * 1.8) * 0.035;
-    rig.position.y = bob + petPulse * 0.45;
-    rig.rotation.z = Math.max(-0.16, Math.min(0.16, -vx * 0.00045));
+    body.position.y = reduced ? 0 : Math.abs(Math.sin(walkPhase)) * (moving ? 0.06 : 0.018);
+    body.rotation.z = moving ? Math.sin(walkPhase * 2) * 0.018 : Math.sin(clock * 1.3) * 0.008;
 
-    // tail
-    wagSpeed += ((moving ? 9 : 4.5) - wagSpeed) * Math.min(1, dt * 1.6);
-    wag += dt * wagSpeed;
-    tail.rotation.y = Math.sin(wag) * (0.5 + petPulse * 0.5);
-    tail.rotation.z = Math.sin(wag * 0.5) * 0.12;
+    var breath = 1 + Math.sin(clock * 1.9) * (moving ? 0.004 : 0.012);
+    trunk.scale.set(1, breath, breath);
 
-    // head looks slightly toward the pointer, ears perk when close
-    var lookY = Math.max(-0.5, Math.min(0.5, (tx - px) * 0.004));
-    var lookX = Math.max(-0.35, Math.min(0.35, (ty - py) * 0.004));
-    head.rotation.y = lookY * facing;
-    head.rotation.x = lookX;
-    var perk = (near || petPulse > 0) ? -0.32 : 0.16;
-    for (var e2 = 0; e2 < ears.length; e2++) {
-      ears[e2].rotation.z += (perk - ears[e2].rotation.z) * Math.min(1, dt * 7);
-    }
+    head.rotation.z = -barkT * 0.42 + (moving ? Math.sin(walkPhase * 2 + 0.5) * 0.03 : 0);
+    head.rotation.y = moving ? 0 : Math.sin(clock * 0.55) * 0.30;
+    head.position.y = 0.86 + Math.sin(clock * 1.9) * 0.012 + happy * 0.05;
+    jaw.rotation.z = barkT * 0.55 + happy * 0.12;
 
-    // eyes: blink, squint when happy, dim when asleep
-    var blink = (Math.sin(t * 0.9) > 0.985) ? 0.12 : 1;
-    var squint = petPulse > 0.15 ? 0.35 : 1;
-    var open = sleeping ? 0.1 : Math.min(blink, squint);
-    for (var e3 = 0; e3 < eyes.length; e3++) {
-      eyes[e3].scale.y += (open - eyes[e3].scale.y) * Math.min(1, dt * 14);
-    }
-    M.eye.emissiveIntensity = sleeping ? 0.25 : 1.4 + petPulse * 1.6;
-    M.warm.emissiveIntensity = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * 3.4));
-    M.accent.emissiveIntensity = 0.45 + petPulse * 0.9;
+    earL.rotation.x = 0.30 + Math.sin(walkPhase * 2) * (moving ? 0.22 : 0.04) - happy * 0.3;
+    earR.rotation.x = -0.34 - Math.sin(walkPhase * 2) * (moving ? 0.20 : 0.035) + happy * 0.28;
 
-    // hearts
-    for (var hI = hearts.length - 1; hI >= 0; hI--) {
-      var H = hearts[hI];
-      H.life += dt;
-      H.mesh.position.x += H.vx * dt;
-      H.mesh.position.y += H.vy * dt;
-      H.mesh.rotation.z = Math.sin(H.life * 4) * 0.3;
-      H.mat.opacity = Math.max(0, 1 - H.life / 1.5);
-      if (H.life > 1.5) {
-        scene.remove(H.mesh);
-        H.mesh.geometry.dispose();
-        H.mat.dispose();
-        hearts.splice(hI, 1);
-      }
+    var wag = 0.30 + wagBoost * 0.9 + (moving ? 0.25 : 0);
+    tail.rotation.y = Math.sin(clock * (5 + wagBoost * 7)) * wag;
+    tail2.rotation.y = Math.sin(clock * (5 + wagBoost * 7) - 0.5) * wag * 0.7;
+
+    nextBlink -= 0.016;
+    if (nextBlink <= 0) { blink = 1; nextBlink = 2.4 + Math.random() * 3.4; }
+    blink *= 0.80;
+    lidL.scale.y = 1 + blink * 2.6;
+    lidL.position.y = 0.19 - blink * 0.09;
+    eyeL.scale.y = Math.max(0.08, 1 - blink * 1.1) * (1 - happy * 0.55);
+    opticLens.scale.setScalar(1 + Math.sin(clock * 3.4) * 0.10 + barkT * 0.3);
+    antTip.material.color.setHex(Math.sin(clock * 3) > 0 ? LED : 0x4d7a12);
+    tLed.material.color.setHex(Math.sin(clock * 3 + 1) > 0 ? LED : 0x4d7a12);
+    cyan.intensity = 0.5 + Math.sin(clock * 3.4) * 0.12;
+
+    for (i = 0; i < hearts.length; i++) {
+      var s = hearts[i];
+      if (s.userData.life <= 0) { s.visible = false; continue; }
+      s.userData.life -= 0.016;
+      s.position.x += s.userData.vx;
+      s.position.y += s.userData.vy;
+      s.material.opacity = Math.max(0, Math.min(1, s.userData.life)) * 0.95;
+      s.scale.setScalar(0.30 + (1 - s.userData.life) * 0.22);
     }
 
     renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
 
-  // a small hello, once the page has settled
-  setTimeout(function () {
-    if (visible) say(pets > 0 ? 'Back again. ' + pets + ' boops so far.' : 'I am BYTE. Follow me around.', 3200);
-  }, 5200);
+  setTimeout(function () { if (on) say('Woof! Click me.', 3200); }, 2600);
 })();

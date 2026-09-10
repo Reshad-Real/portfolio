@@ -1,5 +1,5 @@
 /* ============================================================
-   app.js — boot, theme, navigation, and shared helpers
+   app.js — theme, navigation, reveals, and shared helpers
    Every block is defensive: if one feature fails the rest still runs.
    ============================================================ */
 (function () {
@@ -126,53 +126,6 @@
     }
   })();
 
-  /* ---------- boot sequence ---------- */
-  (function boot() {
-    var el = document.getElementById('boot');
-    if (!el) return;
-    var log = document.getElementById('bootLog');
-    var bar = document.getElementById('bootBar');
-    var skip = document.getElementById('bootSkip');
-    var finished = false;
-
-    var lines = [
-      'vdd rail ......... 0.75 V  <b>ok</b>',
-      'pll lock ......... 3.2 GHz <b>ok</b>',
-      'std-cell lib ..... loaded  <b>ok</b>',
-      'drc / lvs ........ clean   <b>ok</b>',
-      'cyber-dog ........ awake   <b>ok</b>'
-    ];
-
-    function finish() {
-      if (finished) return;
-      finished = true;
-      el.classList.add('done');
-      document.body.style.overflow = '';
-      setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 700);
-    }
-
-    // failsafe: the site is never held hostage by the animation
-    setTimeout(finish, 4500);
-
-    if (skip) skip.addEventListener('click', finish);
-    el.addEventListener('click', function (e) { if (e.target === el) finish(); });
-
-    if (reduced) { finish(); return; }
-
-    document.body.style.overflow = 'hidden';
-    var i = 0;
-    var step = 300;
-    function next() {
-      if (finished) return;
-      if (log) log.innerHTML += lines[i] + '\n';
-      i++;
-      if (bar) bar.style.width = Math.round((i / lines.length) * 100) + '%';
-      if (i < lines.length) setTimeout(next, step);
-      else setTimeout(finish, 420);
-    }
-    setTimeout(next, 220);
-  })();
-
   /* ---------- navigation ---------- */
   (function nav() {
     var bar = document.getElementById('nav');
@@ -239,7 +192,8 @@
   /* ---------- reveals, counters, dials ---------- */
   (function reveals() {
     var targets = document.querySelectorAll(
-      '.flow-item, .paper, .fp, .cell, .course, .edu, .readout, .cert, .awards li, .ref, .pads li'
+      '.reveal, .paper, .tl, .blockk, .kit, .cert, .ref, .pads li, .dial-item, ' +
+      '.hero-stats li, .course-list li, .tools-grid li, .ap-list li'
     );
 
     function countUp(el) {
@@ -275,11 +229,10 @@
         for (var i = 0; i < nums.length; i++) countUp(nums[i]);
         if (el.hasAttribute && el.hasAttribute('data-count')) countUp(el);
 
-        var dials = el.querySelectorAll ? el.querySelectorAll('.dial') : [];
+        var dials = el.querySelectorAll ? el.querySelectorAll('.dial-fg[data-pct]') : [];
         for (var d = 0; d < dials.length; d++) {
           var pct = parseFloat(dials[d].getAttribute('data-pct') || '0');
-          var fg = dials[d].querySelector('.dial-fg');
-          if (fg) fg.style.strokeDashoffset = String(213.6 * (1 - pct / 100));
+          dials[d].style.strokeDashoffset = String(213.6 * (1 - pct / 100));
         }
         io.unobserve(el);
       });
@@ -288,6 +241,62 @@
     for (var t = 0; t < targets.length; t++) {
       if (!reduced) targets[t].classList.add('reveal-init');
       io.observe(targets[t]);
+    }
+  })();
+
+
+  /* ---------- pointer tilt on cards ---------- */
+  (function tilt() {
+    if (reduced) return;
+    var cards = document.querySelectorAll('.tilt');
+    for (var i = 0; i < cards.length; i++) {
+      (function (card) {
+        card.addEventListener('pointermove', function (ev) {
+          var r = card.getBoundingClientRect();
+          var px = (ev.clientX - r.left) / r.width - 0.5;
+          var py = (ev.clientY - r.top) / r.height - 0.5;
+          card.style.transform =
+            'perspective(700px) rotateX(' + (-py * 5).toFixed(2) + 'deg) rotateY(' +
+            (px * 6).toFixed(2) + 'deg) translateY(-3px)';
+          card.style.setProperty('--gx', ((px + 0.5) * 100).toFixed(1) + '%');
+          card.style.setProperty('--gy', ((py + 0.5) * 100).toFixed(1) + '%');
+        });
+        card.addEventListener('pointerleave', function () { card.style.transform = ''; });
+      })(cards[i]);
+    }
+  })();
+
+  /* ---------- the role line settles into place ---------- */
+  (function scramble() {
+    var el = document.getElementById('heroRole');
+    if (!el || reduced) return;
+    var final = el.textContent;
+    var pool = '01<>{}[]/\\|=+-*#@$%&';
+    var frame = 0;
+    var settled = 0;
+    function tick() {
+      frame++;
+      if (frame % 2 === 0) settled += 0.6;
+      var out = '';
+      for (var i = 0; i < final.length; i++) {
+        if (i < settled || final[i] === ' ') out += final[i];
+        else out += pool[Math.floor(Math.random() * pool.length)];
+      }
+      el.textContent = out;
+      if (settled < final.length) requestAnimationFrame(tick);
+      else el.textContent = final;
+    }
+    setTimeout(function () { requestAnimationFrame(tick); }, 340);
+  })();
+
+  /* ---------- stagger anything that reveals as a group ---------- */
+  (function stagger() {
+    var groups = document.querySelectorAll('.tools-grid, .course-list, .ap-list, .pads, .papers, .floor');
+    for (var g = 0; g < groups.length; g++) {
+      var kids = groups[g].children;
+      for (var k = 0; k < kids.length; k++) {
+        kids[k].style.setProperty('--d', (k * 55) + 'ms');
+      }
     }
   })();
 

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The bench arcade — Md. Reshad Al Muttaki</title>
+<meta name="description" content="Four electronics games: Electron Runner, Gate Crash, Trace Router and Resistor Rush.">
+<meta name="theme-color" content="#ffffff">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('bench-theme');
+      document.documentElement.setAttribute('data-theme', t === 'dark' ? 'dark' : 'light');
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body class="page-arcade">
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="s-chip" viewBox="0 0 24 24"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/><rect x="10" y="10" width="4" height="4"/><path d="M9.5 3v3.5M14.5 3v3.5M9.5 17.5V21M14.5 17.5V21M3 9.5h3.5M3 14.5h3.5M17.5 9.5H21M17.5 14.5H21"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></symbol>
+    <symbol id="g-runner" viewBox="0 0 24 24"><circle cx="7" cy="12" r="3"/><path d="M12 12h9M13.5 7.5 21 12l-7.5 4.5"/></symbol>
+    <symbol id="g-gate" viewBox="0 0 24 24"><path d="M7 5.5h4a6.5 6.5 0 0 1 0 13H7z"/><path d="M3 9h4M3 15h4M17.5 12H21"/></symbol>
+    <symbol id="g-router" viewBox="0 0 24 24"><path d="M4 8h6v8h10"/><circle cx="4" cy="8" r="1.6"/><circle cx="20" cy="16" r="1.6"/><path d="M10 8h5"/></symbol>
+    <symbol id="g-resistor" viewBox="0 0 24 24"><path d="M2 12h3M19 12h3"/><rect x="5" y="7.5" width="14" height="9" rx="2"/><path d="M9 7.5v9M12 7.5v9M15 7.5v9"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#arcade">Skip to the games</a>
+<div class="rail" aria-hidden="true"><span id="scrollRail"></span></div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="index.html" aria-label="Back to the portfolio">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><use href="#s-chip"/></svg>
+      <span>reshad<b>.bench</b></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" aria-label="Sections">
+      <a href="index.html#about">About</a>
+      <a href="index.html#work">Work</a>
+      <a href="index.html#papers">Papers</a>
+      <a href="index.html#teaching">Teaching</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="index.html#contact">Contact</a>
+    </nav>
+
+    <div class="tools">
+      <button id="dogToggle" class="tool" type="button" aria-pressed="true" title="Hide or show BYTE">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10c0-3 2-5 7-5s7 2 7 5v4a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5z"/><path d="M5 10 3.5 5.5 7 7M19 10l1.5-4.5L17 7"/><circle cx="9.5" cy="12" r="1"/><circle cx="14.5" cy="12" r="1"/></svg>
+        <span class="tool-label">Dog</span>
+      </button>
+      <button id="themeToggle" class="tool" type="button" title="Switch the bench lighting">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M2 12h2.4M19.6 12H22M4.9 4.9l1.7 1.7M17.4 17.4l1.7 1.7M19.1 4.9l-1.7 1.7M6.6 17.4l-1.7 1.7"/></svg>
+        <span class="tool-label" id="themeLabel">Dark</span>
+      </button>
+      <button class="burger" id="navToggle" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="arcade-hero">
+  <div class="wrap">
+    <a class="back" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-back"/></svg> Back to the portfolio</a>
+    <h1>The bench arcade</h1>
+    <p>Four games about the things I spend my day on. They keep a best score on your device.</p>
+  </div>
+</section>
+
+<section id="arcade" class="band">
+  <div class="wrap">
+    <div class="cab">
+
+      <div class="game-tabs" id="gameTabs" role="tablist" aria-label="Choose a game">
+        <button class="game-tab on" data-game="runner" role="tab" aria-selected="true" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-runner"/></svg>
+          <b>Electron Runner</b><span>reflex</span>
+        </button>
+        <button class="game-tab" data-game="gate" role="tab" aria-selected="false" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-gate"/></svg>
+          <b>Gate Crash</b><span>logic</span>
+        </button>
+        <button class="game-tab" data-game="router" role="tab" aria-selected="false" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-router"/></svg>
+          <b>Trace Router</b><span>puzzle</span>
+        </button>
+        <button class="game-tab" data-game="resistor" role="tab" aria-selected="false" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#g-resistor"/></svg>
+          <b>Resistor Rush</b><span>speed</span>
+        </button>
+      </div>
+
+      <div class="game-shell">
+        <div class="game-bar">
+          <div class="gb-left">
+            <span class="gb-title" id="gbTitle">Electron Runner</span>
+            <span class="gb-rule" id="gbRule"></span>
+          </div>
+          <div class="gb-right">
+            <span class="gb-stat">score <b id="gbScore">0</b></span>
+            <span class="gb-stat">best <b id="gbBest">0</b></span>
+            <span class="gb-stat combo" id="gbCombo">×1</span>
+            <span class="gb-lives" id="gbLives" aria-label="Lives remaining"></span>
+            <button class="gb-btn" id="gbSound" type="button" aria-pressed="true">Sound on</button>
+            <button class="gb-btn gb-primary" id="gbStart" type="button">Start</button>
+          </div>
+        </div>
+
+        <div class="game-body">
+          <div class="game-panel" id="panel-runner"></div>
+          <div class="game-panel" id="panel-gate" hidden></div>
+          <div class="game-panel" id="panel-router" hidden></div>
+          <div class="game-panel" id="panel-resistor" hidden></div>
+        </div>
+
+        <p class="game-msg" id="gameMsg">Press start.</p>
+      </div>
+
+      <p class="cab-note">
+        Keyboard works everywhere: arrows in Electron Runner, <kbd>0</kbd> and <kbd>1</kbd> in Gate Crash,
+        tab and enter for everything else.
+      </p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-inner">
+    <p>© 2026 Md. Reshad Al Muttaki</p>
+    <p class="foot-note">BYTE has been petted <b id="petCount">0</b> times.</p>
+  </div>
+</footer>
+
+<canvas id="dogCanvas" tabindex="0" role="button" aria-label="BYTE the cyber-dog. Activate to bark and open his menu."></canvas>
+<div id="dogBubble" role="status" aria-live="polite"></div>
+<div id="dogMenu" class="dog-menu" role="menu" aria-label="What should BYTE do?" hidden>
+  <button type="button" data-act="pet" role="menuitem">🖐 Pet him</button>
+  <button type="button" data-act="walk" role="menuitem">🐾 Take a walk</button>
+  <button type="button" data-act="home" role="menuitem">🏠 Go to your corner</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/app.js"></script>
+<script src="js/games.js"></script>
+<script src="js/dog3d.js"></script>
+</body>
+</html>

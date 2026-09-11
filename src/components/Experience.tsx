@@ -22,6 +22,7 @@ export function Experience() {
     <Section id="teaching">
       <SectionHeading
         index="04"
+        motif="plant"
         kicker="Teaching & experience"
         title={
           <>

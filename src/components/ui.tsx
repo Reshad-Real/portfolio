@@ -7,6 +7,7 @@ import {
 } from 'react'
 import { useInView } from '../hooks/useInView'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { Motif, type MotifId } from './art/Motif'
 
 /** Fades a block up the first time it enters the viewport. */
 export function Reveal({
@@ -66,15 +67,30 @@ export function SectionHeading({
   title,
   lede,
   align = 'left',
+  motif,
 }: {
   index: string
   kicker: string
   title: ReactNode
   lede?: ReactNode
   align?: 'left' | 'wide'
+  /** A drawn object off the same desk, to carry the hero into the section. */
+  motif?: MotifId
 }) {
   return (
-    <header className={align === 'wide' ? 'mb-12 md:mb-16' : 'mb-12 max-w-3xl md:mb-16'}>
+    <header
+      className={[
+        'relative',
+        align === 'wide' ? 'mb-12 md:mb-16' : 'mb-12 max-w-3xl md:mb-16',
+      ].join(' ')}
+    >
+      {motif && (
+        <Reveal className="pointer-events-none absolute -top-4 right-0 hidden opacity-90 md:block">
+          <span className="block" style={{ animation: 'mf-bob 6s ease-in-out infinite' }}>
+            <Motif id={motif} size={108} />
+          </span>
+        </Reveal>
+      )}
       <Reveal>
         <div className="mb-6 flex items-center gap-4">
           <span

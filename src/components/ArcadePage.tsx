@@ -1,5 +1,5 @@
 import { Suspense, lazy, useState } from 'react'
-import { disableAudio, enableAudio } from '../lib/audio'
+import { setSfx } from '../lib/audio'
 import { Navbar } from './Navbar'
 import { Byte } from './Byte'
 import { useTheme } from '../hooks/useTheme'
@@ -49,12 +49,7 @@ export function ArcadePage({ homeHref }: { homeHref: string }) {
   const cab = CABINETS.find((c) => c.key === active)!
 
   const toggleSound = () => {
-    if (sound) {
-      disableAudio()
-      setSound(false)
-    } else {
-      setSound(enableAudio())
-    }
+    setSound(setSfx(!sound))
   }
 
   return (

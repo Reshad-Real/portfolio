@@ -37,7 +37,8 @@ export function Contact({ base }: { base: string }) {
   return (
     <Section id="contact">
       <SectionHeading
-        index="09"
+        index="05"
+        motif="mug"
         kicker="Contact"
         title={
           <>

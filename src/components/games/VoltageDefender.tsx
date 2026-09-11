@@ -200,7 +200,7 @@ export default function VoltageDefender({ sound }: { sound: boolean }) {
               x: W / 2, y: -60, vx: 90, vy: 18, kind: 'boss',
               hp: HP.boss + r.wave * 6, max: HP.boss + r.wave * 6, t: 0,
             })
-            if (soundRef.current) blip('bad')
+            if (soundRef.current) blip('boss')
           } else if (soundRef.current) blip('level')
         }
 
@@ -279,7 +279,7 @@ export default function VoltageDefender({ sound }: { sound: boolean }) {
             if (d.kind === 'rapid') r.fireRate = Math.max(0.07, r.fireRate - 0.035)
             if (d.kind === 'shield') r.shield = 8
             burst(d.x, d.y, '#9ad7ff', 16)
-            if (soundRef.current) blip('ok')
+            if (soundRef.current) blip('power')
             return false
           }
           return true

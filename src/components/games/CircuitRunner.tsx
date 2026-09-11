@@ -207,12 +207,13 @@ export default function CircuitRunner({ sound }: { sound: boolean }) {
 
           if (it.kind === 'charge') {
             r.charges += 1
+            const grew = r.combo < 8
             r.combo = Math.min(8, r.combo + 1)
             r.best = Math.max(r.best, r.combo)
             r.comboTime = 3.2
             r.score += 12 * r.combo
             burst(it.x, LANES[it.lane], '#ffd166', 12)
-            if (soundRef.current) blip('coin')
+            if (soundRef.current) blip(grew && r.combo > 2 ? 'combo' : 'coin')
           } else if (it.kind === 'boost') {
             r.immune = 5
             r.comboTime = 4
@@ -221,7 +222,7 @@ export default function CircuitRunner({ sound }: { sound: boolean }) {
           } else if (it.kind === 'shield') {
             r.shield = true
             burst(it.x, LANES[it.lane], '#8ab6ff', 18)
-            if (soundRef.current) blip('ok')
+            if (soundRef.current) blip('power')
           } else if (r.immune <= 0) {
             if (r.shield) {
               r.shield = false

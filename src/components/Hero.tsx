@@ -9,24 +9,14 @@ const SOCIALS = [
   { label: 'LinkedIn', href: person.links.linkedin, glyph: 'in' },
 ] as const
 
+/** Staggered entrance, expressed as a delay rather than a JavaScript timer. */
+const d = (ms: number) => ({ ['--d' as string]: `${ms}ms` })
+
 export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string }) {
   const { text, done } = useTypedLines(typedLines)
-  const [in1, setIn1] = useState(false)
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setIn1(true), 120)
-    return () => window.clearTimeout(t)
-  }, [])
-
-  const rise = (delay: number) => ({
-    opacity: in1 ? 1 : 0,
-    transform: in1 ? 'none' : 'translateY(14px)',
-    transition: `opacity .6s ease ${delay}ms, transform .6s cubic-bezier(.2,.7,.2,1) ${delay}ms`,
-  })
 
   return (
     <section id="home" className="relative overflow-hidden border-b border-line bg-bg2">
-      {/* a soft wash so the illustration and the page share a light */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-70"
@@ -40,24 +30,24 @@ export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string })
         {/* ---------------------------------------------------------- copy */}
         <div className="order-2 max-w-xl lg:order-1">
           <p
-            className="mb-3 flex items-center gap-2 text-[11px] uppercase tracking-[0.26em] text-muted"
-            style={{ ...rise(0), fontFamily: 'var(--font-tech)' }}
+            className="mf-in mb-3 flex items-center gap-2 text-[11px] uppercase tracking-[0.26em] text-muted"
+            style={{ ...d(0), fontFamily: 'var(--font-tech)' }}
           >
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
             {person.title}
           </p>
 
           <h1
-            className="text-[clamp(36px,6.6vw,68px)] font-medium leading-[1.02] tracking-[-0.035em] text-ink"
-            style={rise(60)}
+            className="mf-in text-[clamp(36px,6.6vw,68px)] font-medium leading-[1.02] tracking-[-0.035em] text-ink"
+            style={d(80)}
           >
             {person.name}
           </h1>
 
-          {/* the line that keeps typing itself */}
+          {/* Two lines of height are reserved, so retyping never shifts the page. */}
           <p
-            className="mt-4 min-h-[58px] text-[clamp(17px,2.3vw,23px)] leading-snug text-inksoft sm:min-h-[34px]"
-            style={{ ...rise(120), fontFamily: 'var(--font-tech)' }}
+            className="mf-in mt-4 text-[clamp(16px,2.1vw,21px)] leading-[1.45] text-inksoft"
+            style={{ ...d(160), fontFamily: 'var(--font-tech)', minHeight: '2.9em' }}
           >
             <span className="text-accent">&gt;</span> {text}
             <span
@@ -67,23 +57,32 @@ export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string })
             />
           </p>
 
-          <p className="mt-5 max-w-lg text-[clamp(15px,1.7vw,17.5px)] leading-relaxed text-muted" style={rise(180)}>
+          <p
+            className="mf-in mt-4 max-w-lg text-[clamp(15px,1.7vw,17.5px)] leading-relaxed text-muted"
+            style={d(240)}
+          >
             {intro}
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-2.5" style={rise(240)}>
+          <div className="mf-in mt-8 flex flex-wrap items-center gap-2.5" style={d(320)}>
             <Pill href="#research" tone="solid">
               Read the research
             </Pill>
             <Pill href="#papers">See the papers</Pill>
-            <Pill href={arcadeHref}>Play the arcade</Pill>
+            <a
+              href={arcadeHref}
+              className="mf-arcade inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-[#3ef0c0] bg-[#3ef0c0]/12 px-4 py-2 text-[13.5px] font-medium text-[#12806a] transition-transform duration-200 hover:-translate-y-0.5 dark:text-[#3ef0c0]"
+            >
+              <span aria-hidden="true" className="text-[15px]">🕹</span>
+              Play the arcade
+            </a>
             <Pill href={`${base}${person.cv}`} download>
               Download CV
             </Pill>
             <EmailPill />
           </div>
 
-          <div className="mt-8 flex items-center gap-2.5" style={rise(300)}>
+          <div className="mf-in mt-8 flex items-center gap-2.5" style={d(400)}>
             {SOCIALS.map((s) => (
               <a
                 key={s.label}
@@ -102,17 +101,13 @@ export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string })
         </div>
 
         {/* -------------------------------------------------- illustration */}
-        <div
-          className="order-1 lg:order-2"
-          style={{
-            opacity: in1 ? 1 : 0,
-            transform: in1 ? 'none' : 'scale(0.97)',
-            transition: 'opacity .8s ease 60ms, transform .8s cubic-bezier(.2,.7,.2,1) 60ms',
-          }}
-        >
+        <div className="mf-in-scale order-1 lg:order-2" style={d(60)}>
           <div className="overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(20,18,40,0.55)]">
             <HeroScene className="block w-full" />
           </div>
+          <p className="mt-3 text-center text-[12px] text-muted">
+            The panels on the wall are the shortcuts. Give one a click.
+          </p>
         </div>
       </div>
     </section>

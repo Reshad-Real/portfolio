@@ -435,3 +435,65 @@ body[data-locked='true'] {
   25% { opacity: 1 }
   100% { opacity: 0; transform: translate(var(--dx, 0px), -54px) scale(1.15) }
 }
+
+@keyframes mo-spin {
+  to { transform: rotate(360deg) }
+}
+
+/* Wall panels lift and brighten on hover or focus. */
+.hs-panel > g {
+  transition: transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.hs-panel:hover > g,
+.hs-panel:focus-visible > g {
+  transform: translateY(-4px) scale(1.06);
+}
+.hs-panel .hs-panel-glow {
+  transition: opacity 260ms ease;
+}
+.hs-panel:hover .hs-panel-glow,
+.hs-panel:focus-visible .hs-panel-glow {
+  opacity: 0.4;
+}
+.hs-panel:focus-visible {
+  outline: none;
+}
+.hs-panel:focus-visible > g > rect:nth-of-type(2) {
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+/* Entrance driven by the document timeline, not a JS timer, so nothing can be
+   left stranded at opacity 0 if a frame is missed. */
+.mf-in {
+  opacity: 0;
+  animation: mf-pop 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+.mf-in-scale {
+  opacity: 0;
+  animation: mf-scale-in 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes mf-scale-in {
+  from { opacity: 0; transform: scale(0.96) translateY(12px) }
+  to { opacity: 1; transform: none }
+}
+
+/* A soft pulse for the arcade button, so it reads as the one toy on the page. */
+@keyframes mf-arcade-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(62, 240, 192, 0.5), 0 6px 18px -8px rgba(62, 240, 192, 0.8) }
+  50% { box-shadow: 0 0 0 7px rgba(62, 240, 192, 0), 0 10px 26px -8px rgba(62, 240, 192, 0.95) }
+}
+.mf-arcade {
+  animation: mf-arcade-glow 2.6s ease-in-out infinite;
+}
+.mf-arcade:hover {
+  animation-play-state: paused;
+}
+
+@keyframes mf-eq {
+  0%, 100% { height: 5px }
+  50% { height: 13px }
+}

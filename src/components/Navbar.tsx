@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { contactCta, navLinks, person } from '../data/site'
 import { ThemeToggle } from './ThemeToggle'
+import { MusicToggle } from './MusicToggle'
 import { MobileNav } from './MobileNav'
 import type { Theme } from '../hooks/useTheme'
 
@@ -107,11 +108,12 @@ export function Navbar({ theme, onToggleTheme, arcadeHref, simple = false }: Pro
           <div className="flex items-center gap-2.5 sm:gap-3">
             <a
               href={arcadeHref}
-              className="hidden items-center gap-1.5 rounded-full border border-line px-3.5 py-1.5 text-[14px] text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:text-accent sm:inline-flex"
+              className="mf-arcade hidden items-center gap-1.5 rounded-full border border-[#3ef0c0] bg-[#3ef0c0]/12 px-3.5 py-1.5 text-[14px] font-medium text-[#12806a] transition-transform duration-200 hover:-translate-y-0.5 dark:text-[#3ef0c0] sm:inline-flex"
             >
               <span aria-hidden="true">🕹</span>
               {simple ? 'Back to portfolio' : 'Arcade'}
             </a>
+            <MusicToggle />
             <ThemeToggle theme={theme} onToggle={onToggleTheme} />
             {!simple && (
               <a

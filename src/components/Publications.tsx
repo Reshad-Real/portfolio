@@ -9,7 +9,8 @@ export function Publications() {
   return (
     <Section id="papers" tone="alt">
       <SectionHeading
-        index="04"
+        index="03"
+        motif="lamp"
         kicker="Selected publications"
         title={
           <>

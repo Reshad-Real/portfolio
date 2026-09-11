@@ -14,6 +14,7 @@ export function Research() {
     <Section id="research" tone="alt">
       <SectionHeading
         index="02"
+        motif="wafer"
         kicker="What I work on"
         title={
           <>

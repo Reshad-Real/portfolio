@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
+import { WallPanels } from './WallPanels'
 
 /**
  * The hero illustration: cel-shaded anime over a lit room.
@@ -189,8 +190,13 @@ export function HeroScene({ className = '' }: { className?: string }) {
         <path d="M558 44v286M432 187h252" stroke="#100f1e" strokeWidth="7" />
       </g>
 
+      {/* Framed panels on the wall: the portfolio navigation, in the room. */}
+      <g data-depth="9">
+        <WallPanels />
+      </g>
+
       {/* light spilling into the room */}
-      <g opacity="0.55" style={{ mixBlendMode: 'screen' }}>
+      <g opacity="0.55" pointerEvents="none" style={{ mixBlendMode: 'screen' }}>
         <path d="M470 60 L250 560 L470 560 Z" fill="url(#hs-shaft)">
           <animate attributeName="opacity" values="0.75;0.5;0.75" dur="7s" repeatCount="indefinite" />
         </path>
@@ -200,7 +206,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
       </g>
 
       {/* ----------------------------------------------------------- plant */}
-      <g data-depth="11">
+      <g data-depth="11" pointerEvents="none">
         <g id="hs-plant">
           {[
             'M104 300c-26-44-22-96 8-136 14 44 10 96-8 136z',
@@ -233,7 +239,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
       </g>
 
       {/* ============================================== desk and the figure */}
-      <g data-depth="4">
+      <g data-depth="4" pointerEvents="none">
         {/* cast shadow on the wall behind him */}
         <ellipse cx="286" cy="330" rx="150" ry="176" fill="#0d0c1a" opacity="0.42" filter="url(#hs-softer)" />
 
@@ -436,7 +442,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
       </g>
 
       {/* ======================================================= foreground */}
-      <g data-depth="16">
+      <g data-depth="16" pointerEvents="none">
         {/* mug */}
         <ellipse cx="614" cy="514" rx="52" ry="14" fill="#0d0c1a" opacity="0.45" filter="url(#hs-soft)" />
         <path d="M584 452h60v46a18 18 0 0 1-18 18h-24a18 18 0 0 1-18-18z" fill="#e8f0fb" stroke="#141326" strokeWidth="4" />

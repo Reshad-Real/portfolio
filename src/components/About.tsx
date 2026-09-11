@@ -41,6 +41,7 @@ export function About() {
         <div className="lg:col-span-7">
           <SectionHeading
             index="01"
+        motif="chip"
             kicker="Identity"
             title={
               <>

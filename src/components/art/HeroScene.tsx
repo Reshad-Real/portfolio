@@ -408,10 +408,10 @@ export function HeroScene({ className = '' }: { className?: string }) {
           {/* Forearms in along the desk from either side, elbows out past the
               machine and the hands behind it, the way the reference has them.
               Drawn before the laptop, so it covers where they end. */}
-          {['M156 486c8 32 32 62 72 88', 'M504 486c-8 32-32 62-72 88'].map((d) => (
+          {['M148 452c-2 42 14 80 50 112', 'M512 452c2 42-14 80-50 112'].map((d) => (
             <g key={d}>
-              <path d={d} stroke="#141326" strokeWidth="34" fill="none" strokeLinecap="round" />
-              <path d={d} stroke="url(#hs-hoodie)" strokeWidth="26" fill="none" strokeLinecap="round" />
+              <path d={d} stroke="#141326" strokeWidth="40" fill="none" strokeLinecap="round" />
+              <path d={d} stroke="url(#hs-hoodie)" strokeWidth="32" fill="none" strokeLinecap="round" />
             </g>
           ))}
 
@@ -675,7 +675,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
               behind it so the light bleeds out from around the edge rather
               than sitting on the face of it. This is the thing that says the
               machine is on and pointed away from us. */}
-          <path d="M209 336h242v24H209z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
+          <path d="M195 336h280v24H195z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
             <animate attributeName="opacity" values="0.34;0.2;0.34" dur="5s" repeatCount="indefinite" />
           </path>
 
@@ -688,28 +688,28 @@ export function HeroScene({ className = '' }: { className?: string }) {
               corners, with a camera dot and nothing else. A panel inset or a
               lit top edge would read as a bezel and turn it back to front. */}
           <path
-            d="M217 352h226a8 8 0 0 1 8 7l8 127H201l8-127a8 8 0 0 1 8-7z"
+            d="M203 352h264a8 8 0 0 1 8 7l-20 127H215l-20-127a8 8 0 0 1 8-7z"
             fill="url(#hs-lidback)"
             stroke="#100f1e"
             strokeWidth="4"
             strokeLinejoin="round"
           />
           {/* the window, raking across the back of it */}
-          <path d="M408 352h30l-26 134h-30z" fill="#ffffff" opacity="0.06" />
+          <path d="M418 352h32l-18 134h-32z" fill="#ffffff" opacity="0.06" />
           <circle cx="234" cy="374" r="4.5" fill="#8f86c4" opacity="0.32" />
 
           {/* The base: a thin slab seen edge on, a little wider than the lid,
               with the hinge line in shadow where the two meet. The keyboard is
               on his side of that line, so there is none of it to draw. */}
           <path
-            d="M193 486h274a7 7 0 0 1 7 7v3a8 8 0 0 1-8 8H194a8 8 0 0 1-8-8v-3a7 7 0 0 1 7-7z"
+            d="M205 486h260a7 7 0 0 1 7 7v3a8 8 0 0 1-8 8H206a8 8 0 0 1-8-8v-3a7 7 0 0 1 7-7z"
             fill="#312f4e"
             stroke="#100f1e"
             strokeWidth="4"
             strokeLinejoin="round"
           />
-          <path d="M207 485h246" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
-          <path d="M204 496h252" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
+          <path d="M217 485h236" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
+          <path d="M215 496h240" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
 
           {/* the light that gets past him, onto the desk */}
           <ellipse cx="330" cy="510" rx="172" ry="9" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />

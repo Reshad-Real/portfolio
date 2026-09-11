@@ -188,6 +188,10 @@ export function HeroScene({ className = '' }: { className?: string }) {
           <stop offset="0%" stopColor="#4a3a52" />
           <stop offset="100%" stopColor="#2e2436" />
         </linearGradient>
+        <linearGradient id="hs-liddown" x1="0.2" y1="0" x2="0.9" y2="1">
+          <stop offset="0%" stopColor="#3e3c63" />
+          <stop offset="100%" stopColor="#2a2945" />
+        </linearGradient>
 
         {/* --------------------------------------------------------- filters */}
         <filter id="hs-soft" x="-40%" y="-40%" width="180%" height="180%">
@@ -422,16 +426,21 @@ export function HeroScene({ className = '' }: { className?: string }) {
           {/* ---- neck. A neck is not a cylinder: it leaves the skull narrow,
                behind and below the jaw, and widens into the trapezius. The top
                sits under the chin so the join is never a visible seam. */}
-          <path d="M301 342c1 24-1 40-8 60h74c-7-20-9-36-8-60z" fill="#f0c0a0" stroke="#141326" strokeWidth="4" />
+          <path d="M307 342c1 24-1 40-6 60h58c-5-20-7-36-6-60z" fill="#f0c0a0" stroke="#141326" strokeWidth="4" />
           {/* what the jaw casts onto it: the darkest thing on him, and directly
               under the form that blocks the light */}
-          <path d="M301 342c19 13 39 13 58 0 1 12 0 21-2 30-18 8-36 8-54 0-2-9-3-18-2-30z" fill="#c9917a" opacity="0.8" filter="url(#hs-tiny)" />
+          <path d="M307 342c15 11 31 11 46 0 1 11 0 20-2 27-14 7-29 7-42 0-2-7-3-16-2-27z" fill="#c9917a" opacity="0.8" filter="url(#hs-tiny)" />
           {/* the cord of the neck on the lit side */}
-          <path d="M352 356c3 16 4 30 3 44" stroke="#e0ac8c" strokeWidth="4" fill="none" strokeLinecap="round" opacity="0.6" />
+          <path d="M348 356c3 15 4 28 3 42" stroke="#e0ac8c" strokeWidth="4" fill="none" strokeLinecap="round" opacity="0.6" />
           {/* and the shaded side, away from the window */}
-          <path d="M301 342c1 22-1 38-8 60h15c-4-22-4-40-1-58z" fill="#d9a084" opacity="0.75" />
+          <path d="M307 342c1 22-1 38-6 60h13c-4-22-4-40-1-58z" fill="#d9a084" opacity="0.75" />
 
           <g id="head-tilt" style={{ transformBox: 'view-box' }}>
+          {/* The head was 0.66 of the shoulder width, which is bobblehead
+              territory. The reference avatars get away with that because they
+              are tight bust crops and this is not. Scaled about the chin, so
+              the neck join and everything below it stay where they are. */}
+          <g transform="translate(330 366) scale(0.87) translate(-330 -366)">
             {/* ---- hair, back mass. It used to hang in two lobes past the
                  ears, which poked out under the headphone cups as a pair of
                  tabs. It now stops above them. */}
@@ -518,7 +527,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
               {/* Centred over the pupils at 288 and 372. They used to sit at
                   312 and 388, both pushed right and by different amounts, so
                   one brow rode the bridge of his nose. */}
-              <path d="M266 238c9-10 35-10 44 0M350 238c9-10 35-10 44 0" stroke="#241f3a" strokeWidth="6.5" strokeLinecap="round" fill="none" />
+              <path d="M268 239c9-7 33-7 42 0M350 239c9-7 33-7 42 0" stroke="#2d2744" strokeWidth="6" strokeLinecap="round" fill="none" />
             </g>
 
             {/* nose and mouth */}
@@ -572,8 +581,11 @@ export function HeroScene({ className = '' }: { className?: string }) {
             </g>
 
             {/* ---- hair, front */}
+            {/* The outer arc is copied from the back mass exactly. It used to
+                end three units short of it, leaving a lit sliver of the layer
+                behind showing round the top of his head like a crack. */}
             <path
-              d="M330 138c66 0 103 43 103 105-15-17-26-36-31-54-17 24-54 37-99 32-22-2-40-9-51-21-7 15-11 28-24 43-2-66 37-105 102-105z"
+              d="M330 138c66 0 102 44 100 110-15-17-25-37-30-56-17 24-54 37-99 32-22-2-40-9-51-21-8 15-12 28-20 45-3-66 37-110 100-110z"
               fill="url(#hs-hair)"
               stroke="#100f1e"
               strokeWidth="4"
@@ -582,7 +594,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
             <path
               d="M354 160c28 8 48 28 56 56-19-15-34-32-41-50z"
               fill="#6a5f96"
-              opacity="0.6"
+              opacity="0.45"
             />
             {/* One strand, over the forehead where it reads as hair. The two
                 that used to hang beside the ears came out under the headphone
@@ -618,9 +630,11 @@ export function HeroScene({ className = '' }: { className?: string }) {
             <rect x="230" y="264" width="20" height="38" rx="10" fill="#2a2544" />
             <rect x="410" y="264" width="20" height="38" rx="10" fill="#6d5fa8" />
             {/* the little status light on the cup */}
-            <circle cx="420" cy="326" r="5" fill="#68e8b0">
+            {/* On the cup, not ten units below it where it read as a stray dot */}
+            <circle cx="420" cy="306" r="4.5" fill="#68e8b0">
               <animate attributeName="opacity" values="1;0.25;1" dur="2.4s" repeatCount="indefinite" />
             </circle>
+          </g>
           </g>
         </g>
         </g>
@@ -628,6 +642,10 @@ export function HeroScene({ className = '' }: { className?: string }) {
         {/* ---- desk and laptop, in front of him */}
         <rect x="0" y="498" width="720" height="62" fill="url(#hs-desk)" />
         <rect x="0" y="498" width="720" height="7" fill="#6a5674" />
+        {/* grain, so the front of the desk is a surface and not a stripe */}
+        <g stroke="#241c2b" strokeWidth="1.6" opacity="0.3">
+          <path d="M0 517h720M0 532h720M0 546h720" />
+        </g>
 
         {/* Open, square on the desk, screen facing him. That does mean we see
             the back of the lid rather than the display, which is simply what a
@@ -647,16 +665,18 @@ export function HeroScene({ className = '' }: { className?: string }) {
               against a real laptop's 0.6, which is why it read as a letter
               tray. Top edge a little narrower, because it leans away from us
               towards him. */}
-          <path d="M240 382h180l10 100H230z" fill="#2b2a44" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M250 390h160l7 84H243z" fill="#343252" />
+          <path d="M240 382h180l10 100H230z" fill="#24233a" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          {/* The panel inset on the back of the lid. Without it the whole thing
+              was one flat rectangle and read as a slab, not a machine. */}
+          <path d="M252 392h156l7 80H245z" fill="url(#hs-liddown)" stroke="#191830" strokeWidth="2.5" />
           {/* the window, catching the back of the lid */}
           <path d="M390 382h30l-24 100h-30z" fill="#ffffff" opacity="0.055" />
           {/* light escaping round the raised edge */}
-          <path d="M241 383h178" stroke="#cdf1ff" strokeWidth="4" opacity="0.7" strokeLinecap="round">
+          <path d="M250 383h160" stroke="#cdf1ff" strokeWidth="4" opacity="0.7" strokeLinecap="round">
             <animate attributeName="opacity" values="0.7;0.45;0.7" dur="5s" repeatCount="indefinite" />
           </path>
-          <path d="M420 383l9 97" stroke="#bfe4ff" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
-          <path d="M240 383l-9 97" stroke="#bfe4ff" strokeWidth="3" opacity="0.24" strokeLinecap="round" />
+          <path d="M419 393l8 85" stroke="#bfe4ff" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
+          <path d="M241 393l-8 85" stroke="#bfe4ff" strokeWidth="3" opacity="0.24" strokeLinecap="round" />
           <circle cx="330" cy="432" r="11" fill="none" stroke="#9fd7ff" strokeWidth="2.8" opacity="0.4" />
           <circle cx="330" cy="432" r="3.6" fill="#bfefff" opacity="0.8">
             <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3.4s" repeatCount="indefinite" />
@@ -666,8 +686,11 @@ export function HeroScene({ className = '' }: { className?: string }) {
               so from here there is nothing of it to see: only the back edge of
               the slab the lid is hinged to. Drawing the deck and its keys
               coming towards us put the machine the wrong way round. */}
-          <path d="M222 482h216v10a7 7 0 0 1-7 7H229a7 7 0 0 1-7-7z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M228 486h204" stroke="#6f66a0" strokeWidth="3" opacity="0.6" strokeLinecap="round" />
+          <rect x="246" y="474" width="30" height="12" rx="6" fill="#4a4770" stroke="#100f1e" strokeWidth="3.5" />
+          <rect x="384" y="474" width="30" height="12" rx="6" fill="#4a4770" stroke="#100f1e" strokeWidth="3.5" />
+          <path d="M218 480h224v13a8 8 0 0 1-8 8H226a8 8 0 0 1-8-8z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          <path d="M226 485h208" stroke="#7d74b0" strokeWidth="3" opacity="0.55" strokeLinecap="round" />
+          <path d="M230 496h196" stroke="#0f0e1c" strokeWidth="2.5" opacity="0.45" strokeLinecap="round" />
 
           {/* the light that gets past him, onto the desk */}
           <ellipse cx="330" cy="508" rx="146" ry="10" fill="#9fd7ff" opacity="0.18" filter="url(#hs-soft)" />
@@ -677,13 +700,13 @@ export function HeroScene({ className = '' }: { className?: string }) {
       {/* --------------------------------------------------- what he is thinking */}
       {thought && (
         <g className="hs-thought" data-show={thinking ? 'true' : 'false'} pointerEvents="none">
-          <circle cx="404" cy="80" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
-          <circle cx="415" cy="94" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
+          <circle cx="404" cy="104" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
+          <circle cx="415" cy="118" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
           {/* The tech face is monospace, so the box can be sized from the
               character count: 6.9 per glyph at 11.5px, plus the padding. */}
           <rect
             x={416 - (thought.length * 6.9 + 26)}
-            y="28"
+            y="52"
             width={thought.length * 6.9 + 26}
             height="38"
             rx="13"
@@ -693,7 +716,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
           />
           <text
             x={416 - (thought.length * 6.9 + 26) / 2}
-            y="52"
+            y="76"
             textAnchor="middle"
             fill="#241f3a"
             fontSize="11.5"

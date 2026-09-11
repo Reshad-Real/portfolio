@@ -724,3 +724,17 @@ body[data-locked='true'] {
 @media (prefers-reduced-motion: reduce) {
   .bd-enter { transition: none }
 }
+
+/* Bouncing after the butterfly. Its own wrapper, because the host carries his
+   position and the button carries the mirror. */
+@keyframes bd-hop {
+  0%, 100% { transform: translateY(0) }
+  40% { transform: translateY(-17px) }
+  58% { transform: translateY(-2px) }
+  74% { transform: translateY(-9px) }
+  88% { transform: translateY(0) }
+}
+.bd-hop { animation: bd-hop 0.78s cubic-bezier(0.3, 0, 0.4, 1) infinite }
+@media (prefers-reduced-motion: reduce) {
+  .bd-hop { animation: none }
+}

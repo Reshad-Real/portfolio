@@ -88,6 +88,7 @@ export function Byte() {
   const timers = useRef<number[]>([])
   const heartId = useRef(0)
   const flyRef = useRef<HTMLDivElement | null>(null)
+  const facingRef = useRef<1 | -1>(-1)
   const [look, setLook] = useState({ x: 0, y: 0 })
 
   const after = useCallback((ms: number, fn: () => void) => {
@@ -106,11 +107,15 @@ export function Byte() {
 
   /** Writes the element transform, and reports which edge the menu must avoid. */
   const place = useCallback((x: number) => {
-    xRef.current = x
-    const host = hostRef.current
-    if (host) host.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`
+    // Clamped here rather than at each call site. Whatever sets a target -- a
+    // wander, the kennel, a butterfly that has drifted wide -- he cannot end
+    // up off the edge of the window.
     const vw = window.innerWidth
-    setEdge(x > vw - 250 ? 'right' : x < 120 ? 'left' : 'centre')
+    const clamped = Math.min(Math.max(8, x), Math.max(8, vw - size() - 8))
+    xRef.current = clamped
+    const host = hostRef.current
+    if (host) host.style.transform = `translate3d(${clamped.toFixed(1)}px, 0, 0)`
+    setEdge(clamped > vw - 250 ? 'right' : clamped < 120 ? 'left' : 'centre')
   }, [])
 
   useEffect(() => {
@@ -162,6 +167,21 @@ export function Byte() {
     setFacing(home > xRef.current ? 1 : -1)
     speak('heading back', 1500)
   }, [speak])
+
+  /** The kennel is the whistle: it stops whatever he is doing and brings him in. */
+  const callHome = useCallback(() => {
+    if (!isSfxOn()) setSfx(true)
+    setDigging(false)
+    setFly(false)
+    setJoy(0)
+    if (modeRef.current === 'idle' && Math.abs(xRef.current - homeX()) < 8) {
+      // Already sitting there. Acknowledge rather than walk on the spot.
+      bark(true)
+      return
+    }
+    barkSound(true)
+    goHome()
+  }, [bark, goHome])
 
   const wanderSomewhereNew = useCallback(() => {
     const s = size()
@@ -316,10 +336,7 @@ export function Byte() {
         const f = flyRef.current
         if (f) {
           const r = f.getBoundingClientRect()
-          targetRef.current = Math.max(
-            10,
-            Math.min(window.innerWidth - size() - 10, r.left + r.width / 2 - size() / 2),
-          )
+          targetRef.current = r.left + r.width / 2 - size() / 2
         }
       }
 
@@ -327,8 +344,14 @@ export function Byte() {
       const delta = targetRef.current - xRef.current
 
       if (m === 'chasing') {
-        if (Math.abs(delta) > 2) {
-          setFacing(delta > 0 ? 1 : -1)
+        if (Math.abs(delta) > 6) {
+          // Only on a change of direction. Setting it every frame re-rendered
+          // the whole drawing sixty times a second while he was chasing.
+          const want: 1 | -1 = delta > 0 ? 1 : -1
+          if (facingRef.current !== want) {
+            facingRef.current = want
+            setFacing(want)
+          }
           place(xRef.current + Math.sign(delta) * Math.min(speed, Math.abs(delta)))
         }
         return
@@ -462,13 +485,16 @@ export function Byte() {
         ].join(' ')}
       />
 
-      {/* His kennel, in the corner he lives in. */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed bottom-0 right-3 z-20 w-[92px] sm:w-[118px]"
+      {/* His kennel, and the way to call him back from wherever he has got to. */}
+      <button
+        type="button"
+        onClick={callHome}
+        title="Call BYTE back"
+        aria-label="Call BYTE back to his kennel"
+        className="fixed bottom-0 right-3 z-20 w-[92px] cursor-pointer transition-transform duration-300 hover:-translate-y-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent sm:w-[118px]"
       >
         <DogHouse occupied={mode === 'housed'} className="block h-auto w-full" />
-      </div>
+      </button>
 
       {/* The butterfly, only while there is one to chase. */}
       {fly && (
@@ -532,6 +558,7 @@ export function Byte() {
           host, whose transform is the position, nor on the button, whose
           transform is the mirror. */}
       <div className="bd-enter h-full w-full" data-in={mode === 'housed' ? 'true' : 'false'} style={{ transformOrigin: 'bottom center' }}>
+      <div className={mode === 'chasing' ? 'bd-hop h-full w-full' : 'h-full w-full'}>
       <button
         type="button"
         onClick={onDogClick}
@@ -552,6 +579,7 @@ export function Byte() {
           className="h-full w-full"
         />
       </button>
+      </div>
       </div>
 
       {/* Menu, flipped to whichever side has room. */}

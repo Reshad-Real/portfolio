@@ -178,19 +178,35 @@ export function isSfxOn() {
 // ------------------------------------------------------------------ lofi
 
 /**
- * Four bars at 72 BPM: a soft pad through a low-pass, a muted kick, an offbeat
- * hat, and a little vinyl noise. Scheduled a bar ahead so it never stutters.
+ * The background loop. Every sample of it is synthesised here, in the
+ * browser, from oscillators and generated noise: there is no track file and
+ * nothing is fetched, so there is nothing to licence.
+ *
+ * Eight bars at 68 BPM in F major, I-iii-vi-IV. A warm pad and a soft
+ * electric-piano motif sit in a generated room reverb, over a muted kick, a
+ * brushed snare and a swung shaker, with tape wow on the pad and a little
+ * vinyl underneath. Scheduled a bar ahead so it never stutters.
  */
-const BPM = 72
+const BPM = 68
 const BEAT = 60 / BPM
 const BAR = BEAT * 4
+/** How far the offbeats are pushed back, which is most of the feel. */
+const SWING = 0.055
 
-// Dm9 · G7 · Cmaj7 · Am7, as semitone offsets from C2.
-const PROG: number[][] = [
-  [2, 9, 14, 17],
-  [7, 11, 14, 18],
-  [0, 7, 11, 16],
-  [9, 12, 16, 19],
+// Fmaj7, Am7, Dm9, Bbmaj7, as semitone offsets from C2.
+const PROG: { chord: number[]; root: number }[] = [
+  { chord: [17, 21, 24, 28], root: 5 },
+  { chord: [21, 24, 28, 31], root: 9 },
+  { chord: [14, 21, 24, 28], root: 2 },
+  { chord: [22, 26, 29, 33], root: 10 },
+]
+
+/** A sparse motif per bar: [beat, semitone]. F major pentatonic, mostly. */
+const MOTIF: number[][][] = [
+  [[0.5, 36], [1.5, 33], [2.5, 31], [3.25, 33]],
+  [[1, 36], [2.5, 40], [3.5, 38]],
+  [[0.5, 33], [2, 31], [3, 28]],
+  [[1.5, 38], [2.5, 36], [3.5, 33]],
 ]
 
 const hz = (semi: number) => 65.41 * Math.pow(2, semi / 12)
@@ -199,45 +215,141 @@ let loopTimer: number | null = null
 let nextBarAt = 0
 let bar = 0
 let vinyl: AudioBufferSourceNode | null = null
+let wowDepth: GainNode | null = null
+let verbIn: GainNode | null = null
 
-function playPad(at: number, chord: number[]) {
+/** A short room, built from decaying noise. No impulse file to ship. */
+function buildReverb(c: AudioContext): ConvolverNode {
+  const len = Math.floor(c.sampleRate * 2.4)
+  const buf = c.createBuffer(2, len, c.sampleRate)
+  for (let ch = 0; ch < 2; ch++) {
+    const d = buf.getChannelData(ch)
+    for (let i = 0; i < len; i++) {
+      const t = i / len
+      // A little pre-delay, then an exponential tail.
+      const env = Math.pow(1 - t, 2.6) * (i < c.sampleRate * 0.012 ? 0 : 1)
+      d[i] = (Math.random() * 2 - 1) * env
+    }
+  }
+  const conv = c.createConvolver()
+  conv.buffer = buf
+  return conv
+}
+
+function ensureVerb(): GainNode | null {
+  if (!ctx || !musicBus) return null
+  if (verbIn) return verbIn
+  const c = ctx
+  const send = c.createGain()
+  send.gain.value = 1
+  const conv = buildReverb(c)
+  const wet = c.createGain()
+  wet.gain.value = 0.5
+  // Roll the top off the tail, so the room is soft rather than glassy.
+  const tame = c.createBiquadFilter()
+  tame.type = 'lowpass'
+  tame.frequency.value = 2600
+  send.connect(conv).connect(tame).connect(wet).connect(musicBus)
+  verbIn = send
+  return send
+}
+
+/** One slow oscillator detuning the pad, the way tape does. */
+function ensureWow(): GainNode | null {
+  if (!ctx) return null
+  if (wowDepth) return wowDepth
+  const c = ctx
+  const osc = c.createOscillator()
+  osc.type = 'sine'
+  osc.frequency.value = 0.23
+  const depth = c.createGain()
+  depth.gain.value = 5.5
+  osc.connect(depth)
+  osc.start()
+
+  wowDepth = depth
+  return depth
+}
+
+function playPad(at: number, chord: number[], root: number) {
   if (!ctx || !musicBus) return
   const c = ctx
+  const send = ensureVerb()
+  const depth = ensureWow()
+
   const filter = c.createBiquadFilter()
   filter.type = 'lowpass'
-  filter.frequency.setValueAtTime(700, at)
-  filter.frequency.linearRampToValueAtTime(1250, at + BAR * 0.5)
-  filter.frequency.linearRampToValueAtTime(650, at + BAR)
-  filter.Q.value = 0.7
+  filter.frequency.setValueAtTime(620, at)
+  filter.frequency.linearRampToValueAtTime(1100, at + BAR * 0.55)
+  filter.frequency.linearRampToValueAtTime(580, at + BAR)
+  filter.Q.value = 0.5
   filter.connect(musicBus)
+  if (send) filter.connect(send)
 
   for (const semi of chord) {
-    const osc = c.createOscillator()
-    osc.type = 'triangle'
-    // A touch of detune keeps it from sounding like a test tone.
-    osc.detune.value = (Math.random() - 0.5) * 9
-    osc.frequency.value = hz(semi + 12)
-    const g = c.createGain()
-    g.gain.setValueAtTime(0.0001, at)
-    g.gain.linearRampToValueAtTime(0.05, at + 0.5)
-    g.gain.setValueAtTime(0.05, at + BAR - 0.7)
-    g.gain.linearRampToValueAtTime(0.0001, at + BAR - 0.05)
-    osc.connect(g).connect(filter)
-    osc.start(at)
-    osc.stop(at + BAR)
+    // Two voices a few cents apart per note. That beating is the warmth.
+    for (const off of [-4, 4]) {
+      const osc = c.createOscillator()
+      osc.type = off < 0 ? 'triangle' : 'sine'
+      osc.frequency.value = hz(semi)
+      osc.detune.value = off
+      if (depth) depth.connect(osc.detune)
+      const g = c.createGain()
+      g.gain.setValueAtTime(0.0001, at)
+      g.gain.linearRampToValueAtTime(0.028, at + 0.9)
+      g.gain.setValueAtTime(0.028, at + BAR - 0.9)
+      g.gain.linearRampToValueAtTime(0.0001, at + BAR - 0.02)
+      osc.connect(g).connect(filter)
+      osc.start(at)
+      osc.stop(at + BAR)
+    }
   }
 
-  // the root, an octave down
+  // the root, low and round
   const sub = c.createOscillator()
   sub.type = 'sine'
-  sub.frequency.value = hz(chord[0])
+  sub.frequency.value = hz(root)
   const sg = c.createGain()
   sg.gain.setValueAtTime(0.0001, at)
-  sg.gain.linearRampToValueAtTime(0.075, at + 0.3)
-  sg.gain.linearRampToValueAtTime(0.0001, at + BAR - 0.05)
+  sg.gain.linearRampToValueAtTime(0.085, at + 0.35)
+  sg.gain.setValueAtTime(0.07, at + BAR * 0.7)
+  sg.gain.linearRampToValueAtTime(0.0001, at + BAR - 0.02)
   sub.connect(sg).connect(musicBus)
   sub.start(at)
   sub.stop(at + BAR)
+}
+
+/** A soft electric-piano note: a sine, with a partial that dies away first. */
+function playKey(at: number, semi: number) {
+  if (!ctx || !musicBus) return
+  const c = ctx
+  const send = ensureVerb()
+  const out = c.createGain()
+  out.gain.value = 0.09
+  out.connect(musicBus)
+  if (send) out.connect(send)
+
+  const body = c.createOscillator()
+  body.type = 'sine'
+  body.frequency.value = hz(semi)
+  const bg = c.createGain()
+  bg.gain.setValueAtTime(0.0001, at)
+  bg.gain.linearRampToValueAtTime(1, at + 0.012)
+  bg.gain.exponentialRampToValueAtTime(0.0001, at + 1.7)
+  body.connect(bg).connect(out)
+  body.start(at)
+  body.stop(at + 1.8)
+
+  const bell = c.createOscillator()
+  bell.type = 'sine'
+  bell.frequency.value = hz(semi) * 3.02
+  const eg = c.createGain()
+  eg.gain.setValueAtTime(0.0001, at)
+  eg.gain.linearRampToValueAtTime(0.16, at + 0.006)
+  eg.gain.exponentialRampToValueAtTime(0.0001, at + 0.34)
+  bell.connect(eg).connect(out)
+  bell.start(at)
+  bell.stop(at + 0.36)
 }
 
 function playKick(at: number) {
@@ -245,30 +357,55 @@ function playKick(at: number) {
   const c = ctx
   const osc = c.createOscillator()
   osc.type = 'sine'
-  osc.frequency.setValueAtTime(120, at)
-  osc.frequency.exponentialRampToValueAtTime(44, at + 0.13)
+  osc.frequency.setValueAtTime(104, at)
+  osc.frequency.exponentialRampToValueAtTime(41, at + 0.16)
+  const lp = c.createBiquadFilter()
+  lp.type = 'lowpass'
+  lp.frequency.value = 220
   const g = c.createGain()
-  g.gain.setValueAtTime(0.22, at)
-  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.24)
-  osc.connect(g).connect(musicBus)
+  g.gain.setValueAtTime(0.0001, at)
+  g.gain.linearRampToValueAtTime(0.2, at + 0.008)
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.3)
+  osc.connect(lp).connect(g).connect(musicBus)
   osc.start(at)
-  osc.stop(at + 0.26)
+  osc.stop(at + 0.32)
 }
 
-function playHat(at: number) {
+/** Brushed rather than struck: noise with a slow edge on it. */
+function playSnare(at: number) {
+  if (!ctx || !musicBus) return
+  const c = ctx
+  const send = ensureVerb()
+  const src = c.createBufferSource()
+  src.buffer = noiseBuffer(c, 0.3)
+  const bp = c.createBiquadFilter()
+  bp.type = 'bandpass'
+  bp.frequency.value = 1700
+  bp.Q.value = 0.8
+  const g = c.createGain()
+  g.gain.setValueAtTime(0.0001, at)
+  g.gain.linearRampToValueAtTime(0.05, at + 0.02)
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.22)
+  src.connect(bp).connect(g).connect(musicBus)
+  if (send) g.connect(send)
+  src.start(at)
+  src.stop(at + 0.3)
+}
+
+function playShaker(at: number, soft: boolean) {
   if (!ctx || !musicBus) return
   const c = ctx
   const src = c.createBufferSource()
-  src.buffer = noiseBuffer(c, 0.05)
+  src.buffer = noiseBuffer(c, 0.06)
   const hp = c.createBiquadFilter()
   hp.type = 'highpass'
-  hp.frequency.value = 7000
+  hp.frequency.value = 6200
   const g = c.createGain()
-  g.gain.setValueAtTime(0.035, at)
-  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.045)
+  g.gain.setValueAtTime(soft ? 0.012 : 0.024, at)
+  g.gain.exponentialRampToValueAtTime(0.0001, at + 0.06)
   src.connect(hp).connect(g).connect(musicBus)
   src.start(at)
-  src.stop(at + 0.05)
+  src.stop(at + 0.07)
 }
 
 function scheduleBar() {
@@ -277,11 +414,21 @@ function scheduleBar() {
   // Keep roughly a bar of music queued ahead of the clock.
   while (nextBarAt < c.currentTime + BAR * 1.2) {
     const at = Math.max(nextBarAt, c.currentTime + 0.05)
-    playPad(at, PROG[bar % PROG.length])
+    const i = bar % PROG.length
+    const step = PROG[i]
+    playPad(at, step.chord, step.root)
+
     playKick(at)
-    playKick(at + BEAT * 2)
-    playKick(at + BEAT * 2.75)
-    for (let i = 0; i < 4; i++) playHat(at + BEAT * (i + 0.5))
+    playKick(at + BEAT * 2.5)
+    playSnare(at + BEAT * 2)
+    // The motif rests every fourth bar, so the loop can breathe.
+    if (bar % 4 !== 3) {
+      for (const note of MOTIF[i]) playKey(at + BEAT * note[0], note[1])
+    }
+    for (let k = 0; k < 8; k++) {
+      const off = k % 2 === 1 ? SWING : 0
+      playShaker(at + BEAT * (k / 2 + off), k % 2 === 1)
+    }
     bar += 1
     nextBarAt = at + BAR
   }
@@ -291,15 +438,15 @@ function startVinyl() {
   if (!ctx || !musicBus || vinyl) return
   const c = ctx
   const src = c.createBufferSource()
-  src.buffer = noiseBuffer(c, 2)
+  src.buffer = noiseBuffer(c, 3)
   src.loop = true
-  const lp = c.createBiquadFilter()
-  lp.type = 'bandpass'
-  lp.frequency.value = 3200
-  lp.Q.value = 0.6
+  const bp = c.createBiquadFilter()
+  bp.type = 'bandpass'
+  bp.frequency.value = 2400
+  bp.Q.value = 0.5
   const g = c.createGain()
-  g.gain.value = 0.012
-  src.connect(lp).connect(g).connect(musicBus)
+  g.gain.value = 0.01
+  src.connect(bp).connect(g).connect(musicBus)
   src.start()
   vinyl = src
 }
@@ -310,9 +457,12 @@ export function setMusic(on: boolean): boolean {
     musicOn = true
     musicBus.gain.cancelScheduledValues(ctx.currentTime)
     musicBus.gain.setValueAtTime(musicBus.gain.value, ctx.currentTime)
-    musicBus.gain.linearRampToValueAtTime(0.85, ctx.currentTime + 1.4)
+    // A long fade in, so it arrives rather than starts.
+    musicBus.gain.linearRampToValueAtTime(0.85, ctx.currentTime + 2.6)
     nextBarAt = ctx.currentTime + 0.15
     bar = 0
+    ensureVerb()
+    ensureWow()
     startVinyl()
     scheduleBar()
     if (loopTimer) window.clearInterval(loopTimer)
@@ -328,11 +478,11 @@ export function setMusic(on: boolean): boolean {
   if (ctx && musicBus) {
     musicBus.gain.cancelScheduledValues(ctx.currentTime)
     musicBus.gain.setValueAtTime(musicBus.gain.value, ctx.currentTime)
-    musicBus.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.6)
+    musicBus.gain.linearRampToValueAtTime(0, ctx.currentTime + 1.1)
   }
   if (vinyl) {
     try {
-      vinyl.stop(ctx ? ctx.currentTime + 0.7 : 0)
+      vinyl.stop(ctx ? ctx.currentTime + 1.2 : 0)
     } catch {
       /* ignore */
     }

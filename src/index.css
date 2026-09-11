@@ -625,3 +625,56 @@ body[data-locked='true'] {
   .mf-mote { animation: none; opacity: 0 }
   .mf-card::after { transition: none }
 }
+
+/* ------------------------------------------------- BYTE, walking ---------
+   A four-beat walk rather than four legs swinging on the same sine. Stance
+   is about 60% of the cycle: the planted foot travels backwards under him
+   while the body moves on, then the leg folds at the knee and swings
+   through. Front legs fold backwards at the elbow, hind legs forwards at
+   the hock, which is what tells the two pairs apart at a glance. */
+@keyframes bd-hip {
+  0% { transform: rotate(-19deg) }
+  60% { transform: rotate(21deg) }
+  76% { transform: rotate(4deg) }
+  100% { transform: rotate(-19deg) }
+}
+@keyframes bd-knee-front {
+  0%, 52% { transform: rotate(0deg) }
+  68% { transform: rotate(-32deg) }
+  86% { transform: rotate(-9deg) }
+  100% { transform: rotate(0deg) }
+}
+@keyframes bd-knee-hind {
+  0%, 52% { transform: rotate(4deg) }
+  68% { transform: rotate(38deg) }
+  86% { transform: rotate(12deg) }
+  100% { transform: rotate(4deg) }
+}
+
+/* Two rises per stride, and a little pitch as the weight crosses over. */
+@keyframes bd-bob {
+  0%, 100% { transform: translateY(0) }
+  25% { transform: translateY(-2.4px) }
+  50% { transform: translateY(0.4px) }
+  75% { transform: translateY(-2.4px) }
+}
+@keyframes bd-pitch {
+  0%, 100% { transform: rotate(1deg) }
+  50% { transform: rotate(-1deg) }
+}
+
+/* The head nods once per stride, lagging the body. */
+@keyframes bd-nod {
+  0%, 100% { transform: translateY(0) rotate(0deg) }
+  30% { transform: translateY(2.2px) rotate(-1.8deg) }
+  64% { transform: translateY(-1.6px) rotate(1.4deg) }
+}
+
+/* The lid closes over the optic. The eye itself never changes shape. */
+.bd-lid {
+  transform: scaleY(0);
+  transition: transform 110ms ease;
+}
+.bd-lid[data-shut='true'] {
+  transform: scaleY(1);
+}

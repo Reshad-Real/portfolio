@@ -30,6 +30,92 @@ const CHROME = '#c3c9d4'
 const CHROME_D = '#8f97a6'
 const OPTIC = '#2fb8f5'
 
+/**
+ * One stride, and the four feet spread evenly across it. A dog walking puts
+ * them down one at a time, a quarter of a cycle apart, near-fore first.
+ * Firing all four off the same wave is what made him look wound up.
+ */
+const STRIDE = 0.9
+const NEAR_LEGS = [
+  { x: 78, hip: 106, delay: 0, kind: 'front' as const },
+  { x: 138, hip: 110, delay: STRIDE * 0.75, kind: 'hind' as const },
+]
+const FAR_LEGS = [
+  { x: 66, hip: 106, delay: STRIDE * 0.5, kind: 'front' as const },
+  { x: 126, hip: 110, delay: STRIDE * 0.25, kind: 'hind' as const },
+]
+
+/**
+ * A leg in two pieces. The thigh swings from the hip, the shank hangs off a
+ * knee and folds as the leg swings through, so the foot clears the ground
+ * instead of scuffing along it.
+ */
+function Leg({
+  x,
+  hip,
+  delay,
+  kind,
+  far = false,
+}: {
+  x: number
+  hip: number
+  delay: number
+  kind: 'front' | 'hind'
+  far?: boolean
+}) {
+  const knee = hip + 30
+  const fill = far ? FUR_D : 'url(#bd-fur)'
+  const w = far ? 14 : 16.5
+  return (
+    <g
+      style={{
+        transformOrigin: `${x}px ${hip}px`,
+        animation: `bd-hip ${STRIDE}s cubic-bezier(0.45, 0, 0.55, 1) ${delay}s infinite`,
+      }}
+    >
+      {/* thigh */}
+      <rect
+        x={x - w / 2}
+        y={hip - 4}
+        width={w}
+        height={knee - hip + 10}
+        rx={w / 2}
+        fill={fill}
+        stroke={INK}
+        strokeWidth="3"
+      />
+      <g
+        style={{
+          transformOrigin: `${x}px ${knee}px`,
+          animation: `bd-knee-${kind} ${STRIDE}s cubic-bezier(0.45, 0, 0.55, 1) ${delay}s infinite`,
+        }}
+      >
+        {/* shank */}
+        <rect
+          x={x - (w - 2) / 2}
+          y={knee - 4}
+          width={w - 2}
+          height="29"
+          rx={(w - 2) / 2}
+          fill={fill}
+          stroke={INK}
+          strokeWidth="3"
+        />
+        {/* paw */}
+        <ellipse
+          cx={x - 1}
+          cy={knee + 25}
+          rx={far ? 8 : 9.5}
+          ry={far ? 5 : 6}
+          fill={far ? FUR_D : CREAM}
+          stroke={INK}
+          strokeWidth="3"
+        />
+      </g>
+    </g>
+  )
+}
+
 export function DogArt({
   pose,
   joy,
@@ -237,18 +323,11 @@ export function DogArt({
       <g style={{ display: pose === 'walk' ? 'block' : 'none' }}>
         {/* In profile only one side of him shows, so the chrome becomes a
             cheek plate rather than a seam down the middle. */}
-        <g style={{ transformOrigin: '100px 120px', animation: 'mf-bob 0.44s ease-in-out infinite' }}>
+        <g style={{ transformOrigin: '100px 126px', animation: 'bd-pitch 1.8s ease-in-out infinite' }}>
+        <g style={{ transformOrigin: '100px 120px', animation: 'bd-bob 0.9s ease-in-out infinite' }}>
           {/* far legs */}
-          {[
-            { x: 66, delay: '0.22s' },
-            { x: 126, delay: '0s' },
-          ].map((l) => (
-            <g
-              key={`far-${l.x}`}
-              style={{ transformOrigin: `${l.x}px 128px`, animation: `bd-step 0.88s ease-in-out ${l.delay} infinite` }}
-            >
-              <rect x={l.x - 7} y="126" width="14" height="42" rx="7" fill={FUR_D} stroke={INK} strokeWidth="3" />
-            </g>
+          {FAR_LEGS.map((l) => (
+            <Leg key={`far-${l.x}`} {...l} far />
           ))}
 
           {/* tail */}
@@ -273,21 +352,12 @@ export function DogArt({
           <path d="M66 132c16 10 62 10 78 0-4 12-16 18-40 18s-34-6-38-18z" fill={CREAM} opacity="0.85" />
 
           {/* near legs */}
-          {[
-            { x: 78, delay: '0s' },
-            { x: 138, delay: '0.22s' },
-          ].map((l) => (
-            <g
-              key={`near-${l.x}`}
-              style={{ transformOrigin: `${l.x}px 128px`, animation: `bd-step 0.88s ease-in-out ${l.delay} infinite` }}
-            >
-              <rect x={l.x - 8} y="126" width="16" height="44" rx="8" fill="url(#bd-fur)" stroke={INK} strokeWidth="3" />
-              <ellipse cx={l.x} cy="170" rx="10" ry="6" fill={CREAM} stroke={INK} strokeWidth="3" />
-            </g>
+          {NEAR_LEGS.map((l) => (
+            <Leg key={`near-${l.x}`} {...l} />
           ))}
 
           {/* head, in profile facing left: nose at x=6, tail at x=174 */}
-          <g style={{ transformOrigin: '46px 86px', animation: 'bd-headbob 0.88s ease-in-out infinite' }}>
+          <g style={{ transformOrigin: '52px 96px', animation: 'bd-nod 0.9s ease-in-out infinite' }}>
             {/* ear */}
             <path
               d="M50 62c-12 4-18 22-14 42 4 16 12 24 20 22 6-2 8-14 4-30-4-16-4-30-10-34z"
@@ -303,15 +373,27 @@ export function DogArt({
               stroke={INK}
               strokeWidth="3.5"
             />
-            {/* cheek plate */}
+            {/* cheek plate, with a status light rather than a second eye */}
             <path d="M58 64c14 4 22 16 22 30 0 10-4 18-10 22 6-18 2-38-12-52z" fill="url(#bd-chrome)" stroke={INK} strokeWidth="3" />
-            <circle cx="66" cy="84" r="9" fill="url(#bd-optic)" stroke={INK} strokeWidth="2.6" />
-            <circle cx="66" cy="84" r="12" fill={OPTIC} opacity="0.45" filter="url(#bd-glow)" />
+            <path d="M62 72c8 4 12 12 12 22" stroke={CHROME_D} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+            <circle cx="68" cy="94" r="3" fill={OPTIC}>
+              <animate attributeName="opacity" values="1;0.3;1" dur="2.6s" repeatCount="indefinite" />
+            </circle>
             {/* muzzle pointing forward */}
             <path d="M14 92c-8 0-12 6-12 12s6 12 16 12c12 0 20-6 20-14s-10-10-24-10z" fill={CREAM} stroke={INK} strokeWidth="3.5" />
             <ellipse cx="6" cy="98" rx="6" ry="5" fill={INK} />
-            <ellipse cx="30" cy="82" rx="6" ry={eyeShut ? 1.4 : 7} fill={INK} />
-            {!eyeShut && <circle cx="28" cy="79" r="2.4" fill="#ffffff" />}
+
+            {/* One eye, because in profile only one is facing us. It keeps a
+                fixed shape and size; only the lid moves, so it cannot pop
+                between frames the way a squashed ellipse did. */}
+            <circle cx="30" cy="82" r="11" fill={OPTIC} opacity="0.3" filter="url(#bd-glow)" />
+            <circle cx="30" cy="82" r="8.5" fill="url(#bd-optic)" stroke={INK} strokeWidth="2.8" />
+            <circle cx="30" cy="82" r="3.4" fill="#0a2333" />
+            <circle cx="27.6" cy="79.4" r="2.4" fill="#ffffff" opacity="0.92" />
+            <g className="bd-lid" data-shut={eyeShut ? 'true' : 'false'} style={{ transformOrigin: '30px 72px' }}>
+              <path d="M19 82a11 11 0 0 1 22 0 11 11 0 0 1-22 0z" fill="url(#bd-fur)" />
+              <path d="M19 82a11 11 0 0 1 22 0" stroke={INK} strokeWidth="2.8" fill="none" strokeLinecap="round" />
+            </g>
             {barking ? (
               <path d="M8 106c8 0 16 2 20 8-6 6-18 6-22-2z" fill="#5e2334" stroke={INK} strokeWidth="2.6" />
             ) : (
@@ -321,6 +403,7 @@ export function DogArt({
               <path d="M14 110c6 0 10 4 8 10-4 4-12 0-8-10z" fill="#f69bb0" stroke={INK} strokeWidth="2.4" />
             )}
           </g>
+        </g>
         </g>
       </g>
     </svg>

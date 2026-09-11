@@ -188,9 +188,9 @@ export function HeroScene({ className = '' }: { className?: string }) {
           <stop offset="0%" stopColor="#4a3a52" />
           <stop offset="100%" stopColor="#2e2436" />
         </linearGradient>
-        <linearGradient id="hs-liddown" x1="0.2" y1="0" x2="0.9" y2="1">
-          <stop offset="0%" stopColor="#3e3c63" />
-          <stop offset="100%" stopColor="#2a2945" />
+        <linearGradient id="hs-lidback" x1="0.3" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#302e4d" />
+          <stop offset="100%" stopColor="#1f1e33" />
         </linearGradient>
 
         {/* --------------------------------------------------------- filters */}
@@ -654,46 +654,54 @@ export function HeroScene({ className = '' }: { className?: string }) {
             and the screen reflected in his glasses. */}
         <g id="hs-laptop">
           {/* what it throws up into the room */}
-          <ellipse cx="330" cy="420" rx="184" ry="96" fill="url(#hs-screenglow)">
+          <ellipse cx="330" cy="418" rx="178" ry="92" fill="url(#hs-screenglow)">
             <animate attributeName="opacity" values="0.95;0.72;0.95" dur="5s" repeatCount="indefinite" />
           </ellipse>
+          {/* The bloom of screen light escaping past the top of the lid, drawn
+              behind it so the light bleeds out from around the edge rather
+              than sitting on the face of it. This is the thing that says the
+              machine is on and pointed away from us. */}
+          <path d="M240 368h180v24H240z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
+            <animate attributeName="opacity" values="0.34;0.2;0.34" dur="5s" repeatCount="indefinite" />
+          </path>
 
           {/* where it meets the desk */}
-          <ellipse cx="330" cy="502" rx="116" ry="11" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="500" rx="112" ry="10" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
 
-          {/* The lid, 200 wide by 100 tall. It was 200 by 60, a ratio of 0.3
-              against a real laptop's 0.6, which is why it read as a letter
-              tray. Top edge a little narrower, because it leans away from us
-              towards him. */}
-          <path d="M240 382h180l10 100H230z" fill="#24233a" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          {/* The panel inset on the back of the lid. Without it the whole thing
-              was one flat rectangle and read as a slab, not a machine. */}
-          <path d="M252 392h156l7 80H245z" fill="url(#hs-liddown)" stroke="#191830" strokeWidth="2.5" />
-          {/* the window, catching the back of the lid */}
-          <path d="M390 382h30l-24 100h-30z" fill="#ffffff" opacity="0.055" />
-          {/* light escaping round the raised edge */}
-          <path d="M250 383h160" stroke="#cdf1ff" strokeWidth="4" opacity="0.7" strokeLinecap="round">
-            <animate attributeName="opacity" values="0.7;0.45;0.7" dur="5s" repeatCount="indefinite" />
-          </path>
-          <path d="M419 393l8 85" stroke="#bfe4ff" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
-          <path d="M241 393l-8 85" stroke="#bfe4ff" strokeWidth="3" opacity="0.24" strokeLinecap="round" />
-          <circle cx="330" cy="432" r="11" fill="none" stroke="#9fd7ff" strokeWidth="2.8" opacity="0.4" />
-          <circle cx="330" cy="432" r="3.6" fill="#bfefff" opacity="0.8">
-            <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3.4s" repeatCount="indefinite" />
-          </circle>
+          {/* The back of the lid: one surface, tapering as it leans away from
+              us, rounded at the top corners, with nothing on it but a maker's
+              mark. It used to carry a rectangle inset into it and a lit strip
+              along its top edge, and those are precisely the two cues that
+              read as a bezel and a screen -- which is why it looked like the
+              front. That, over a chunky lipped box, made it luggage. */}
+          <path
+            d="M246 384h168a8 8 0 0 1 8 7l7 91H231l7-91a8 8 0 0 1 8-7z"
+            fill="url(#hs-lidback)"
+            stroke="#100f1e"
+            strokeWidth="4"
+            strokeLinejoin="round"
+          />
+          {/* the window, raking across the back of it */}
+          <path d="M392 384h26l-22 98h-26z" fill="#ffffff" opacity="0.06" />
+          {/* embossed, not lit: a glowing badge is a screen cue as well */}
+          <circle cx="330" cy="436" r="9" fill="none" stroke="#8f86c4" strokeWidth="2.4" opacity="0.3" />
+          <circle cx="330" cy="436" r="3" fill="#8f86c4" opacity="0.26" />
 
-          {/* The base, from behind. The keyboard is on his side of the hinge,
-              so from here there is nothing of it to see: only the back edge of
-              the slab the lid is hinged to. Drawing the deck and its keys
-              coming towards us put the machine the wrong way round. */}
-          <rect x="246" y="474" width="30" height="12" rx="6" fill="#4a4770" stroke="#100f1e" strokeWidth="3.5" />
-          <rect x="384" y="474" width="30" height="12" rx="6" fill="#4a4770" stroke="#100f1e" strokeWidth="3.5" />
-          <path d="M218 480h224v13a8 8 0 0 1-8 8H226a8 8 0 0 1-8-8z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M226 485h208" stroke="#7d74b0" strokeWidth="3" opacity="0.55" strokeLinecap="round" />
-          <path d="M230 496h196" stroke="#0f0e1c" strokeWidth="2.5" opacity="0.45" strokeLinecap="round" />
+          {/* The base: a thin slab seen edge on, a little wider than the lid,
+              with the hinge line in shadow where the two meet. The keyboard is
+              on his side of that line, so there is none of it to draw. */}
+          <path
+            d="M224 482h212a6 6 0 0 1 6 6v4a7 7 0 0 1-7 7H225a7 7 0 0 1-7-7v-4a6 6 0 0 1 6-6z"
+            fill="#312f4e"
+            stroke="#100f1e"
+            strokeWidth="4"
+            strokeLinejoin="round"
+          />
+          <path d="M234 481h192" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
+          <path d="M232 491h196" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
 
           {/* the light that gets past him, onto the desk */}
-          <ellipse cx="330" cy="508" rx="146" ry="10" fill="#9fd7ff" opacity="0.18" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="506" rx="140" ry="9" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />
         </g>
       </g>
 

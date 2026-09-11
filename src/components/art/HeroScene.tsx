@@ -371,9 +371,9 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
       {/* ============================================== desk and the figure */}
       <g data-depth="4" pointerEvents="none">
-        {/* He sits 54 higher than the desk was drawn for, so the hoodie clears
+        {/* He sits 76 higher than the desk was drawn for, so the hoodie clears
             the laptop and the head is attached to a body rather than a bare neck. */}
-        <g transform="translate(0 -54)">
+        <g transform="translate(0 -76)">
         {/* What he casts on the wall. It was a plain ellipse sitting behind
             his head like a halo; a shadow is the silhouette of the thing that
             blocked the light, thrown away from the source. The window is up
@@ -390,25 +390,39 @@ export function HeroScene({ className = '' }: { className?: string }) {
               upper arm drops from there. Widest across the arms rather than at
               the top, which is what separates a body from a beanbag. 310 wide
               against a 200-wide head: the same ratio the reference avatars use. */}
+          {/* 380 across against a 174-wide head, so the head is 0.46 of the
+              shoulders. That is the ratio in the reference; at 310 it was 0.56
+              and the laptop had nothing to be wide against. */}
           <path
-            d="M175 600c-2-70 4-120 14-148 8-24 22-38 42-44 26-8 59-12 99-12s73 4 99 12c20 6 34 20 42 44 10 28 16 78 14 148z"
+            d="M140 600c-2-78 4-134 16-166 10-26 26-42 48-50 30-9 66-14 126-14s96 5 126 14c22 8 38 24 48 50 12 32 18 88 16 166z"
             fill="url(#hs-hoodie)"
             stroke="#141326"
             strokeWidth="4"
           />
           {/* Form shadow on the far side. Fabric has no hard terminator, so
               this is blurred where the face's core shadow is only softened. */}
-          <path d="M175 600c-2-70 4-120 14-148 8-24 22-38 42-44-22 40-34 106-36 192z" fill="#1d2748" opacity="0.6" filter="url(#hs-soft)" />
+          <path d="M140 600c-2-78 4-134 16-166 10-26 26-42 48-50-24 42-38 112-40 216z" fill="#1d2748" opacity="0.6" filter="url(#hs-soft)" />
           {/* the screen, throwing cool light up the near side of the chest */}
-          <path d="M205 600c0-48 6-84 20-110-7 33-11 69-11 110z" fill="#9fd7ff" opacity="0.15" filter="url(#hs-soft)" />
+          <path d="M172 600c0-54 6-94 22-122-8 36-12 78-12 122z" fill="#9fd7ff" opacity="0.15" filter="url(#hs-soft)" />
+
+          {/* Forearms in along the desk from either side, elbows out past the
+              machine and the hands behind it, the way the reference has them.
+              Drawn before the laptop, so it covers where they end. */}
+          {['M156 486c8 32 32 62 72 88', 'M504 486c-8 32-32 62-72 88'].map((d) => (
+            <g key={d}>
+              <path d={d} stroke="#141326" strokeWidth="34" fill="none" strokeLinecap="round" />
+              <path d={d} stroke="url(#hs-hoodie)" strokeWidth="26" fill="none" strokeLinecap="round" />
+            </g>
+          ))}
+
           {/* raglan seams, so each arm is a separate form from the chest */}
           <g stroke="#222d55" strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.6">
-            <path d="M238 412c-15 26-24 62-26 104" />
-            <path d="M422 412c15 26 24 62 26 104" />
+            <path d="M212 396c-14 28-21 66-23 110" />
+            <path d="M448 396c14 28 21 66 23 110" />
           </g>
           {/* rim light: a thin line on the lit silhouette, not a band of tan */}
           <path
-            d="M330 396c40 0 73 4 99 12 20 6 34 20 42 44 10 28 16 78 14 148"
+            d="M330 370c60 0 96 5 126 14 22 8 38 24 48 50 12 32 18 88 16 166"
             fill="none"
             stroke="#ffe0b8"
             strokeWidth="4"
@@ -416,7 +430,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
           />
           {/* hood bunched at the neck */}
           <path
-            d="M288 410c13 16 71 16 84 0 12 12 17 25 16 36-39 14-116 14-117-1-1-10 5-23 17-35z"
+            d="M288 392c13 16 71 16 84 0 12 12 17 25 16 36-39 14-116 14-117-1-1-10 5-23 17-35z"
             fill="#32427a"
             stroke="#141326"
             strokeWidth="4"
@@ -654,67 +668,64 @@ export function HeroScene({ className = '' }: { className?: string }) {
             and the screen reflected in his glasses. */}
         <g id="hs-laptop">
           {/* what it throws up into the room */}
-          <ellipse cx="330" cy="418" rx="178" ry="92" fill="url(#hs-screenglow)">
+          <ellipse cx="330" cy="400" rx="212" ry="112" fill="url(#hs-screenglow)">
             <animate attributeName="opacity" values="0.95;0.72;0.95" dur="5s" repeatCount="indefinite" />
           </ellipse>
           {/* The bloom of screen light escaping past the top of the lid, drawn
               behind it so the light bleeds out from around the edge rather
               than sitting on the face of it. This is the thing that says the
               machine is on and pointed away from us. */}
-          <path d="M240 368h180v24H240z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
+          <path d="M209 336h242v24H209z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
             <animate attributeName="opacity" values="0.34;0.2;0.34" dur="5s" repeatCount="indefinite" />
           </path>
 
           {/* where it meets the desk */}
-          <ellipse cx="330" cy="500" rx="112" ry="10" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="504" rx="150" ry="11" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
 
-          {/* The back of the lid: one surface, tapering as it leans away from
-              us, rounded at the top corners, with nothing on it but a maker's
-              mark. It used to carry a rectangle inset into it and a lit strip
-              along its top edge, and those are precisely the two cues that
-              read as a bezel and a screen -- which is why it looked like the
-              front. That, over a chunky lipped box, made it luggage. */}
+          {/* The lid: 258 across against 380 of shoulder, which is the 0.68 the
+              reference uses. It was 200 against 310, so it read as a toy. One
+              plain surface, tapering as it leans away, rounded at the top
+              corners, with a camera dot and nothing else. A panel inset or a
+              lit top edge would read as a bezel and turn it back to front. */}
           <path
-            d="M246 384h168a8 8 0 0 1 8 7l7 91H231l7-91a8 8 0 0 1 8-7z"
+            d="M217 352h226a8 8 0 0 1 8 7l8 127H201l8-127a8 8 0 0 1 8-7z"
             fill="url(#hs-lidback)"
             stroke="#100f1e"
             strokeWidth="4"
             strokeLinejoin="round"
           />
           {/* the window, raking across the back of it */}
-          <path d="M392 384h26l-22 98h-26z" fill="#ffffff" opacity="0.06" />
-          {/* embossed, not lit: a glowing badge is a screen cue as well */}
-          <circle cx="330" cy="436" r="9" fill="none" stroke="#8f86c4" strokeWidth="2.4" opacity="0.3" />
-          <circle cx="330" cy="436" r="3" fill="#8f86c4" opacity="0.26" />
+          <path d="M408 352h30l-26 134h-30z" fill="#ffffff" opacity="0.06" />
+          <circle cx="234" cy="374" r="4.5" fill="#8f86c4" opacity="0.32" />
 
           {/* The base: a thin slab seen edge on, a little wider than the lid,
               with the hinge line in shadow where the two meet. The keyboard is
               on his side of that line, so there is none of it to draw. */}
           <path
-            d="M224 482h212a6 6 0 0 1 6 6v4a7 7 0 0 1-7 7H225a7 7 0 0 1-7-7v-4a6 6 0 0 1 6-6z"
+            d="M193 486h274a7 7 0 0 1 7 7v3a8 8 0 0 1-8 8H194a8 8 0 0 1-8-8v-3a7 7 0 0 1 7-7z"
             fill="#312f4e"
             stroke="#100f1e"
             strokeWidth="4"
             strokeLinejoin="round"
           />
-          <path d="M234 481h192" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
-          <path d="M232 491h196" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
+          <path d="M207 485h246" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
+          <path d="M204 496h252" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
 
           {/* the light that gets past him, onto the desk */}
-          <ellipse cx="330" cy="506" rx="140" ry="9" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="510" rx="172" ry="9" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />
         </g>
       </g>
 
       {/* --------------------------------------------------- what he is thinking */}
       {thought && (
         <g className="hs-thought" data-show={thinking ? 'true' : 'false'} pointerEvents="none">
-          <circle cx="404" cy="104" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
-          <circle cx="415" cy="118" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
+          <circle cx="404" cy="82" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
+          <circle cx="415" cy="94" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
           {/* The tech face is monospace, so the box can be sized from the
               character count: 6.9 per glyph at 11.5px, plus the padding. */}
           <rect
             x={416 - (thought.length * 6.9 + 26)}
-            y="52"
+            y="30"
             width={thought.length * 6.9 + 26}
             height="38"
             rx="13"
@@ -724,7 +735,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
           />
           <text
             x={416 - (thought.length * 6.9 + 26) / 2}
-            y="76"
+            y="54"
             textAnchor="middle"
             fill="#241f3a"
             fontSize="11.5"

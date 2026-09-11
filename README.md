@@ -135,7 +135,7 @@ src/
                   Publications, SignalLab, Experience, Studio, ElectronicsArcade,
                   Contact, Footer, ui
     games/        CircuitRunner, VoltageDefender, LogicLab, arcadeUi
-  hooks/          useTypewriter, useTheme, usePointer, useInView, usePrefersReducedMotion
+  hooks/          useTypewriter, useTheme, useInView, usePrefersReducedMotion
   lib/            gl, geometry, chamberScene, dogScene, parts, quality, audio
   data/           site, publications, projects, experience, skills
 ```

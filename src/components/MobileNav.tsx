@@ -11,7 +11,12 @@ export function MobileNav({ open, onClose }: Props) {
   const firstRef = useRef<HTMLAnchorElement | null>(null)
 
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      // Do not leave focus behind inside a panel that is now inert.
+      const active = document.activeElement
+      if (active instanceof HTMLElement && panelRef.current?.contains(active)) active.blur()
+      return
+    }
     firstRef.current?.focus()
 
     const onKey = (e: KeyboardEvent) => {
@@ -45,7 +50,7 @@ export function MobileNav({ open, onClose }: Props) {
         'fixed inset-0 z-[9] bg-black/90 backdrop-blur-md transition-opacity duration-300 md:hidden',
         open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
       ].join(' ')}
-      aria-hidden={!open}
+      inert={!open}
     >
       <nav
         aria-label="Mobile"

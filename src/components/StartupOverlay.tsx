@@ -51,13 +51,19 @@ export function StartupOverlay({ phase, progress, onEnter, webgl }: Props) {
     return () => window.removeEventListener('keydown', onKey)
   }, [booting, onEnter])
 
+  // Once the overlay is dismissed it must not keep focus, or it would be
+  // hidden from assistive technology while a focused control sits inside it.
+  useEffect(() => {
+    if (!booting) enterRef.current?.blur()
+  }, [booting])
+
   return (
     <div
       className={[
-        'absolute inset-0 z-20 transition-opacity duration-[900ms] ease-out',
+        'absolute inset-0 z-20 transition-opacity duration-500 ease-out',
         booting ? 'opacity-100' : 'pointer-events-none opacity-0',
       ].join(' ')}
-      aria-hidden={!booting}
+      inert={!booting}
     >
       {/* Corner brackets frame the volume like a microscope viewport. */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-5 sm:inset-8">

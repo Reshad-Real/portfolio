@@ -1,18 +1,32 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { DogArt, type Pose } from './art/DogArt'
+import { DogHouse } from './art/DogHouse'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 import { bark as barkSound, isSfxOn, setSfx } from '../lib/audio'
 
 const HIDE_KEY = 'mf-dog-hidden'
 const MET_KEY = 'mf-dog-met'
 
-type Mode = 'idle' | 'menu' | 'petting' | 'walking' | 'goinghome'
+type Mode =
+  | 'idle'
+  | 'menu'
+  | 'petting'
+  | 'walking'
+  | 'goinghome'
+  | 'digging'
+  | 'tohouse'
+  | 'housed'
+  | 'chasing'
 
 type Heart = { id: number; dx: number }
 
 const BARKS = ['woof!', 'wf!', 'borf!', 'arf!']
 const PET_LINES = ['good human', 'again, please', 'best day', '*happy noises*']
 const WALK_LINES = ['off we go', 'exploring', 'brb, sniffing']
+const DIG_LINES = ['diggy diggy', 'it is here somewhere', 'i buried it']
+const FOUND_LINES = ['got it!', 'mine', 'told you']
+const HOUSE_LINES = ['nap time', 'back in a bit', 'my house']
+const CHASE_LINES = ['ooh!', 'come back', 'flappy thing']
 
 const pick = (xs: readonly string[]) => xs[Math.floor(Math.random() * xs.length)]
 
@@ -55,9 +69,15 @@ export function Byte() {
   const [hearts, setHearts] = useState<Heart[]>([])
   const [ring, setRing] = useState(0)
   const [edge, setEdge] = useState<'left' | 'right' | 'centre'>('right')
+  const [digging, setDigging] = useState(false)
+  const [bone, setBone] = useState(false)
+  const [fly, setFly] = useState(false)
 
   const size = () => (window.innerWidth < 640 ? 64 : 88)
-  const homeX = () => Math.max(10, window.innerWidth - size() - 12)
+  /** The kennel sits in the corner; he lives just to the left of its door. */
+  const houseW = () => (window.innerWidth < 640 ? 92 : 118)
+  const houseX = () => Math.max(10, window.innerWidth - houseW() / 2 - size() / 2 - 14)
+  const homeX = () => Math.max(10, window.innerWidth - houseW() - size() - 18)
 
   // Position lives here, never in state.
   const xRef = useRef(0)
@@ -67,6 +87,7 @@ export function Byte() {
   const clickTimes = useRef<number[]>([])
   const timers = useRef<number[]>([])
   const heartId = useRef(0)
+  const flyRef = useRef<HTMLDivElement | null>(null)
   const [look, setLook] = useState({ x: 0, y: 0 })
 
   const after = useCallback((ms: number, fn: () => void) => {
@@ -162,6 +183,10 @@ export function Byte() {
       return
     }
 
+    // Any click ends whatever he had wandered off to do.
+    setDigging(false)
+    setFly(false)
+
     if (modeRef.current === 'menu') {
       // Close the menu; if he was out walking, let him carry on.
       setMode(pose === 'walk' ? 'walking' : 'idle')
@@ -199,6 +224,75 @@ export function Byte() {
     })
   }, [after, bark, speak, wanderSomewhereNew])
 
+  // ------------------------------------------------- what he does unwatched
+  /** Scrabbles at the floor, throws the spoil back, comes up with the bone. */
+  const dig = useCallback(() => {
+    setPose('sit')
+    setDigging(true)
+    setMode('digging')
+    speak(pick(DIG_LINES), 2000)
+    after(2600, () => {
+      if (modeRef.current !== 'digging') return
+      setDigging(false)
+      setBone(true)
+      setJoy(1)
+      barkSound(true)
+      speak(pick(FOUND_LINES), 1800)
+      setMode('idle')
+      after(900, () => setJoy(0))
+      after(6000, () => setBone(false))
+    })
+  }, [after, speak])
+
+  /** Trots to the kennel, goes in, comes back out a while later. */
+  const goInside = useCallback(() => {
+    setMode('tohouse')
+    setPose('walk')
+    const door = houseX()
+    targetRef.current = door
+    setFacing(door > xRef.current ? 1 : -1)
+    speak(pick(HOUSE_LINES), 1800)
+  }, [speak])
+
+  /** Follows the butterfly along the floor until it loses him. */
+  const chase = useCallback(() => {
+    setFly(true)
+    setMode('chasing')
+    setPose('walk')
+    speak(pick(CHASE_LINES), 1600)
+    barkSound(true)
+    after(8600, () => {
+      setFly(false)
+      if (modeRef.current !== 'chasing') return
+      goHome()
+    })
+  }, [after, goHome, speak])
+
+  /**
+   * Left alone he finds something to do. Only ever fires from a settled idle,
+   * and any click cancels whatever he was up to, so it never fights the user.
+   */
+  useEffect(() => {
+    if (hidden || reduced) return
+    let alive = true
+    let t = 0
+    const arm = () => {
+      t = window.setTimeout(() => {
+        if (!alive) return
+        if (modeRef.current === 'idle') {
+          const antic = [dig, goInside, chase][Math.floor(Math.random() * 3)]
+          antic()
+        }
+        arm()
+      }, 14000 + Math.random() * 14000)
+    }
+    arm()
+    return () => {
+      alive = false
+      window.clearTimeout(t)
+    }
+  }, [hidden, reduced, dig, goInside, chase])
+
   // ------------------------------------------------------------ the motion
   useEffect(() => {
     if (hidden) return
@@ -213,11 +307,32 @@ export function Byte() {
       last = now
 
       const m = modeRef.current
-      if (m !== 'walking' && m !== 'goinghome') return
+      if (m !== 'walking' && m !== 'goinghome' && m !== 'tohouse' && m !== 'chasing') return
       if (resting) return
 
-      const speed = (m === 'goinghome' ? 0.2 : 0.12) * dt
+      // While chasing he steers at whatever the butterfly is over, sampled
+      // from the element itself rather than duplicating its path here.
+      if (m === 'chasing') {
+        const f = flyRef.current
+        if (f) {
+          const r = f.getBoundingClientRect()
+          targetRef.current = Math.max(
+            10,
+            Math.min(window.innerWidth - size() - 10, r.left + r.width / 2 - size() / 2),
+          )
+        }
+      }
+
+      const speed = (m === 'goinghome' ? 0.2 : m === 'chasing' ? 0.17 : 0.12) * dt
       const delta = targetRef.current - xRef.current
+
+      if (m === 'chasing') {
+        if (Math.abs(delta) > 2) {
+          setFacing(delta > 0 ? 1 : -1)
+          place(xRef.current + Math.sign(delta) * Math.min(speed, Math.abs(delta)))
+        }
+        return
+      }
 
       if (Math.abs(delta) <= speed) {
         place(targetRef.current)
@@ -225,6 +340,20 @@ export function Byte() {
           setMode('idle')
           setPose('sit')
           setFacing(-1)
+          return
+        }
+        if (m === 'tohouse') {
+          // In he goes. He comes back out on his own a few seconds later.
+          setMode('housed')
+          setPose('sit')
+          setFacing(-1)
+          after(4200 + Math.random() * 3000, () => {
+            if (modeRef.current !== 'housed') return
+            setMode('goinghome')
+            setPose('walk')
+            targetRef.current = homeX()
+            setFacing(-1)
+          })
           return
         }
         // Sit and sniff, then pick somewhere else.
@@ -333,6 +462,34 @@ export function Byte() {
         ].join(' ')}
       />
 
+      {/* His kennel, in the corner he lives in. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed bottom-0 right-3 z-20 w-[92px] sm:w-[118px]"
+      >
+        <DogHouse occupied={mode === 'housed'} className="block h-auto w-full" />
+      </div>
+
+      {/* The butterfly, only while there is one to chase. */}
+      {fly && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none fixed bottom-[86px] right-[150px] z-30 sm:bottom-[104px]"
+          style={{ animation: 'bd-flit 8.6s ease-in-out' }}
+        >
+          <div ref={flyRef} className="relative h-5 w-6">
+            <span
+              className="absolute left-0 top-0 block h-5 w-3 rounded-l-full bg-accent2/80"
+              style={{ transformOrigin: 'right center', animation: 'bd-wing-l 0.22s ease-in-out infinite' }}
+            />
+            <span
+              className="absolute right-0 top-0 block h-5 w-3 rounded-r-full bg-accent/80"
+              style={{ transformOrigin: 'left center', animation: 'bd-wing-r 0.22s ease-in-out infinite' }}
+            />
+          </div>
+        </div>
+      )}
+
     <div
       ref={hostRef}
       className="pointer-events-none fixed bottom-0 left-0 z-30 h-[68px] w-[64px] sm:h-[92px] sm:w-[88px]"
@@ -370,7 +527,11 @@ export function Byte() {
       ))}
 
       {/* The walk pose is drawn nose-left, so travelling right is the mirrored
-          one. scaleX carried the opposite sign, so he walked backwards both ways. */}
+          one. scaleX carried the opposite sign, so he walked backwards both ways.
+          The wrapper carries the shrink into the kennel: it cannot go on the
+          host, whose transform is the position, nor on the button, whose
+          transform is the mirror. */}
+      <div className="bd-enter h-full w-full" data-in={mode === 'housed' ? 'true' : 'false'} style={{ transformOrigin: 'bottom center' }}>
       <button
         type="button"
         onClick={onDogClick}
@@ -383,12 +544,15 @@ export function Byte() {
           pose={pose}
           joy={joy}
           barking={barking}
+          digging={digging}
+          bone={bone}
           blinking={blinking}
           lookX={pose === 'walk' ? 0 : look.x}
           lookY={pose === 'walk' ? 0 : look.y}
           className="h-full w-full"
         />
       </button>
+      </div>
 
       {/* Menu, flipped to whichever side has room. */}
       <div

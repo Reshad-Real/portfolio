@@ -14,6 +14,10 @@ export type DogArtProps = {
   joy: number
   /** Mouth open, for a bark. */
   barking: boolean
+  /** Front paws scrabbling at the ground. */
+  digging?: boolean
+  /** Carrying the bone he just dug up. */
+  bone?: boolean
   blinking: boolean
   /** Pupil offset, -1..1. */
   lookX: number
@@ -120,6 +124,8 @@ export function DogArt({
   pose,
   joy,
   barking,
+  digging = false,
+  bone = false,
   blinking,
   lookX,
   lookY,
@@ -201,10 +207,41 @@ export function DogArt({
             strokeWidth="3.5"
           />
           <path d="M100 106c14 0 22 16 22 34s-8 26-22 26-22-8-22-26 8-34 22-34z" fill={CREAM} />
-          {/* front paws */}
-          <path d="M74 156c10 0 16 6 16 14 0 6-6 8-16 8s-16-2-16-8c0-8 6-14 16-14z" fill={CREAM} stroke={INK} strokeWidth="3.5" />
-          <path d="M126 156c10 0 16 6 16 14 0 6-6 8-16 8s-16-2-16-8c0-8 6-14 16-14z" fill={CREAM} stroke={INK} strokeWidth="3.5" />
+          {/* Front paws. While he digs they alternate, so one is always down. */}
+          <g style={digging ? { transformOrigin: '74px 150px', animation: 'bd-paw 0.34s ease-in-out infinite' } : undefined}>
+            <path d="M74 156c10 0 16 6 16 14 0 6-6 8-16 8s-16-2-16-8c0-8 6-14 16-14z" fill={CREAM} stroke={INK} strokeWidth="3.5" />
+          </g>
+          <g style={digging ? { transformOrigin: '126px 150px', animation: 'bd-paw 0.34s ease-in-out 0.17s infinite' } : undefined}>
+            <path d="M126 156c10 0 16 6 16 14 0 6-6 8-16 8s-16-2-16-8c0-8 6-14 16-14z" fill={CREAM} stroke={INK} strokeWidth="3.5" />
+          </g>
         </g>
+
+        {/* The dirt he throws back, and the hole it comes out of. */}
+        {digging && (
+          <g>
+            {/* The hole, and the spoil piled either side of it. Drawn solid:
+                at the contact shadow's opacity it washed out against it. */}
+            <ellipse cx="100" cy="174" rx="40" ry="9" fill="#4a3524" />
+            <ellipse cx="100" cy="172" rx="26" ry="5" fill="#2a1d12" />
+            <ellipse cx="58" cy="171" rx="13" ry="5.5" fill="#6b4d34" stroke={INK} strokeWidth="2.4" />
+            <ellipse cx="142" cy="171" rx="13" ry="5.5" fill="#6b4d34" stroke={INK} strokeWidth="2.4" />
+            {[
+              { x: 62, d: '0s' },
+              { x: 78, d: '0.12s' },
+              { x: 122, d: '0.2s' },
+              { x: 138, d: '0.31s' },
+            ].map((c) => (
+              <circle
+                key={c.x}
+                cx={c.x}
+                cy="172"
+                r={c.x % 3 === 0 ? 4 : 3}
+                fill="#6b4d34"
+                style={{ transformBox: 'fill-box', animation: `bd-dirt 0.62s ease-out ${c.d} infinite` }}
+              />
+            ))}
+          </g>
+        )}
 
         {/* ------------------------------------------------------------ head */}
         <g
@@ -313,8 +350,21 @@ export function DogArt({
             />
           )}
           {/* tongue, out when he is pleased */}
-          {joy > 0.35 && !barking && (
+          {joy > 0.35 && !barking && !bone && (
             <path d="M96 106c6-2 12 2 11 9-1 6-9 8-12 3z" fill="#f69bb0" stroke={INK} strokeWidth="2.6" />
+          )}
+          {/* what he dug up, held crossways in his jaws */}
+          {bone && (
+            <g transform="rotate(-8 100 110)">
+              <path
+                d="M70 104c-5-4-13-3-15 3-2 5 2 10 8 10-1 5 3 9 9 8 4-1 6-4 6-7h44c0 3 2 6 6 7 6 1 10-3 9-8 6 0 10-5 8-10-2-6-10-7-15-3-3-5-11-5-14 1-1 2-1 4 0 6H84c1-2 1-4 0-6-3-6-11-6-14-1z"
+                fill="#f4ead6"
+                stroke={INK}
+                strokeWidth="3"
+                strokeLinejoin="round"
+              />
+              <path d="M86 110h28" stroke="#d8c9ad" strokeWidth="3" strokeLinecap="round" />
+            </g>
           )}
         </g>
       </g>

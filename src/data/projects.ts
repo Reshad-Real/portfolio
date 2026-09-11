@@ -27,7 +27,7 @@ export const projects: Project[] = [
     blurb:
       'A flexible skin-mounted sensor that harvests what it needs to run. No battery to change is the whole point of wearing it continuously.',
     detail:
-      'Part of Advancing Sustainable Biosensing: A Self-powered Biosensor for Real-time and Wireless Health Monitoring, funded by RSGI at BRAC University. The e-skin-type biosensor is developed in both simulation and hardware, so the modelled behaviour and the bench behaviour can be held against each other rather than taken on trust. The work runs across the whole chain: the harvesting stage that powers the device, the flexible substrate it has to sit on and bend with, conditioning the biosignal once it has been picked up, and getting that reading off the body wirelessly.',
+      'Part of Advancing Sustainable Biosensing: A Self-powered Biosensor for Real-time and Wireless Health Monitoring, funded by RSGI at BRAC University. Energy harvesting, the flexible substrate, signal conditioning and the wireless link are developed as one chain rather than four parts, and the device is built in both simulation and hardware so that the modelled behaviour and the bench behaviour can be held against each other.',
     stack: ['energy harvesting', 'flexible substrates', 'biosignals', 'wireless'],
     context: 'BRAC University · RSGI',
   },

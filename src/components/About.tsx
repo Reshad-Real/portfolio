@@ -56,13 +56,20 @@ export function About() {
               Research Fellow there now. My research sits between device physics and simulation.
             </Reveal>
             <Reveal as="p" delay={70}>
-              At BRAC CREST I model gallium nitride tri-gate devices in Silvaco Atlas, pushing an
+              At CREST I model gallium nitride tri-gate devices in Silvaco Atlas, pushing an
               asymmetric-spacer AlGaN/GaN FinFET down to a 5 nm gate and arguing with the
-              short-channel effects that show up when you do. Alongside that I work on self-powered
-              electronic-skin biosensors, and on digital-twin models for energy storage and EV
-              charging.
+              short-channel effects that show up when you do.
             </Reveal>
             <Reveal as="p" delay={140}>
+              At RSGI I work on a self-powered electronic-skin biosensor for real-time, wireless
+              health monitoring. It has to harvest the power it runs on, bend with the skin it is
+              stuck to, condition a signal that arrives buried in noise, and then get that reading
+              off the body without a wire. Those four will not stay separate, so the device gets
+              built twice, once in simulation and once on the bench, and neither version is allowed
+              to be the only witness to how it behaves. My published papers sit alongside it, on
+              digital twins for energy storage and EV charging.
+            </Reveal>
+            <Reveal as="p" delay={210}>
               I also teach. Four semesters of tutoring circuits and electronics taught me that the
               fastest way to find the hole in your own understanding is to explain it to someone at
               eight in the morning.

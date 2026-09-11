@@ -12,13 +12,23 @@ import { WallPanels } from './art/WallPanels'
  */
 const MOTIFS: MotifId[] = ['chip', 'wafer', 'mug', 'plant', 'window', 'lamp']
 
-const DOG_STATES: { name: string; pose: Pose; joy: number; barking: boolean; blinking: boolean }[] = [
+const DOG_STATES: {
+  name: string
+  pose: Pose
+  joy: number
+  barking: boolean
+  blinking: boolean
+  digging?: boolean
+  bone?: boolean
+}[] = [
   { name: 'sit · idle', pose: 'sit', joy: 0, barking: false, blinking: false },
   { name: 'sit · blink', pose: 'sit', joy: 0, barking: false, blinking: true },
   { name: 'sit · bark', pose: 'sit', joy: 0, barking: true, blinking: false },
   { name: 'sit · petted', pose: 'sit', joy: 1, barking: false, blinking: false },
   { name: 'walk', pose: 'walk', joy: 0, barking: false, blinking: false },
   { name: 'walk · bark', pose: 'walk', joy: 0.6, barking: true, blinking: false },
+  { name: 'sit · digging', pose: 'sit', joy: 0, barking: false, blinking: false, digging: true },
+  { name: 'sit · got the bone', pose: 'sit', joy: 1, barking: false, blinking: false, bone: true },
 ]
 
 function Cell({ label, children }: { label: string; children: React.ReactNode }) {
@@ -83,6 +93,8 @@ export function ArtInspector() {
                 pose={s.pose}
                 joy={s.joy}
                 barking={s.barking}
+                digging={s.digging}
+                bone={s.bone}
                 blinking={s.blinking}
                 lookX={0}
                 lookY={0}

@@ -83,7 +83,19 @@ export function Research() {
         })}
       </div>
 
-      <div className="mt-14 grid gap-8 md:grid-cols-3">
+      <Reveal className="mt-20 md:mt-24">
+        <div className="mb-8 flex items-center gap-4">
+          <h3
+            className="shrink-0 text-[11px] uppercase tracking-[0.22em] text-muted"
+            style={{ fontFamily: "var(--font-tech)" }}
+          >
+            Research interests
+          </h3>
+          <span className="mf-rule h-px flex-1 bg-line" />
+        </div>
+      </Reveal>
+
+      <div className="grid gap-8 md:grid-cols-3">
         {interests.map((group, i) => (
           <Reveal key={group.id} delay={i * 80}>
             <div className="border-t-2 border-accent/30 pt-5">

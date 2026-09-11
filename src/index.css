@@ -678,3 +678,49 @@ body[data-locked='true'] {
 .bd-lid[data-shut='true'] {
   transform: scaleY(1);
 }
+
+/* ---------------------------------------------- BYTE, keeping himself busy */
+/* Digging: the paws alternate so one is always in the dirt, and the spoil
+   flies back over his shoulder. */
+@keyframes bd-paw {
+  0%, 100% { transform: translateY(0) rotate(0deg) }
+  50% { transform: translateY(-9px) rotate(-14deg) }
+}
+@keyframes bd-dirt {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6) }
+  25% { opacity: 0.9 }
+  100% { opacity: 0; transform: translate(0, -26px) scale(1) }
+}
+
+/* The butterfly he cannot catch. */
+@keyframes bd-flit {
+  0% { transform: translate(0, 0) }
+  20% { transform: translate(-90px, -46px) }
+  40% { transform: translate(-170px, 12px) }
+  60% { transform: translate(-100px, -58px) }
+  80% { transform: translate(-30px, -14px) }
+  100% { transform: translate(0, 0) }
+}
+@keyframes bd-wing-l {
+  0%, 100% { transform: rotateY(0deg) }
+  50% { transform: rotateY(70deg) }
+}
+@keyframes bd-wing-r {
+  0%, 100% { transform: rotateY(0deg) }
+  50% { transform: rotateY(-70deg) }
+}
+
+/* Going in and coming out of the kennel. */
+.bd-enter {
+  transition:
+    opacity 420ms ease,
+    transform 420ms cubic-bezier(0.4, 0, 0.7, 0.6);
+}
+.bd-enter[data-in='true'] {
+  opacity: 0;
+  transform: translateY(6px) scale(0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-enter { transition: none }
+}

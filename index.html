@@ -130,41 +130,43 @@
       </ul>
     </div>
 
-    <!-- the die panel. It stays here; it never takes the screen. -->
+    <!-- the scope. It stays here; it never takes the screen. -->
     <div class="hero-device">
       <div class="dev-card">
         <div class="dev-top">
-          <span class="dev-tag">floorplan · 9 mm² die</span>
-          <span class="die-stat live" id="dieStat">powered</span>
+          <span class="dev-tag">bench scope · CH1</span>
+          <span class="scope-stat live" id="scopeStat">running</span>
         </div>
 
         <div class="dev-stagewrap">
-          <canvas id="dieCanvas" tabindex="0" role="img"
-                  aria-label="Interactive 3D chip floorplan. Drag to rotate; each labelled block is a link to that section of the page."></canvas>
-          <div class="dev-fallback" id="dieFallback" hidden>
-            <svg viewBox="0 0 200 170" aria-hidden="true">
-              <rect x="8" y="8" width="184" height="154" rx="6" class="fb-die"/>
-              <rect x="26" y="28" width="74" height="62" rx="3"/>
-              <rect x="112" y="28" width="62" height="28" rx="3"/>
-              <rect x="112" y="62" width="62" height="28" rx="3"/>
-              <rect x="26" y="102" width="40" height="40" rx="3"/>
-              <rect x="78" y="102" width="96" height="26" rx="3"/>
+          <canvas id="scopeCanvas" tabindex="0" role="img"
+                  aria-label="An interactive 3D bench oscilloscope. Drag to tilt, turn the knobs to change the trace, and press a front-panel key to jump to that section of the page."></canvas>
+          <div class="dev-fallback" id="scopeFallback" hidden>
+            <svg viewBox="0 0 220 150" aria-hidden="true">
+              <rect x="6" y="8" width="208" height="120" rx="8" class="fb-case"/>
+              <rect x="18" y="20" width="140" height="86" rx="4" class="fb-screen"/>
+              <path d="M22 64 q14 -34 28 0 t28 0 t28 0 t28 0" class="fb-trace"/>
+              <circle cx="182" cy="38" r="12" class="fb-knob"/>
+              <circle cx="182" cy="74" r="12" class="fb-knob"/>
+              <rect x="18" y="112" width="26" height="10" rx="3" class="fb-key"/>
+              <rect x="50" y="112" width="26" height="10" rx="3" class="fb-key"/>
+              <rect x="82" y="112" width="26" height="10" rx="3" class="fb-key"/>
             </svg>
-            <p>A die floorplan: logic core, two SRAM macros, a PLL, an analogue block and the I/O ring around the edge.</p>
+            <p>A bench oscilloscope: the trace on screen, three knobs on the right, and a row of keys along the bottom.</p>
           </div>
-          <span class="dev-hint" id="dieHint">drag to rotate</span>
+          <span class="dev-hint" id="scopeHint">drag to tilt</span>
         </div>
 
-        <p class="dev-read" id="dieRead"><b>Floorplan · 9 mm² die</b> · hover a block to read it</p>
+        <p class="dev-read" id="scopeRead"><b>CH1 · sine</b> · a clean sine from the function generator</p>
 
-        <p class="dev-probes"><i></i>The six labelled blocks are the site map — click one to jump to that section.</p>
+        <p class="dev-probes"><i></i>The six front-panel keys are the site map — press one to jump to that section.</p>
 
-        <div class="dev-tools" id="dieTools">
-          <button class="sw on" id="powerBtn" type="button" aria-pressed="true">
-            <span class="sw-led"></span><span class="sw-name">Power</span><span class="sw-state">ON</span>
+        <div class="dev-tools" id="scopeTools">
+          <button class="sw on" id="runBtn" type="button" aria-pressed="true">
+            <span class="sw-led"></span><span class="sw-name">Acquire</span><span class="sw-state">RUN</span>
           </button>
-          <button class="sw" id="xrayBtn" type="button" aria-pressed="false">
-            <span class="sw-led"></span><span class="sw-name">X-ray</span><span class="sw-state">OFF</span>
+          <button class="sw sw-plain" id="modeBtn" type="button">
+            <span class="sw-name">Trace</span><span class="sw-state">SINE</span>
           </button>
         </div>
       </div>
@@ -587,10 +589,8 @@
         <h3 class="sub-h mt">References</h3>
         <div class="refs">
           <div class="ref">
-            <div class="ref-fig">
-              <canvas data-ref-figure="older" tabindex="0" role="img"
-                      aria-label="Stylised 3D figure representing Dr. Mirza Rasheduzzaman"></canvas>
-            </div>
+            <div class="ref-fig" data-ref-figure="older"
+                 aria-label="Stylised portrait of Dr. Mirza Rasheduzzaman"></div>
             <div class="ref-body">
               <b>Dr. Mirza Rasheduzzaman</b>
               <span>Associate Professor, Dept. of EEE, BRAC University</span>
@@ -599,10 +599,8 @@
           </div>
 
           <div class="ref">
-            <div class="ref-fig">
-              <canvas data-ref-figure="younger" tabindex="0" role="img"
-                      aria-label="Stylised 3D figure representing SK Tahmed Salim Rafid"></canvas>
-            </div>
+            <div class="ref-fig" data-ref-figure="younger"
+                 aria-label="Stylised portrait of SK Tahmed Salim Rafid"></div>
             <div class="ref-body">
               <b>SK Tahmed Salim Rafid</b>
               <span>Lecturer, Dept. of EEE, BRAC University</span>
@@ -713,7 +711,7 @@
 </button>
 
 <!-- ══════════════ BYTE ══════════════ -->
-<canvas id="dogCanvas" tabindex="0" role="button" aria-label="BYTE the cyber-dog. Activate to bark and open his menu."></canvas>
+<div id="dogStage"></div>
 <div id="dogBubble" role="status" aria-live="polite"></div>
 <div id="dogMenu" class="dog-menu" role="menu" aria-label="What should BYTE do?" hidden>
   <button type="button" data-act="pet" role="menuitem">🖐 Pet him</button>
@@ -723,8 +721,8 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="js/app.js"></script>
-<script src="js/die3d.js"></script>
-<script src="js/dog3d.js"></script>
-<script src="js/refs3d.js"></script>
+<script src="js/scope3d.js"></script>
+<script src="js/dog2d.js"></script>
+<script src="js/refs2d.js"></script>
 </body>
 </html>

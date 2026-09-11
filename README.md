@@ -17,9 +17,9 @@ Two pages, no build step, no framework. Open `index.html` and it runs.
 | `arcade.html` | The games, on their own page |
 | `styles.css` | All styling. Light is the default theme; dark is opt-in |
 | `js/app.js` | Theme, navigation, scroll reveals, counters, card tilt |
-| `js/die3d.js` | The hero: an interactive 3D chip floorplan |
-| `js/dog3d.js` | BYTE, the cyborg dog |
-| `js/refs3d.js` | The two 3D figures on the reference cards |
+| `js/scope3d.js` | The hero: a bench oscilloscope with a live 2D screen |
+| `js/dog2d.js` | BYTE, drawn in SVG |
+| `js/refs2d.js` | The two drawn portraits on the reference cards |
 | `js/games.js` | The four arcade games |
 
 Three.js r128 is pulled from a CDN. Everything else is hand-written.
@@ -28,61 +28,51 @@ Three.js r128 is pulled from a CDN. Everything else is hand-written.
 
 ## The hero
 
-A **chip floorplan** seen from above — and the site map. The six labelled blocks *are* the
-navigation: hover one to read what it holds, click it to travel to that section.
+A **bench oscilloscope**. The cabinet is deliberately plain 3D — a box, a bezel, three
+knobs, a row of keys — because all the character lives on the screen, and the screen is a
+**2D canvas redrawn every frame**. Flat drawing is where fine detail can actually be
+controlled; modelled geometry at this scale cannot.
 
-| Block | Section |
-|---|---|
-| U1 · logic core | About |
-| U2 · SRAM macro | Work |
-| U3 · SRAM macro | Papers |
-| U5 · PLL | Research |
-| U6 · analogue | Teaching |
-| J1 · I/O ring | Contact |
+The screen shows a real graticule, a glowing trace with its own bloom, channel and trigger
+labels, and live measurements along the bottom. Five traces: sine, square with edge
+overshoot, a ringing step response, an X-Y Lissajous figure, and an eye diagram with the
+opening marked.
 
-Around them sits everything a real floorplan has and nobody clicks: filler and decap, a
-seal ring, corner alignment marks, a gold pad ring with bond stubs, power straps overhead
-and a clock spine.
+- **Drag** to tilt the cabinet.
+- **Turn the knobs** — mode, time/div, volts/div.
+- **Press a front-panel key** to jump to that section. The six keys are the site map:
+  About, Work, Papers, Research, Teaching, Contact.
+- **Acquire** stops and starts the sweep.
 
-The surface detail is **painted, not modelled**. Each block's top face carries a
-procedurally drawn canvas texture, because a die's surface is far finer than geometry can
-carry: standard-cell rows with power rails and vias on the logic core, dense bit-cell
-arrays with a sense-amp strip on the memories, guard-ringed shapes on the analogue blocks,
-driver slabs on the I/O, and a plain hatch on the filler. The oxide between blocks has its
-own faint routing and speckle.
-
-- **Drag** to rotate.
-- **Power** runs signal packets along the routing channels.
-- **X-ray** flattens the blocks and hides the straps so the routing grid shows through.
-
-If WebGL is unavailable, a static floorplan diagram takes its place.
+If WebGL is unavailable, a static drawing of the instrument takes its place.
 
 ## BYTE
 
-A golden retriever puppy whose head is **half fur and half chrome**. The metal side is not
-a panel laid over the head — it is a full shell the shape of the skull, cut down the middle
-by a clipping plane that tracks the head every frame. That produces the clean split the
-reference photo has. A glowing optic sits in the metal half, mirroring the fur eye, with a
-lit seam running along the cut.
+A golden retriever puppy, **drawn in SVG** rather than modelled. Half his face is fur and
+half is chrome, with a glowing optic in the metal side — and because the split is an SVG
+clip path, it is exact rather than approximated.
 
-His **proportions** are the thing that makes him read as a puppy rather than a lumpy
-quadruped: the head is nearly as big as the body, the body is short and round, and the
-legs are stubby with no visible knee. Those ratios are asserted in the geometry tests,
-because they are what earlier versions got wrong while passing every other check.
+Two poses live in the same drawing: a front-facing sit and a side-on walk, swapped when he
+starts moving, with the walk legs animated from their hip pivots. Everything that moves —
+head, ears, tail, jaw, eyelid, optic — is a named group transformed each frame.
 
-He **sits** in the bottom-right corner, facing you, and **stands up** to walk — the two
-poses are separate sets of joint angles that lerp into each other, so getting up reads as
-a motion rather than a snap.
+He sits in the bottom-right corner.
 
 - **Click him** — he barks, then offers a menu.
 - **Pet him** — hearts, a wagging tail, and a line of nonsense. The count is remembered.
-- **Take a walk** — he stands, barks, and wanders along the bottom of the page, turning to
+- **Take a walk** — he stands, barks, and wanders along the bottom of the page, flipping to
   face the way he's going.
-- **Click him again** while he's out and the menu comes back, so you can pet him wherever
-  he's got to.
-- **Click him three times** and he trots back to his corner.
+- **Click him again** while he's out and the menu comes back.
+- **Click him three times** and he trots home.
 
 Hide him from the **Dog** button in the header.
+
+## The portraits
+
+The two reference cards carry **drawn SVG portraits** — stylised avatars, not likenesses.
+The older one has a receded grey hairline, glasses and a grey beard; the younger has fuller
+dark hair and no glasses. Both blink, breathe, glance toward your cursor when it crosses
+their card, and smile when clicked.
 
 ## The arcade
 
@@ -135,14 +125,14 @@ replace the matching `<symbol>` and everything picks it up.
 
 ## Testing
 
-Three harnesses live outside the site (`test-home.js`, `test-arcade.js`,
-`test-geometry.js`). The geometry one is the interesting one: because the 3D scenes cannot
-be eyeballed in CI, every model is projected through its own camera and measured — does it
-fit inside the canvas, is it centred, does the die stay in frame through a full rotation,
-does any hair geometry sit in front of a face, does the hair actually cover the crown, do
-two floorplan blocks overlap, are the dog's proportions those of a puppy. That is how the
-cropped busts, the overflowing hero, the bald figures and the adult-proportioned dog were
-all caught.
+Three harnesses live outside the site: `test-home.js`, `test-arcade.js` and `test-draw.js`.
+
+`test-draw.js` measures the artwork, since it cannot be looked at in CI. Every circle,
+ellipse and rect in each SVG is checked against its own viewBox, so nothing can quietly
+spill out of frame. The dog's clip path is checked to be exactly half the drawing width.
+Every animatable group is checked to exist, and then checked to actually move. The scope is
+projected through its camera to confirm it fits and fills its panel, and its keys are
+checked not to overlap.
 
 ## Accessibility
 

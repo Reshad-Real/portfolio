@@ -5,6 +5,7 @@ import { About, Marquee } from './components/About'
 import { Research } from './components/Research'
 import { Publications } from './components/Publications'
 import { Experience } from './components/Experience'
+import { Courses } from './components/Courses'
 import { ArcadeTeaser } from './components/ArcadeTeaser'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
@@ -36,6 +37,7 @@ export default function App() {
         <Research />
         <Publications />
         <Experience />
+        <Courses />
         <ArcadeTeaser href={arcadeHref} />
         <Contact base={base} />
       </main>

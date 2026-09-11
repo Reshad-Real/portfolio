@@ -33,6 +33,7 @@ export const navLinks = [
   { label: 'Research', href: '#research' },
   { label: 'Papers', href: '#papers' },
   { label: 'Teaching', href: '#teaching' },
+  { label: 'Courses', href: '#courses' },
 ] as const
 
 export const contactCta = { label: 'Get in touch', href: '#contact' } as const

@@ -21,17 +21,6 @@ export const projects: Project[] = [
     context: 'BRAC University · CREST',
   },
   {
-    id: 'g4fet',
-    kind: 'device',
-    title: 'GaN-based G4FET technology',
-    blurb:
-      'A four-gate transistor in gallium nitride: one body, four independent controls, and a design space that does not behave like anything in the textbook.',
-    detail:
-      'Research on GaN-Based G4FET Technology: Fabrication, Characterization, Modeling, and Circuit Demonstration, funded under the CREST initiative. The work covers transfer and output behaviour, subthreshold swing, DIBL and self-heating, written up for peer review.',
-    stack: ['TCAD', 'multi-gate', 'transfer curves', 'characterisation'],
-    context: 'BRAC University · CREST',
-  },
-  {
     id: 'eskin',
     kind: 'sensing',
     title: 'Self-powered e-skin biosensor',

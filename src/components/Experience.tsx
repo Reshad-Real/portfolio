@@ -1,5 +1,4 @@
 import { education, honours, references, roles, training } from '../data/experience'
-import { courses } from '../data/projects'
 import { skillGroups } from '../data/skills'
 import { useInView } from '../hooks/useInView'
 import { Counter, Reveal, Section, SectionHeading, Tag } from './ui'
@@ -30,7 +29,7 @@ export function Experience() {
             <br className="hidden sm:block" /> and who it happens with.
           </>
         }
-        lede="Two research posts, four semesters of tutoring, three courses, and one year advising the students who had just arrived."
+        lede="Two research posts, four semesters of tutoring, and one year advising the students who had just arrived."
       />
 
       <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
@@ -133,37 +132,9 @@ export function Experience() {
         </div>
 
         <div className="lg:col-span-5">
-          <Reveal>
-            <h3
-              className="mb-5 text-[11px] uppercase tracking-[0.22em] text-muted"
-              style={{ fontFamily: 'var(--font-tech)' }}
-            >
-              Courses tutored
-            </h3>
-            <ul className="space-y-3">
-              {courses.map((c) => (
-                <li
-                  key={c.code}
-                  className="mf-card rounded-xl border border-line bg-bg p-5 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
-                >
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <span className="text-[12px] text-accent" style={{ fontFamily: 'var(--font-tech)' }}>
-                      {c.code}
-                    </span>
-                    <span className="text-[11px] text-muted" style={{ fontFamily: 'var(--font-tech)' }}>
-                      {c.term}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-[16px] font-medium text-ink">{c.title}</p>
-                  <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">{c.detail}</p>
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-
           <Reveal delay={80}>
             <h3
-              className="mb-5 mt-12 text-[11px] uppercase tracking-[0.22em] text-muted"
+              className="mb-5 text-[11px] uppercase tracking-[0.22em] text-muted"
               style={{ fontFamily: 'var(--font-tech)' }}
             >
               Education

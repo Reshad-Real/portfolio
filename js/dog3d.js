@@ -30,6 +30,7 @@
   } catch (e) { hide(); return; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(SIZE, SIZE, false);
+  try { renderer.localClippingEnabled = true; } catch (e) {}
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);
@@ -110,27 +111,27 @@
   var jaw = new THREE.Group();
   jaw.position.set(0.40, -0.34, 0);
   head.add(jaw);
-  var mouth = ball(0.24, metal(0x6b3540, 18), 16);
-  mouth.scale.set(0.80, 0.52, 0.80);
-  mouth.position.set(0.20, -0.02, 0);
+  var mouth = ball(0.17, metal(0x5c2f38, 14), 14);
+  mouth.scale.set(0.72, 0.40, 0.70);
+  mouth.position.set(0.22, 0.02, 0);
   jaw.add(mouth);
-  var tongue = ball(0.16, fur(TONGUE), 14);
-  tongue.scale.set(0.92, 0.44, 0.80);
-  tongue.position.set(0.30, -0.14, 0);
+  var tongue = ball(0.11, fur(TONGUE), 12);
+  tongue.scale.set(0.88, 0.40, 0.76);
+  tongue.position.set(0.28, -0.07, 0);
   jaw.add(tongue);
-  var tongueTip = ball(0.12, fur(TONGUE), 12);
-  tongueTip.scale.set(0.9, 0.42, 0.85);
-  tongueTip.position.set(0.40, -0.20, 0);
+  var tongueTip = ball(0.085, fur(TONGUE), 10);
+  tongueTip.scale.set(0.9, 0.40, 0.82);
+  tongueTip.position.set(0.34, -0.11, 0);
   jaw.add(tongueTip);
 
   /* the fur-side eye */
-  var eye = ball(0.125, metal(0x171009, 90), 16);
+  var eye = ball(0.105, metal(0x171009, 90), 18);
   eye.position.set(0.50, 0.14, -0.32);
   head.add(eye);
   var glint = ball(0.042, lit(0xffffff), 10);
   glint.position.set(0.58, 0.21, -0.38);
   head.add(glint);
-  var lid = ball(0.135, goldM, 14);
+  var lid = ball(0.118, goldM, 16);
   lid.position.set(0.50, 0.31, -0.32);
   head.add(lid);
 
@@ -152,7 +153,7 @@
   earBotM.scale.set(0.60, 1.55, 0.82);
   earBotM.position.y = -0.40;
   earBot.add(earBotM);
-  var earCuff = ball(0.22, chromeD, 16);
+  var earCuff = ball(0.22, metal(0x9aa6ad, 70), 16);
   earCuff.scale.set(0.82, 0.58, 0.98);
   earCuff.position.y = -0.74;
   earBot.add(earCuff);
@@ -162,41 +163,65 @@
   earBot.rotation.x = 0.20;
   earBot.rotation.z = 0.10;
 
-  /* ---------- the chrome panel: one eye and cheek only ---------- */
+  /* ---------- the chrome half ----------
+     Not a panel laid on top of the head — an actual half. A full shell
+     the same shape as the skull, cut down the middle by a clipping plane
+     that tracks the head. That gives the clean fur/metal split the
+     reference photo has, instead of a silver lump stuck to one side. */
   var cyber = new THREE.Group();
   head.add(cyber);
 
-  var plateA = ball(0.735, chromeM, 26);
-  plateA.scale.set(0.60, 0.74, 0.40);
-  plateA.position.set(0.22, 0.12, 0.36);
-  cyber.add(plateA);
+  var clipPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+  chromeM.clippingPlanes = [clipPlane];
+  chromeD.clippingPlanes = [clipPlane];
+  chromeM.side = THREE.DoubleSide;
+  chromeD.side = THREE.DoubleSide;
 
-  var cheekPlate = ball(0.52, chromeD, 20);
-  cheekPlate.scale.set(0.70, 0.52, 0.42);
-  cheekPlate.position.set(0.50, -0.16, 0.28);
-  cyber.add(cheekPlate);
+  var chromeSkull = ball(0.728, chromeM, 30);
+  chromeSkull.scale.set(1.0, 0.95, 0.98);
+  cyber.add(chromeSkull);
 
-  var seamLine = box(0.035, 0.72, 0.05, lit(OPTIC));
-  seamLine.position.set(-0.16, 0.10, 0.48);
-  seamLine.rotation.z = 0.14;
+  var chromeMuzzle = ball(0.408, chromeD, 22);
+  chromeMuzzle.scale.set(1.05, 0.78, 0.92);
+  chromeMuzzle.position.set(0.52, -0.20, 0);
+  cyber.add(chromeMuzzle);
+
+  /* the seam sits exactly on the cut */
+  var seamLine = new THREE.Mesh(new THREE.TorusGeometry(0.70, 0.022, 8, 40), lit(OPTIC));
+  seamLine.position.set(0, 0, 0.012);
+  seamLine.scale.set(1.0, 0.95, 1.0);
   cyber.add(seamLine);
 
-  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.05, 10, 24), chromeD);
-  opticHousing.position.set(0.38, 0.13, 0.47);
-  opticHousing.rotation.y = -0.6;
+  /* the optic, in the metal half, mirroring the fur eye */
+  var opticHousing = new THREE.Mesh(new THREE.TorusGeometry(0.185, 0.055, 12, 26), chromeD);
+  opticHousing.position.set(0.50, 0.14, 0.32);
+  opticHousing.rotation.y = -0.72;
+  opticHousing.material = metal(0x8d9aa2, 70);
   cyber.add(opticHousing);
-  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.145, 22), lit(OPTIC));
-  opticLens.position.set(0.408, 0.13, 0.508);
-  opticLens.rotation.y = -0.6;
+  var opticLens = new THREE.Mesh(new THREE.CircleGeometry(0.155, 24), lit(OPTIC));
+  opticLens.position.set(0.533, 0.14, 0.352);
+  opticLens.rotation.y = -0.72;
   cyber.add(opticLens);
-  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.06, 16), lit(0xdff4ff));
-  opticCore.position.set(0.42, 0.13, 0.522);
-  opticCore.rotation.y = -0.6;
+  var opticRing2 = new THREE.Mesh(new THREE.RingGeometry(0.085, 0.115, 24), lit(0x9fe4ff));
+  opticRing2.position.set(0.539, 0.14, 0.357);
+  opticRing2.rotation.y = -0.72;
+  cyber.add(opticRing2);
+  var opticCore = new THREE.Mesh(new THREE.CircleGeometry(0.052, 18), lit(0xeaf9ff));
+  opticCore.position.set(0.545, 0.14, 0.361);
+  opticCore.rotation.y = -0.72;
   cyber.add(opticCore);
 
+  /* a few panel lines so the metal is not a blank dome */
+  var panelMat = lit(0x6f8189, 0.85);
+  [[0.18, 0.44, 0.50, 0.34], [0.16, -0.30, 0.44, 0.30], [-0.24, 0.10, 0.30, 0.52]]
+    .forEach(function (pl) {
+      var line = box(pl[2], 0.016, 0.02, panelMat);
+      line.position.set(pl[0], pl[1], pl[3]);
+      cyber.add(line);
+    });
   for (var rv = 0; rv < 3; rv++) {
-    var rivet = ball(0.028, chromeD, 8);
-    rivet.position.set(-0.06 + rv * 0.12, 0.44 - rv * 0.20, 0.42);
+    var rivet = ball(0.026, metal(0x7e8c93, 60), 8);
+    rivet.position.set(-0.10 + rv * 0.14, 0.46 - rv * 0.16, 0.44);
     cyber.add(rivet);
   }
 
@@ -206,18 +231,21 @@
     g.position.set(x, -0.58, z);
     torso.add(g);
 
-    var limb = tube(0.20, 0.22, 0.42, goldM);
-    limb.position.y = -0.21;
+    var limb = tube(0.19, 0.21, 0.40, goldM);
+    limb.position.y = -0.20;
     g.add(limb);
+    var hipCap = ball(0.20, goldM, 16);
+    hipCap.scale.set(1.0, 0.9, 1.0);
+    g.add(hipCap);
 
     /* kept as a group so the walk cycle still has something to bend */
     var knee = new THREE.Group();
     knee.position.y = -0.40;
     g.add(knee);
 
-    var paw = ball(0.24, creamM, 16);
-    paw.scale.set(1.0, 0.72, 1.05);
-    paw.position.set(0.03, -0.14, 0);
+    var paw = ball(0.235, creamM, 20);
+    paw.scale.set(1.02, 0.78, 1.06);
+    paw.position.set(0.03, -0.12, 0);
     knee.add(paw);
 
     return { g: g, knee: knee, paw: paw, front: !!front };
@@ -502,6 +530,9 @@
 
   /* ---------- loop ---------- */
   var running = true;
+  var clipNormal = new THREE.Vector3();
+  var clipQuat = new THREE.Quaternion();
+  var clipPoint = new THREE.Vector3();
   document.addEventListener('visibilitychange', function () { running = !document.hidden; });
 
   function lerp(a, b, n) { return a + (b - a) * n; }
@@ -606,9 +637,15 @@
     eye.scale.y = Math.max(0.1, 1 - blink * 1.05) * (1 - happy * 0.4);
     glint.visible = blink < 0.4;
 
+    /* the clipping plane follows the head, so the metal half stays a half */
+    head.updateMatrixWorld(true);
+    clipNormal.set(0, 0, 1).applyQuaternion(head.getWorldQuaternion(clipQuat)).normalize();
+    clipPlane.setFromNormalAndCoplanarPoint(clipNormal, head.getWorldPosition(clipPoint));
+
     /* optic pulse */
     var pulse = 1 + Math.sin(clock * 3.2) * 0.10 + barkT * 0.28;
     opticCore.scale.setScalar(pulse);
+    opticRing2.scale.setScalar(1 + Math.sin(clock * 3.2 + 0.8) * 0.07);
     blue.intensity = 0.7 + Math.sin(clock * 3.2) * 0.16;
     seamLine.material.color.setHex(Math.sin(clock * 2) > -0.6 ? OPTIC : 0x1d6a99);
     earSeam.material.color.setHex(Math.sin(clock * 2 + 1) > 0 ? OPTIC : 0x1d6a99);
@@ -633,7 +670,7 @@
   /* exposed for the geometry tests */
   canvas.__dog = {
     scene: scene, camera: camera, dog: dog, head: head, legs: legs,
-    nose: nose, skull: skull, trunk: trunk, opticLens: opticLens, plateA: plateA,
+    nose: nose, skull: skull, trunk: trunk, opticLens: opticLens, plateA: chromeSkull,
     setSit: function (v) { sitOverride = v; sitAmt = v; },
     freeSit: function () { sitOverride = null; }
   };

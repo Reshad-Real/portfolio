@@ -75,6 +75,122 @@
   }
   function box(w, h, d, m) { return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m); }
 
+
+  /* ---------- procedural die textures ----------
+     Painted onto canvases and mapped to the top face of each block. This
+     is what makes a floorplan look like a die photograph rather than a
+     set of coloured boxes: the surface detail is far finer than geometry
+     could reasonably carry. */
+  function makeTex(draw, px) {
+    var c = document.createElement('canvas');
+    c.width = c.height = px || 256;
+    var g = c.getContext('2d');
+    if (g) draw(g, c.width);
+    var tx = new THREE.CanvasTexture(c);
+    tx.needsUpdate = true;
+    tx.anisotropy = 4;
+    return tx;
+  }
+  function hexStr(n) { return '#' + ('000000' + n.toString(16)).slice(-6); }
+  function shade(hex, f) {
+    var col = new THREE.Color(hex);
+    col.offsetHSL(0, 0, f);
+    return '#' + col.getHexString();
+  }
+
+  /* standard-cell rows: fine horizontal tracks with power rails and vias */
+  function texStdCell(base) {
+    return makeTex(function (g, n) {
+      g.fillStyle = shade(base, -0.16); g.fillRect(0, 0, n, n);
+      for (var y = 0; y < n; y += 10) {
+        g.fillStyle = shade(base, 0.06);
+        g.fillRect(0, y, n, 6);
+        g.fillStyle = shade(base, 0.20);
+        g.fillRect(0, y, n, 1.4);
+        g.fillRect(0, y + 5, n, 1.4);
+      }
+      g.fillStyle = shade(base, 0.30);
+      for (var i = 0; i < 340; i++) {
+        g.fillRect(Math.random() * n, Math.floor(Math.random() * (n / 10)) * 10 + 2, 2, 2);
+      }
+      for (var x = 0; x < n; x += 46) {
+        g.fillStyle = shade(base, 0.16);
+        g.fillRect(x, 0, 2.6, n);
+      }
+    });
+  }
+  /* memory: a dense, regular bit-cell array with sense amps at one edge */
+  function texSram(base) {
+    return makeTex(function (g, n) {
+      g.fillStyle = shade(base, -0.18); g.fillRect(0, 0, n, n);
+      g.fillStyle = shade(base, 0.14);
+      for (var y = 4; y < n - 26; y += 6) {
+        for (var x = 4; x < n - 4; x += 6) g.fillRect(x, y, 4, 4);
+      }
+      g.fillStyle = shade(base, 0.28);
+      g.fillRect(0, n - 24, n, 10);
+      g.fillStyle = shade(base, 0.06);
+      g.fillRect(0, n - 12, n, 12);
+      g.fillStyle = shade(base, 0.34);
+      for (var x2 = 6; x2 < n; x2 += 24) g.fillRect(x2, n - 22, 3, 6);
+    });
+  }
+  /* analogue: fewer, larger, hand-drawn looking shapes with guard rings */
+  function texAnalog(base) {
+    return makeTex(function (g, n) {
+      g.fillStyle = shade(base, -0.14); g.fillRect(0, 0, n, n);
+      g.strokeStyle = shade(base, 0.26); g.lineWidth = 3;
+      g.strokeRect(6, 6, n - 12, n - 12);
+      var rects = [[22, 26, 78, 62], [116, 22, 52, 96], [184, 30, 46, 46],
+                   [26, 108, 64, 84], [110, 138, 96, 54], [180, 96, 52, 32]];
+      for (var i = 0; i < rects.length; i++) {
+        g.fillStyle = shade(base, i % 2 ? 0.10 : 0.20);
+        g.fillRect(rects[i][0], rects[i][1], rects[i][2], rects[i][3]);
+        g.strokeStyle = shade(base, 0.30); g.lineWidth = 1.6;
+        g.strokeRect(rects[i][0], rects[i][1], rects[i][2], rects[i][3]);
+      }
+      g.fillStyle = shade(base, 0.34);
+      for (var k = 0; k < 26; k++) g.fillRect(Math.random() * n, 200 + Math.random() * 40, 6, 3);
+    });
+  }
+  /* I/O: driver slabs and ESD structures in a row */
+  function texIO(base) {
+    return makeTex(function (g, n) {
+      g.fillStyle = shade(base, -0.16); g.fillRect(0, 0, n, n);
+      for (var x = 8; x < n - 8; x += 40) {
+        g.fillStyle = shade(base, 0.18);
+        g.fillRect(x, 16, 30, n - 76);
+        g.fillStyle = shade(base, 0.32);
+        g.fillRect(x, n - 52, 30, 30);
+      }
+      g.fillStyle = shade(base, 0.26);
+      g.fillRect(0, n - 16, n, 8);
+    });
+  }
+  /* filler and decap: uniform hatch, deliberately featureless */
+  function texFiller(base) {
+    return makeTex(function (g, n) {
+      g.fillStyle = shade(base, -0.10); g.fillRect(0, 0, n, n);
+      g.strokeStyle = shade(base, 0.14); g.lineWidth = 3;
+      for (var i = -n; i < n * 2; i += 12) {
+        g.beginPath(); g.moveTo(i, 0); g.lineTo(i + n, n); g.stroke();
+      }
+    }, 128);
+  }
+  /* the oxide surface between blocks: faint routing and speckle */
+  function texOxide(base) {
+    return makeTex(function (g, n) {
+      g.fillStyle = shade(base, -0.06); g.fillRect(0, 0, n, n);
+      g.strokeStyle = shade(base, 0.10); g.lineWidth = 2;
+      for (var i = 0; i < n; i += 16) {
+        g.beginPath(); g.moveTo(i, 0); g.lineTo(i, n); g.stroke();
+        g.beginPath(); g.moveTo(0, i); g.lineTo(n, i); g.stroke();
+      }
+      g.fillStyle = shade(base, 0.16);
+      for (var k = 0; k < 500; k++) g.fillRect(Math.random() * n, Math.random() * n, 2, 2);
+    });
+  }
+
   /* ---------- substrate, scribe line, seal ring ---------- */
   var S = 9.0, HALF = S / 2;
   var scribe = box(S + 0.5, 0.36, S + 0.5, solid(COL.scribe, 10));
@@ -85,7 +201,12 @@
   base.position.y = -0.05;
   die.add(base);
 
-  var oxide = box(S - 0.5, 0.12, S - 0.5, solid(COL.oxide, 26));
+  var oxideTop = solid(COL.oxide, 26);
+  oxideTop.map = texOxide(COL.oxide);
+  if (oxideTop.map) { oxideTop.map.wrapS = oxideTop.map.wrapT = THREE.RepeatWrapping; oxideTop.map.repeat.set(3, 3); }
+  var oxide = new THREE.Mesh(new THREE.BoxGeometry(S - 0.5, 0.12, S - 0.5),
+    [solid(COL.oxide, 26), solid(COL.oxide, 26), oxideTop,
+     solid(COL.oxide, 26), solid(COL.oxide, 26), solid(COL.oxide, 26)]);
   oxide.position.y = 0.16;
   die.add(oxide);
 
@@ -125,22 +246,22 @@
   var BLOCKS = [
     { id: 'about', label: 'ABOUT', tag: 'U1 · logic core',
       info: 'The datapath. Who I am and how the work actually goes.',
-      x: -1.40, z: -1.40, w: 3.40, d: 2.60, h: 1.35, c: COL.core, rows: true },
+      x: -1.40, z: -1.40, w: 3.40, d: 2.60, h: 1.35, c: COL.core, surface: 'rows' },
     { id: 'work', label: 'WORK', tag: 'U2 · SRAM macro',
       info: 'Where I have worked: BRAC CREST, RSGI, tutoring, Ulkasemi.',
-      x: 2.15, z: -2.00, w: 2.60, d: 1.60, h: 1.05, c: COL.sram, array: true },
+      x: 2.15, z: -2.00, w: 2.60, d: 1.60, h: 1.05, c: COL.sram, surface: 'array' },
     { id: 'papers', label: 'PAPERS', tag: 'U3 · SRAM macro',
       info: 'Six Q1 journal papers, each linked to its DOI.',
-      x: 2.15, z: -0.15, w: 2.60, d: 1.60, h: 1.05, c: COL.mem, array: true },
+      x: 2.15, z: -0.15, w: 2.60, d: 1.60, h: 1.05, c: COL.mem, surface: 'array' },
     { id: 'research', label: 'RESEARCH', tag: 'U5 · PLL',
       info: 'What I am building: GaN tri-gates, e-skin sensors, digital twins.',
-      x: -2.75, z: 1.60, w: 2.00, d: 1.80, h: 1.65, c: COL.pll },
+      x: -2.75, z: 1.60, w: 2.00, d: 1.80, h: 1.65, c: COL.pll, surface: 'analog' },
     { id: 'teaching', label: 'TEACHING', tag: 'U6 · analogue',
       info: 'Four semesters of tutoring, and where I studied.',
-      x: 0.15, z: 1.75, w: 2.60, d: 1.50, h: 0.95, c: COL.ana },
+      x: 0.15, z: 1.75, w: 2.60, d: 1.50, h: 0.95, c: COL.ana, surface: 'analog' },
     { id: 'contact', label: 'CONTACT', tag: 'J1 · I/O ring',
       info: 'Everything this die says to the outside world goes through here.',
-      x: 2.60, z: 2.00, w: 1.70, d: 1.40, h: 0.75, c: COL.io }
+      x: 2.60, z: 2.00, w: 1.70, d: 1.40, h: 0.75, c: COL.io, surface: 'io' }
   ];
 
   function makeLabel(text, color, weight) {
@@ -161,34 +282,18 @@
   }
 
   var TOP = 0.22;
+  var TEXER = { rows: texStdCell, array: texSram, analog: texAnalog, io: texIO };
   var blocks = [];
   for (var i = 0; i < BLOCKS.length; i++) {
     var d = BLOCKS[i];
-    var m = box(d.w, d.h, d.d, solid(d.c));
+    var sideMat = solid(d.c, 26);
+    var topMat = solid(d.c, 44);
+    var painter = TEXER[d.surface] || texStdCell;
+    topMat.map = painter(d.c);
+    var m = new THREE.Mesh(new THREE.BoxGeometry(d.w, d.h, d.d),
+      [sideMat, sideMat, topMat, sideMat, sideMat, sideMat]);
     m.position.set(d.x, TOP + d.h / 2, d.z);
     die.add(m);
-
-    /* standard-cell rows on the logic core */
-    if (d.rows) {
-      for (var rr = 0; rr < 9; rr++) {
-        var row = box(d.w - 0.26, 0.03, 0.055, lit(0x9fd8e0, 0.55));
-        row.position.set(d.x, TOP + d.h + 0.015, d.z - d.d / 2 + 0.22 + rr * ((d.d - 0.44) / 8));
-        die.add(row);
-      }
-    }
-    /* bit-cell array on the memories */
-    if (d.array) {
-      for (var ax = 0; ax < 7; ax++) {
-        var cx = box(0.035, 0.03, d.d - 0.28, lit(0xe6cfa4, 0.5));
-        cx.position.set(d.x - d.w / 2 + 0.24 + ax * ((d.w - 0.48) / 6), TOP + d.h + 0.015, d.z);
-        die.add(cx);
-      }
-      for (var az = 0; az < 5; az++) {
-        var cz = box(d.w - 0.28, 0.03, 0.035, lit(0xe6cfa4, 0.5));
-        cz.position.set(d.x, TOP + d.h + 0.015, d.z - d.d / 2 + 0.22 + az * ((d.d - 0.44) / 4));
-        die.add(cz);
-      }
-    }
 
     var sp = new THREE.Sprite(new THREE.SpriteMaterial({
       map: makeLabel(d.label, '#0d1618'), transparent: true, depthTest: false, opacity: 0.92
@@ -199,7 +304,7 @@
 
     blocks.push({
       def: d, mesh: m, label: sp, h: d.h,
-      hoverT: 0, dim: 0
+      mats: [sideMat, topMat], hoverT: 0, dim: 0
     });
   }
 
@@ -213,18 +318,18 @@
     { x: -0.35, z: 0.45, w: 1.30, d: 0.80, h: 0.28 }
   ];
   var fillMat = solid(COL.fill, 20);
+  var fillTop = solid(COL.fill, 24);
+  fillTop.map = texFiller(COL.fill);
+  if (fillTop.map) {
+    fillTop.map.wrapS = fillTop.map.wrapT = THREE.RepeatWrapping;
+    fillTop.map.repeat.set(2, 2);
+  }
   for (i = 0; i < FILL.length; i++) {
     var f = FILL[i];
-    var fm = box(f.w, f.h, f.d, fillMat);
+    var fm = new THREE.Mesh(new THREE.BoxGeometry(f.w, f.h, f.d),
+      [fillMat, fillMat, fillTop, fillMat, fillMat, fillMat]);
     fm.position.set(f.x, TOP + f.h / 2, f.z);
     die.add(fm);
-    /* fine hatching so filler reads as filler */
-    var n = Math.max(2, Math.round(f.w / 0.42));
-    for (var hh = 0; hh < n; hh++) {
-      var hatch = box(0.03, 0.02, f.d - 0.14, lit(0x5f7681, 0.45));
-      hatch.position.set(f.x - f.w / 2 + 0.2 + hh * ((f.w - 0.4) / (n - 1 || 1)), TOP + f.h + 0.01, f.z);
-      die.add(hatch);
-    }
   }
 
   /* ---------- pad ring ---------- */
@@ -415,7 +520,9 @@
     var dark = !!c.dark;
     scribe.material.color.setHex(dark ? 0x0a1418 : 0x16232a);
     base.material.color.setHex(dark ? 0x14252c : 0x22333b);
-    oxide.material.color.setHex(dark ? 0x1d3540 : 0x2f4550);
+    var oxCol = dark ? 0x1d3540 : 0x2f4550;
+    var oxMats = Array.isArray(oxide.material) ? oxide.material : [oxide.material];
+    for (var om = 0; om < oxMats.length; om++) oxMats[om].color.setHex(oxCol);
     key.intensity = dark ? 0.76 : 0.95;
     var ink = dark ? '#e9f4f5' : '#0d1618';
     for (var i = 0; i < blocks.length; i++) {
@@ -461,10 +568,12 @@
       b.mesh.position.y = TOP + (b.h * squash) / 2 + b.hoverT * 0.38;
 
       var col = new THREE.Color(b.def.c);
-      if (b.hoverT > 0.001) col.offsetHSL(0, 0.06 * b.hoverT, 0.13 * b.hoverT);
-      b.mesh.material.color.copy(col);
-      b.mesh.material.opacity = 1 - b.dim * 0.45;
-      b.mesh.material.transparent = b.dim > 0.01;
+      if (b.hoverT > 0.001) col.offsetHSL(0, 0.06 * b.hoverT, 0.15 * b.hoverT);
+      for (var mi = 0; mi < b.mats.length; mi++) {
+        b.mats[mi].color.copy(col);
+        b.mats[mi].opacity = 1 - b.dim * 0.45;
+        b.mats[mi].transparent = b.dim > 0.01;
+      }
 
       b.label.position.y = TOP + b.h * squash + 0.62 + b.hoverT * 0.42;
       b.label.material.opacity = 0.62 + b.hoverT * 0.38 - b.dim * 0.24;

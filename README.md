@@ -40,10 +40,16 @@ navigation: hover one to read what it holds, click it to travel to that section.
 | U6 · analogue | Teaching |
 | J1 · I/O ring | Contact |
 
-Around them sits everything a real floorplan has and nobody clicks: filler and decap with
-hatching, a seal ring, corner alignment marks, a gold pad ring with bond stubs, power
-straps overhead, a clock spine, standard-cell rows across the core, and bit-cell arrays on
-the memories.
+Around them sits everything a real floorplan has and nobody clicks: filler and decap, a
+seal ring, corner alignment marks, a gold pad ring with bond stubs, power straps overhead
+and a clock spine.
+
+The surface detail is **painted, not modelled**. Each block's top face carries a
+procedurally drawn canvas texture, because a die's surface is far finer than geometry can
+carry: standard-cell rows with power rails and vias on the logic core, dense bit-cell
+arrays with a sense-amp strip on the memories, guard-ringed shapes on the analogue blocks,
+driver slabs on the I/O, and a plain hatch on the filler. The oxide between blocks has its
+own faint routing and speckle.
 
 - **Drag** to rotate.
 - **Power** runs signal packets along the routing channels.
@@ -53,8 +59,11 @@ If WebGL is unavailable, a static floorplan diagram takes its place.
 
 ## BYTE
 
-A golden retriever puppy with a chrome panel over one eye and cheek, a glowing blue optic
-set into it, a lit seam along its edge, and a metal cuff on one ear tip.
+A golden retriever puppy whose head is **half fur and half chrome**. The metal side is not
+a panel laid over the head — it is a full shell the shape of the skull, cut down the middle
+by a clipping plane that tracks the head every frame. That produces the clean split the
+reference photo has. A glowing optic sits in the metal half, mirroring the fur eye, with a
+lit seam running along the cut.
 
 His **proportions** are the thing that makes him read as a puppy rather than a lumpy
 quadruped: the head is nearly as big as the body, the body is short and round, and the

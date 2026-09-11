@@ -64,8 +64,8 @@
 
     /* ---- shoulders: a bust, cut off at the bottom of the frame ---- */
     var shoulders = ball(0.92, shirtM, 22);
-    shoulders.scale.set(1.52, 0.74, 0.86);
-    shoulders.position.y = -1.30;
+    shoulders.scale.set(1.62, 0.90, 0.92);
+    shoulders.position.y = -1.44;
     person.add(shoulders);
 
     var collarM = mat(o.collar, 12, 0x333a3c);
@@ -112,10 +112,10 @@
     head.add(mouth);
 
     var eyeM = mat(0x161210, 78, 0xffffff);
-    var eyeL = ball(0.062, eyeM, 14); eyeL.position.set(-0.168, 0.035, 0.375); head.add(eyeL);
-    var eyeR = ball(0.062, eyeM, 14); eyeR.position.set(0.168, 0.035, 0.375); head.add(eyeR);
-    var lidL = ball(0.062, skinM, 12); lidL.position.set(-0.165, 0.115, 0.365); head.add(lidL);
-    var lidR = ball(0.062, skinM, 12); lidR.position.set(0.165, 0.115, 0.365); head.add(lidR);
+    var eyeL = ball(0.050, eyeM, 16); eyeL.position.set(-0.163, 0.035, 0.385); head.add(eyeL);
+    var eyeR = ball(0.050, eyeM, 16); eyeR.position.set(0.163, 0.035, 0.385); head.add(eyeR);
+    var lidL = ball(0.058, skinM, 14); lidL.position.set(-0.163, 0.108, 0.372); head.add(lidL);
+    var lidR = ball(0.058, skinM, 14); lidR.position.set(0.163, 0.108, 0.372); head.add(lidR);
 
     var browM = mat(o.brow, 9);
     var browL = box(0.185, 0.05, 0.06, browM); browL.position.set(-0.168, 0.155, 0.383); head.add(browL);
@@ -211,14 +211,14 @@
 
   var PEOPLE = {
     older: {
-      skin: 0xa9784f, hair: 0xc3c9cc, brow: 0xa8afb2, shirt: 0x34474f,
-      collar: 0xe8eef0, accent: 0x0c7b86, beardColor: 0xc3c9cc,
+      skin: 0xb08055, hair: 0xaeb5b9, brow: 0x98a0a4, shirt: 0x34474f,
+      collar: 0xe8eef0, accent: 0x0c7b86, beardColor: 0xb4bbbf,
       capS: [0.99, 0.88, 0.93], hairY: 0.115, hairZ: -0.10,
       sideS: [1.00, 0.84, 0.93], sideY: 0.02, sideZ: -0.07, backH: 0.74,
       glasses: true, beard: true, fringe: false
     },
     younger: {
-      skin: 0xb07a4e, hair: 0x2b1e16, brow: 0x2b1e16, shirt: 0x1d5f68,
+      skin: 0xb88154, hair: 0x2b1e16, brow: 0x2b1e16, shirt: 0x1d5f68,
       collar: 0xf2f6f7, accent: 0x6dbb1c, beardColor: 0x35251a,
       capS: [1.02, 0.98, 0.98], hairY: 0.085, hairZ: -0.05,
       sideS: [1.02, 0.92, 0.97], sideY: 0.03, sideZ: -0.06, backH: 0.82,
@@ -306,8 +306,8 @@
       f.person.rotation.y += ((f.hover ? f.look.x * 0.14 : Math.sin(f.t * 0.26) * 0.05) - f.person.rotation.y) * 0.06;
 
       var b = f.blink;
-      f.lidL.position.y = 0.115 - b * 0.09;
-      f.lidR.position.y = 0.115 - b * 0.09;
+      f.lidL.position.y = 0.108 - b * 0.085;
+      f.lidR.position.y = 0.108 - b * 0.085;
       f.eyeL.scale.y = Math.max(0.08, 1 - b * 1.1);
       f.eyeR.scale.y = Math.max(0.08, 1 - b * 1.1);
 

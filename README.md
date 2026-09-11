@@ -1,156 +1,156 @@
-# reshad.bench
+# Mainframe®
 
 The portfolio of **Md. Reshad Al Muttaki** — VLSI and semiconductor device engineer,
-Research Fellow at BRAC CREST.
+Research Fellow at BRAC University.
 
 Live: https://reshad-real.github.io/portfolio/
 
 ---
 
-## What's here
+## Stack
 
-Two pages, no build step, no framework. Open `index.html` and it runs.
+React 19, TypeScript, Vite 7, Tailwind CSS v4. Two runtime dependencies, `react` and
+`react-dom`. No 3D library, no animation library, no icon set.
 
-| File | What it does |
-|---|---|
-| `index.html` | The portfolio itself |
-| `arcade.html` | The games, on their own page |
-| `styles.css` | All styling. Light is the default theme; dark is opt-in |
-| `js/app.js` | Theme, navigation, scroll reveals, counters, card tilt |
-| `js/scope3d.js` | The hero: a bench oscilloscope with a live 2D screen |
-| `js/dog2d.js` | BYTE, drawn in SVG |
-| `js/refs2d.js` | The two drawn portraits on the reference cards |
-| `js/games.js` | The four arcade games |
+```bash
+npm install
+npm run dev        # http://localhost:5173/portfolio/
+npm run build      # type-check, then bundle into dist/
+npm run preview
+```
 
-Three.js r128 is pulled from a CDN. Everything else is hand-written.
+`vite.config.ts` sets `base` to `/portfolio/` for GitHub Pages. Set `VITE_BASE=/` to host
+the same source at a domain root.
 
 ---
 
-## The hero
+## The 3D
 
-A **bench oscilloscope**. The cabinet is deliberately plain 3D — a box, a bezel, three
-knobs, a row of keys — because all the character lives on the screen, and the screen is a
-**2D canvas redrawn every frame**. Flat drawing is where fine detail can actually be
-controlled; modelled geometry at this scale cannot.
+Both scenes run on a hand-written WebGL layer in `src/lib/gl.ts` — matrix maths, shader
+plumbing and mesh helpers, and nothing else. Everything drawn is generated at runtime from
+primitives in `src/lib/geometry.ts`, so there is not a single model, texture or binary asset
+to download.
 
-The screen shows a real graticule, a glowing trace with its own bloom, channel and trigger
-labels, and live measurements along the bottom. Five traces: sine, square with edge
-overshoot, a ringing step response, an X-Y Lissajous figure, and an eye diagram with the
-opening marked.
+**`src/lib/chamberScene.ts` — the startup chamber.** A 5 nm AlGaN/GaN asymmetric-spacer
+tri-gate assembles out of the dark: substrate, buffer, fin, AlGaN barrier, wrapped gate,
+unequal spacers, source and drain, each arriving on its own schedule. A lattice point cloud
+drifts above it, copper traces route away from the contacts with a travelling pulse, and
+carriers stream through the channel. Roughly fifteen draw calls, three shader programs. The
+camera answers to the cursor, to device orientation where it is reported, and to scroll.
 
-- **Drag** to tilt the cabinet.
-- **Turn the knobs** — mode, time/div, volts/div.
-- **Press a front-panel key** to jump to that section. The six keys are the site map:
-  About, Work, Papers, Research, Teaching, Contact.
-- **Acquire** stops and starts the sweep.
+The same context carries straight into the hero — the section is never unmounted — so the
+camera pulling back and panning aside is one continuous shot rather than a cut. On a
+portrait screen it lifts instead of panning, because the copy sits along the bottom there.
 
-If WebGL is unavailable, a static drawing of the instrument takes its place.
+**`src/lib/dogScene.ts` — BYTE.** A cartoon retriever posed by a small scene graph:
+spheres, boxes, cones, a torus collar. Half fur, half chrome, with a glowing optic set into
+the metal side. He trails the cursor along the bottom of the window, walks when the distance
+is worth walking, turns to face the way he is going, looks where you look, perks up over
+anything clickable, blinks on his own schedule, and says something short when a new section
+comes into view.
 
-## BYTE
+Click or drag on him to pet him: his eyes close, his ears fold back, his tail speeds up and
+hearts come off him. Keyboard users get the same by focusing him and pressing Enter. The
+`pet me` hint disappears after the first one and does not come back. The × hides him for
+good, and the button that appears in his place brings him back.
 
-A golden retriever puppy, **drawn in SVG** rather than modelled. Half his face is fur and
-half is chrome, with a glowing optic in the metal side — and because the split is an SVG
-clip path, it is exact rather than approximated.
+### Performance
 
-Two poses live in the same drawing: a front-facing sit and a side-on walk, swapped when he
-starts moving, with the walk legs animated from their hip pivots. The two poses treat the
-chrome differently on purpose — head-on you see the split down the middle, but in profile
-you only ever see one side of him, so there the metal is a cheek plate set into an
-otherwise furry head. Splitting a profile down the middle just reads as a helmet. Everything that moves —
-head, ears, tail, jaw, eyelid, optic — is a named group transformed each frame.
-
-He sits in the bottom-right corner.
-
-- **Click him** — he barks, then offers a menu.
-- **Pet him** — hearts, a wagging tail, and a line of nonsense. The count is remembered.
-- **Take a walk** — he stands, barks, and wanders along the bottom of the page, flipping to
-  face the way he's going.
-- **Click him again** while he's out and the menu comes back.
-- **Click him three times** and he trots home.
-
-Hide him from the **Dog** button in the header.
-
-## The portraits
-
-The two reference cards carry **drawn SVG portraits** — stylised avatars, not likenesses.
-The older one has grey at the temples and a thin strip over the crown — a receded hairline
-rather than a helmet — with glasses and a trimmed grey beard. The younger has a clean dark
-hairline with no flaps at the temples. Both have a jaw rather than a plain oval, a shaded
-side to the face, a moustache above a visible mouth, and a beard that follows the jawline
-instead of covering it. Both blink, breathe, glance toward your cursor when it crosses
-their card, and smile when clicked.
-
-## The arcade
-
-Four games at `arcade.html`. Best scores are kept in `localStorage`, per game.
-
-Every game opens on a **start screen** naming it and listing its controls, and ends on a
-**game over screen** with the final score, your best, and what killed the run. Beat your
-record and the screen says so.
-
-Each cabinet themes both screens itself — its own accent colour, background pattern,
-animated artwork and wording. Electron Runner opens on a streaking carrier and ends on a
-flatline; Gate Crash opens on a falling gate and ends on a cracked substrate; Trace Router
-opens on a powered trace and ends on a broken one; Resistor Rush opens on live bands and
-ends on a burnt resistor. The ending keeps the palette but never repeats the start.
-
-- **Electron Runner** — you are a carrier in the channel. Three lanes, rising speed.
-  Dodge lattice defects, collect charge, grab the rare boost for temporary immunity.
-  Three lives. Arrow keys, the on-screen pad, or tap the top/bottom half of the canvas.
-- **Gate Crash** — logic gates fall toward the substrate. Answer the output of the
-  outlined one with `0` or `1` before it lands. New gate types unlock as you level;
-  everything falls faster. Three lives.
-- **Trace Router** — rotate copper until power from `V` reaches every pad. The grid
-  grows 5×5 → 8×8, and there's a clock.
-- **Resistor Rush** — read the colour bands against an eight-second timer. Streaks
-  multiply your score, and past 90 points it starts running backwards, giving you the
-  value and asking for the bands.
+`detectQuality()` reads core count, memory, pointer type and pixel ratio, and scales point
+counts and the pixel-ratio cap accordingly. Both scenes park their animation loop entirely
+when scrolled off screen, BYTE stops while the tab is hidden, and `prefers-reduced-motion`
+cuts idle motion, drift and the typewriter. If WebGL is unavailable the chamber draws a
+static SVG cross-section of the same device instead of a dead canvas, and BYTE simply does
+not appear.
 
 ---
 
-## Education
+## Interactive work
 
-Three grade cards, each with an animated bar that fills to the score on scroll, so 3.81
-out of 4.00 reads as a proportion rather than a bare number.
+**Device explorer** (`#labs`) — gate length, fin width, oxide EOT and drain bias against a
+live transfer characteristic, with subthreshold swing, DIBL, natural length and the
+Ion/Ioff ratio recomputed on every change. Switch between tri-gate and planar and watch the
+short-channel numbers come apart. The model is the standard analytic one; it is labelled as
+such, and it is not TCAD output.
+
+**Demand monitor** (`#energy`) — a rolling charging-demand trace with an exponentially
+weighted baseline and a residual detector on top, in the shape of the published EV-charging
+anomaly work. Synthetic signal, with a button to inject an excursion.
+
+**Signal lab** (`#bench`) — a bench oscilloscope with five traces: sine, square with edge
+overshoot, second-order step with an adjustable damping ratio, an X-Y Lissajous figure with
+an adjustable phase, and an eye diagram with the opening marked. Real graticule, real
+time/div and volts/div, live Vpp and frequency. Every pixel is computed from the waveform.
+
+---
+
+## The electronics arcade
+
+Three cabinets at `#arcade`, lazy-loaded as one chunk so nothing is paid for until a cabinet
+is opened. Each keeps its own best score in `localStorage`, is fully keyboard playable, and
+stays silent until the sound switch is turned on — at which point the effects are
+synthesised through WebAudio, so there is still nothing to download.
+
+- **Circuit Runner** — you are a carrier in the channel. Three lanes, rising speed. Dodge
+  defects, collect charge, grab the rare boost for temporary immunity. Three lives. Arrow
+  keys or W/S; tap the top or bottom half on touch.
+- **Voltage Defender** — keep a power rail alive. Spikes fall straight, noise weaves, and a
+  short takes three hits. Waves get faster. Arrows or A/D to move, space to fire; drag and
+  tap on touch.
+- **Logic Lab** — a circuit with empty gates and a truth table it has to satisfy. Fill each
+  gate until your column matches the target. The circuit grows from one gate to three and
+  the clock shortens every level; a wrong verify costs three seconds. Keys 1–6 set the
+  focused gate, Enter verifies.
+
+---
 
 ## Themes
 
-Light by default. The toggle in the header switches to dark and the choice is saved.
-Both 3D scenes and all four games re-read their colours on the switch.
+Light is the default and the design is built for it: white, near-black type, thin grey
+rules, one restrained blue accent. Dark is a designed alternative on deep charcoal rather
+than an inversion. The choice is resolved before first paint by a small script in
+`index.html`, kept in `localStorage`, and only falls back to `prefers-color-scheme` while
+the visitor has not chosen. The startup chamber keeps its own cinematic dark styling in both
+themes, and hands over to the selected theme at the first section.
 
 ---
-
-## Icons
-
-Every icon is hand-drawn SVG in a sprite at the top of each page — including the ones
-next to LinkedIn, GitHub and Google Scholar. They're original glyphs, not the official
-brand marks, so nothing here is anyone's trademark. Swap in real ones if you'd rather:
-replace the matching `<symbol>` and everything picks it up.
-
----
-
-## Testing
-
-Three harnesses live outside the site: `test-home.js`, `test-arcade.js` and `test-draw.js`.
-
-`test-draw.js` measures the artwork, since it cannot be looked at in CI. Every circle,
-ellipse and rect in each SVG is checked against its own viewBox, so nothing can quietly
-spill out of frame. The dog's clip path is checked to be exactly half the drawing width.
-Every animatable group is checked to exist, and then checked to actually move. The scope is
-projected through its camera to confirm it fits and fills its panel, and its keys are
-checked not to overlap.
 
 ## Accessibility
 
-- Keyboard reachable throughout; visible focus rings.
-- The 3D device takes arrow keys; BYTE responds to Enter and Space.
-- `prefers-reduced-motion` cuts the marquee, reveals, idle motion and scrambling.
-- Live regions for BYTE's speech and the game messages.
+Semantic landmarks and headings, a skip link, visible focus rings throughout. The startup
+sequence is enterable from the keyboard and can be skipped at any point. The mobile overlay
+traps focus and closes on Escape. The blurred intro line is mirrored for screen readers, the
+clipboard buttons announce their result through a live region and fall back gracefully where
+the Clipboard API is unavailable, and every game is playable without a pointer.
+`prefers-reduced-motion` is honoured by the CSS and by every hook that animates.
+
+---
+
+## Layout
+
+```
+src/
+  components/     Navbar, MobileNav, ThemeToggle, HeroChamber, StartupOverlay, Hero,
+                  ChamberFallback, CyberDog, About, Research, DeviceExplorer, EnergyLab,
+                  Publications, SignalLab, Experience, Studio, ElectronicsArcade,
+                  Contact, Footer, ui
+    games/        CircuitRunner, VoltageDefender, LogicLab, arcadeUi
+  hooks/          useTypewriter, useTheme, usePointer, useInView, usePrefersReducedMotion
+  lib/            gl, geometry, chamberScene, dogScene, parts, quality, audio
+  data/           site, publications, projects, experience, skills
+```
+
+All written content comes from the CV and the previous site. Nothing about the research, the
+publications, the posts or the grades is invented. The studio name, the A.R.I.A intro and the
+`hello@mainframe.co` address in the hero are brand copy and live in `src/data/site.ts`; the
+real contact details are in the contact section and the footer.
 
 ---
 
 ## Deploying
 
-Settings → Pages → Deploy from a branch → `main` → `/ (root)`.
+Pushed to `main`, the workflow in `.github/workflows/deploy.yml` type-checks, builds and
+publishes to GitHub Pages. `actions/configure-pages` switches the Pages source over to
+Actions on the first run, so nothing has to be changed in the repository settings.
 
 © 2026 Md. Reshad Al Muttaki

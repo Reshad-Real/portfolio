@@ -1,0 +1,354 @@
+@import 'tailwindcss';
+
+/* Dark theme is driven by data-theme on <html>, set before first paint. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+:root {
+  --font-heading: 'HelveticaNowDisplay-Medium', 'Helvetica Neue', Arial, sans-serif;
+  --font-body: 'HelveticaNowDisplayW01-Rg', 'Helvetica Neue', Arial, sans-serif;
+  --font-tech: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
+
+  /* Light is the default surface. */
+  --bg: #ffffff;
+  --bg-2: #f4f4f1;
+  --surface: #fbfbf9;
+  --ink: #08090b;
+  --ink-soft: #2a2d33;
+  --muted: #5a5f66;
+  --line: #e4e4de;
+  --line-strong: #cfcfc7;
+  --accent: #0b3cf0;
+  --accent-2: #b8420f;
+  --phosphor: #067a6a;
+  --grid: rgba(8, 9, 11, 0.055);
+  --elev: 0 1px 2px rgba(8, 9, 11, 0.05), 0 12px 34px -22px rgba(8, 9, 11, 0.28);
+}
+
+[data-theme='dark'] {
+  --bg: #0a0b0d;
+  --bg-2: #101217;
+  --surface: #14161c;
+  --ink: #f1f3f5;
+  --ink-soft: #d3d7dd;
+  --muted: #99a0aa;
+  --line: #23262e;
+  --line-strong: #363b45;
+  --accent: #7c96ff;
+  --accent-2: #ff8f57;
+  --phosphor: #2fe6c4;
+  --grid: rgba(255, 255, 255, 0.06);
+  --elev: 0 1px 2px rgba(0, 0, 0, 0.5), 0 18px 44px -26px rgba(0, 0, 0, 0.8);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg2: var(--bg-2);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-inksoft: var(--ink-soft);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-linestrong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent2: var(--accent-2);
+  --color-phosphor: var(--phosphor);
+  --font-sans: var(--font-body);
+  --font-tech: var(--font-tech);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* The fixed navbar must not cover a section that has just been jumped to. */
+  scroll-padding-top: 5.5rem;
+  background: var(--bg);
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  margin: 0;
+  min-height: 100svh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  transition:
+    background-color 0.45s ease,
+    color 0.45s ease;
+}
+
+/* The startup sequence locks the page until the visitor enters. */
+body[data-locked='true'] {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* A dark chamber holds the startup scene and the hero; it keeps white text
+   in both themes so the transition into the themed page is deliberate. */
+.chamber {
+  --ink: #ffffff;
+  --muted: rgba(255, 255, 255, 0.62);
+  --line: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes mf-sweep {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(400%);
+  }
+}
+
+@keyframes mf-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes mf-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes mf-dash {
+  to {
+    stroke-dashoffset: -1000;
+  }
+}
+
+@keyframes mf-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes mf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.mf-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: #fff;
+  vertical-align: middle;
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+.mf-marquee-track {
+  animation: mf-marquee 42s linear infinite;
+}
+
+.mf-blueprint {
+  background-image:
+    linear-gradient(to right, var(--grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.mf-dotgrid {
+  background-image: radial-gradient(var(--grid) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Retro arcade chrome. Deliberately its own visual language. */
+.mf-crt {
+  position: relative;
+  font-family: var(--font-tech);
+}
+.mf-crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.22) 0px,
+    rgba(0, 0, 0, 0.22) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  border-radius: inherit;
+}
+.mf-crt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: inherit;
+  background: radial-gradient(120% 100% at 50% 50%, transparent 52%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.mf-scanbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 22%;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: mf-sweep 5.5s linear infinite;
+  pointer-events: none;
+}
+
+.mf-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+.mf-reveal[data-shown='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Slim, unobtrusive scrollbar that follows the theme. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 99px;
+  border: 3px solid var(--bg);
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .mf-reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .mf-cursor {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------- controls */
+.mf-range {
+  --pct: 50%;
+}
+.mf-range:focus-visible {
+  outline-offset: 6px;
+}
+.mf-range::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 99px;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0 var(--pct),
+    var(--line-strong) var(--pct) 100%
+  );
+}
+.mf-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-top: -6px;
+  border-radius: 99px;
+  background: var(--ink);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  transition: transform 0.15s ease;
+}
+.mf-range:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+.mf-range::-moz-range-track {
+  height: 3px;
+  border-radius: 99px;
+  background: var(--line-strong);
+}
+.mf-range::-moz-range-progress {
+  height: 3px;
+  border-radius: 99px;
+  background: var(--accent);
+}
+.mf-range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 99px;
+  background: var(--ink);
+  border: 3px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+
+@keyframes mf-heart {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-46px) scale(1.15);
+  }
+}

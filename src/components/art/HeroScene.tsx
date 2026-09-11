@@ -390,39 +390,30 @@ export function HeroScene({ className = '' }: { className?: string }) {
               upper arm drops from there. Widest across the arms rather than at
               the top, which is what separates a body from a beanbag. 310 wide
               against a 200-wide head: the same ratio the reference avatars use. */}
-          {/* 380 across against a 174-wide head, so the head is 0.46 of the
-              shoulders. That is the ratio in the reference; at 310 it was 0.56
-              and the laptop had nothing to be wide against. */}
+          {/* 300 across, which puts the silhouette barely ten units outside
+              the top edge of the laptop: the machine hides him from the collar
+              down, and what reads as his body is the shoulders and chest above
+              it. Taking the torso to 380 and hanging forearms off it had made
+              him close to twice the width of his own head. */}
           <path
-            d="M140 600c-2-78 4-134 16-166 10-26 26-42 48-50 30-9 66-14 126-14s96 5 126 14c22 8 38 24 48 50 12 32 18 88 16 166z"
+            d="M180 600c-2-78 4-132 14-164 10-26 24-42 44-50 28-8 62-12 92-12s64 4 92 12c20 8 34 24 44 50 10 32 16 86 14 164z"
             fill="url(#hs-hoodie)"
             stroke="#141326"
             strokeWidth="4"
           />
           {/* Form shadow on the far side. Fabric has no hard terminator, so
               this is blurred where the face's core shadow is only softened. */}
-          <path d="M140 600c-2-78 4-134 16-166 10-26 26-42 48-50-24 42-38 112-40 216z" fill="#1d2748" opacity="0.6" filter="url(#hs-soft)" />
+          <path d="M180 600c-2-78 4-132 14-164 10-26 24-42 44-50-22 42-36 112-38 214z" fill="#1d2748" opacity="0.6" filter="url(#hs-soft)" />
           {/* the screen, throwing cool light up the near side of the chest */}
-          <path d="M172 600c0-54 6-94 22-122-8 36-12 78-12 122z" fill="#9fd7ff" opacity="0.15" filter="url(#hs-soft)" />
-
-          {/* Forearms in along the desk from either side, elbows out past the
-              machine and the hands behind it, the way the reference has them.
-              Drawn before the laptop, so it covers where they end. */}
-          {['M148 452c-2 42 14 80 50 112', 'M512 452c2 42-14 80-50 112'].map((d) => (
-            <g key={d}>
-              <path d={d} stroke="#141326" strokeWidth="40" fill="none" strokeLinecap="round" />
-              <path d={d} stroke="url(#hs-hoodie)" strokeWidth="32" fill="none" strokeLinecap="round" />
-            </g>
-          ))}
-
+          <path d="M208 600c0-50 6-88 20-116-7 34-11 74-11 116z" fill="#9fd7ff" opacity="0.15" filter="url(#hs-soft)" />
           {/* raglan seams, so each arm is a separate form from the chest */}
           <g stroke="#222d55" strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.6">
-            <path d="M212 396c-14 28-21 66-23 110" />
-            <path d="M448 396c14 28 21 66 23 110" />
+            <path d="M246 400c-13 26-20 62-22 104" />
+            <path d="M414 400c13 26 20 62 22 104" />
           </g>
           {/* rim light: a thin line on the lit silhouette, not a band of tan */}
           <path
-            d="M330 370c60 0 96 5 126 14 22 8 38 24 48 50 12 32 18 88 16 166"
+            d="M330 374c30 0 64 4 92 12 20 8 34 24 44 50 10 32 16 86 14 164"
             fill="none"
             stroke="#ffe0b8"
             strokeWidth="4"
@@ -675,12 +666,12 @@ export function HeroScene({ className = '' }: { className?: string }) {
               behind it so the light bleeds out from around the edge rather
               than sitting on the face of it. This is the thing that says the
               machine is on and pointed away from us. */}
-          <path d="M195 336h280v24H195z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
+          <path d="M190 336h280v24H190z" fill="#9fd7ff" opacity="0.34" filter="url(#hs-soft)">
             <animate attributeName="opacity" values="0.34;0.2;0.34" dur="5s" repeatCount="indefinite" />
           </path>
 
           {/* where it meets the desk */}
-          <ellipse cx="330" cy="504" rx="150" ry="11" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="504" rx="145" ry="11" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
 
           {/* The lid: 258 across against 380 of shoulder, which is the 0.68 the
               reference uses. It was 200 against 310, so it read as a toy. One
@@ -688,28 +679,28 @@ export function HeroScene({ className = '' }: { className?: string }) {
               corners, with a camera dot and nothing else. A panel inset or a
               lit top edge would read as a bezel and turn it back to front. */}
           <path
-            d="M203 352h264a8 8 0 0 1 8 7l-20 127H215l-20-127a8 8 0 0 1 8-7z"
+            d="M198 352h264a8 8 0 0 1 8 7l-20 127H210l-20-127a8 8 0 0 1 8-7z"
             fill="url(#hs-lidback)"
             stroke="#100f1e"
             strokeWidth="4"
             strokeLinejoin="round"
           />
           {/* the window, raking across the back of it */}
-          <path d="M418 352h32l-18 134h-32z" fill="#ffffff" opacity="0.06" />
-          <circle cx="234" cy="374" r="4.5" fill="#8f86c4" opacity="0.32" />
+          <path d="M413 352h32l-18 134h-32z" fill="#ffffff" opacity="0.06" />
+          <circle cx="229" cy="374" r="4.5" fill="#8f86c4" opacity="0.32" />
 
           {/* The base: a thin slab seen edge on, a little wider than the lid,
               with the hinge line in shadow where the two meet. The keyboard is
               on his side of that line, so there is none of it to draw. */}
           <path
-            d="M205 486h260a7 7 0 0 1 7 7v3a8 8 0 0 1-8 8H206a8 8 0 0 1-8-8v-3a7 7 0 0 1 7-7z"
+            d="M200 486h260a7 7 0 0 1 7 7v3a8 8 0 0 1-8 8H201a8 8 0 0 1-8-8v-3a7 7 0 0 1 7-7z"
             fill="#312f4e"
             stroke="#100f1e"
             strokeWidth="4"
             strokeLinejoin="round"
           />
-          <path d="M217 485h236" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
-          <path d="M215 496h240" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
+          <path d="M212 485h236" stroke="#0b0a16" strokeWidth="4" opacity="0.55" strokeLinecap="round" />
+          <path d="M210 496h240" stroke="#6f66a0" strokeWidth="2.2" opacity="0.32" strokeLinecap="round" />
 
           {/* the light that gets past him, onto the desk */}
           <ellipse cx="330" cy="510" rx="172" ry="9" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />

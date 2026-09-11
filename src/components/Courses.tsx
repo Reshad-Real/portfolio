@@ -10,7 +10,6 @@ export function Courses() {
     <Section id="courses" tone="alt">
       <SectionHeading
         index="05"
-        motif="lamp"
         kicker="Courses tutored"
         title={
           <>

@@ -10,7 +10,6 @@ export function Publications() {
     <Section id="papers" tone="alt">
       <SectionHeading
         index="03"
-        motif="lamp"
         kicker="Selected publications"
         title={
           <>

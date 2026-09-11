@@ -21,12 +21,63 @@ function getCtor(): Ctor | null {
   return w.AudioContext ?? w.webkitAudioContext ?? null
 }
 
+/**
+ * iOS puts Web Audio in the "ambient" session by default, and an ambient
+ * session is silenced by the hardware ring switch. A phone with that switch
+ * flipped therefore plays nothing at all, however correct the rest is. Asking
+ * for the playback session is the fix; Safari 16.4 and up honour it and every
+ * other browser ignores the property.
+ */
+function claimPlaybackSession() {
+  const ns = navigator as unknown as { audioSession?: { type: string } }
+  if (!ns.audioSession) return
+  try {
+    ns.audioSession.type = 'playback'
+  } catch {
+    /* read-only on some versions */
+  }
+}
+
+/**
+ * One sample of silence, played the instant the context exists. iOS treats
+ * this as the handshake that moves a context out of its interrupted state;
+ * without it a context can report "running" and still produce nothing.
+ */
+function unlock(c: AudioContext) {
+  try {
+    const src = c.createBufferSource()
+    src.buffer = c.createBuffer(1, 1, c.sampleRate)
+    src.connect(c.destination)
+    src.start(0)
+  } catch {
+    /* ignore */
+  }
+}
+
+let wakeHooked = false
+
+/** Phones suspend the context when the page goes away. Bring it back. */
+function hookWake() {
+  if (wakeHooked || typeof document === 'undefined') return
+  wakeHooked = true
+  const wake = () => {
+    if (!ctx || document.visibilityState !== 'visible') return
+    if (ctx.state !== 'running') void ctx.resume()
+    // Its clock stopped while it was away, so the loop needs catching up.
+    if (musicOn) scheduleBar()
+  }
+  document.addEventListener('visibilitychange', wake)
+  window.addEventListener('pageshow', wake)
+  window.addEventListener('focus', wake)
+}
+
 /** Must be called from a user gesture. Returns false when audio is unavailable. */
 function ensure(): boolean {
   const Ctor = getCtor()
   if (!Ctor) return false
   try {
     if (!ctx) {
+      claimPlaybackSession()
       ctx = new Ctor()
       sfxBus = ctx.createGain()
       sfxBus.gain.value = 0.5
@@ -34,8 +85,10 @@ function ensure(): boolean {
       musicBus = ctx.createGain()
       musicBus.gain.value = 0
       musicBus.connect(ctx.destination)
+      unlock(ctx)
+      hookWake()
     }
-    if (ctx.state === 'suspended') void ctx.resume()
+    if (ctx.state !== 'running') void ctx.resume()
     return true
   } catch {
     return false
@@ -219,13 +272,21 @@ export function armAudio(onStart?: (started: { sfx: boolean; music: boolean }) =
   if (armed || typeof window === 'undefined') return
   armed = true
 
-  const events = ['pointerdown', 'keydown', 'touchstart'] as const
+  // touchend rather than touchstart: iOS treats a gesture as complete only
+  // once the finger lifts, and click covers anything that synthesises one.
+  const events = ['pointerdown', 'touchend', 'click', 'keydown'] as const
+
   const fire = () => {
-    for (const e of events) window.removeEventListener(e, fire)
-    const sfx = prefersSfx() ? setSfx(true) : false
-    const music = prefersMusic() ? setMusic(true) : false
+    const sfx = prefersSfx() ? (isSfxOn() ? true : setSfx(true)) : false
+    const music = prefersMusic() ? (musicOn ? true : setMusic(true)) : false
     onStart?.({ sfx, music })
+    // A phone can refuse the first gesture and accept the second. Stand down
+    // only once the context is genuinely running.
+    if (ctx && ctx.state === 'running') {
+      for (const e of events) window.removeEventListener(e, fire)
+    }
   }
+
   for (const e of events) window.addEventListener(e, fire, { passive: true })
 }
 

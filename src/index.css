@@ -382,10 +382,16 @@ body[data-locked='true'] {
   92% { transform: translateX(190px); opacity: 0 }
 }
 
+/* transform-box, because an SVG element otherwise pivots about the whole
+   viewBox and the steam drifts off across the desk. */
+.hs-steam {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+}
 @keyframes hs-steam {
-  0% { opacity: 0; transform: translateY(6px) scaleX(0.8) }
-  35% { opacity: 0.55 }
-  100% { opacity: 0; transform: translateY(-26px) scaleX(1.25) }
+  0% { opacity: 0; transform: translateY(6px) scaleX(0.85) }
+  35% { opacity: 0.5 }
+  100% { opacity: 0; transform: translateY(-26px) scaleX(1.2) }
 }
 
 @keyframes mf-pop {
@@ -496,4 +502,8 @@ body[data-locked='true'] {
 @keyframes mf-eq {
   0%, 100% { height: 5px }
   50% { height: 13px }
+}
+
+.mf-dog-floor {
+  background: linear-gradient(to top, color-mix(in srgb, var(--ink) 16%, transparent), transparent);
 }

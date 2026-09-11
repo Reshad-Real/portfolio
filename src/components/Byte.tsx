@@ -56,8 +56,8 @@ export function Byte() {
   const [ring, setRing] = useState(0)
   const [edge, setEdge] = useState<'left' | 'right' | 'centre'>('right')
 
-  const size = () => (window.innerWidth < 640 ? 84 : 116)
-  const homeX = () => Math.max(10, window.innerWidth - size() - 14)
+  const size = () => (window.innerWidth < 640 ? 64 : 88)
+  const homeX = () => Math.max(10, window.innerWidth - size() - 12)
 
   // Position lives here, never in state.
   const xRef = useRef(0)
@@ -319,10 +319,23 @@ export function Byte() {
 
   const menuOpen = mode === 'menu'
 
+  const out = mode === 'walking' || mode === 'goinghome'
+
   return (
+    <>
+      {/* A floor, only while he is out, so crossing the page reads as him
+          walking in front of it rather than over it. */}
+      <div
+        aria-hidden="true"
+        className={[
+          'mf-dog-floor pointer-events-none fixed inset-x-0 bottom-0 z-20 h-[60px] transition-opacity duration-500 sm:h-[76px]',
+          out ? 'opacity-100' : 'opacity-0',
+        ].join(' ')}
+      />
+
     <div
       ref={hostRef}
-      className="pointer-events-none fixed bottom-1 left-0 z-30 h-[88px] w-[84px] sm:h-[120px] sm:w-[116px]"
+      className="pointer-events-none fixed bottom-0 left-0 z-30 h-[68px] w-[64px] sm:h-[92px] sm:w-[88px]"
       style={{ transform: 'translate3d(-300px, 0, 0)' }}
     >
       {say && (
@@ -426,5 +439,6 @@ export function Byte() {
         </span>
       )}
     </div>
+    </>
   )
 }

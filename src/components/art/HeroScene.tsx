@@ -360,12 +360,13 @@ export function HeroScene({ className = '' }: { className?: string }) {
               <rect
                 x="280"
                 y="238"
-                width="26"
+                width="12"
                 height="64"
                 fill="#ffffff"
-                opacity="0.45"
+                opacity="0.16"
+                filter="url(#hs-tiny)"
                 transform="rotate(18 293 270)"
-                style={{ animation: 'hs-glint 9s ease-in-out infinite' }}
+                style={{ animation: 'hs-glint 11s ease-in-out infinite' }}
               />
             </g>
 
@@ -455,6 +456,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
             <path
               key={i}
               d={`M${600 + i * 14} 440c-8-14 8-22 0-36`}
+              className="hs-steam"
               style={{ animation: `hs-steam ${3.4 + i * 0.6}s ease-in-out ${i * 0.5}s infinite` }}
             />
           ))}

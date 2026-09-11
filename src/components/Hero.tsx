@@ -101,7 +101,7 @@ export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string })
         </div>
 
         {/* -------------------------------------------------- illustration */}
-        <div className="mf-in-scale order-1 lg:order-2" style={d(60)}>
+        <div className="mf-in-scale order-1 mx-auto w-full max-w-[520px] lg:order-2 lg:max-w-none" style={d(60)}>
           <div className="overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(20,18,40,0.55)]">
             <HeroScene className="block w-full" />
           </div>

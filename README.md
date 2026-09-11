@@ -53,7 +53,10 @@ half is chrome, with a glowing optic in the metal side — and because the split
 clip path, it is exact rather than approximated.
 
 Two poses live in the same drawing: a front-facing sit and a side-on walk, swapped when he
-starts moving, with the walk legs animated from their hip pivots. Everything that moves —
+starts moving, with the walk legs animated from their hip pivots. The two poses treat the
+chrome differently on purpose — head-on you see the split down the middle, but in profile
+you only ever see one side of him, so there the metal is a cheek plate set into an
+otherwise furry head. Splitting a profile down the middle just reads as a helmet. Everything that moves —
 head, ears, tail, jaw, eyelid, optic — is a named group transformed each frame.
 
 He sits in the bottom-right corner.
@@ -70,8 +73,11 @@ Hide him from the **Dog** button in the header.
 ## The portraits
 
 The two reference cards carry **drawn SVG portraits** — stylised avatars, not likenesses.
-The older one has a receded grey hairline, glasses and a grey beard; the younger has fuller
-dark hair and no glasses. Both blink, breathe, glance toward your cursor when it crosses
+The older one has grey at the temples and a thin strip over the crown — a receded hairline
+rather than a helmet — with glasses and a trimmed grey beard. The younger has a clean dark
+hairline with no flaps at the temples. Both have a jaw rather than a plain oval, a shaded
+side to the face, a moustache above a visible mouth, and a beard that follows the jawline
+instead of covering it. Both blink, breathe, glance toward your cursor when it crosses
 their card, and smile when clicked.
 
 ## The arcade

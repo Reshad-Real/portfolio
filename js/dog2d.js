@@ -125,33 +125,74 @@
       '</g>' +
     '</g>' +
 
-    /* ================= SIDE ON, WALKING ================= */
+    /* ================= SIDE ON, WALKING =================
+       In profile you only ever see one side of him, so splitting the head
+       down the middle read as a helmet. This side shows the metal cheek
+       plate set into an otherwise furry head. Legs start well inside the
+       body outline so there is no gap where they join. */
     '<g id="b-side" style="display:none">' +
-      '<g id="s-tail"><path d="M46 118 q-22 -4 -26 -26 q-2 -14 8 -17 q9 -2 11 9 q2 16 12 23 z" fill="url(#b-fur-d)"/></g>' +
-      '<g id="s-leg-rb"><rect x="56" y="132" width="16" height="42" rx="8" fill="url(#b-fur-d)"/>' +
-        '<ellipse cx="64" cy="174" rx="11" ry="7" fill="#e6cda0"/></g>' +
-      '<g id="s-leg-fb"><rect x="120" y="132" width="16" height="42" rx="8" fill="url(#b-fur-d)"/>' +
-        '<ellipse cx="128" cy="174" rx="11" ry="7" fill="#e6cda0"/></g>' +
+      '<defs><clipPath id="b-headclip"><circle cx="146" cy="84" r="37"/></clipPath></defs>' +
+
+      /* tail, behind everything */
+      '<g id="s-tail"><path d="M50 106 c-16 -6 -26 -24 -22 -40 c2 -9 12 -12 17 -4 c5 8 2 20 7 28 c4 6 10 9 16 10 z" ' +
+           'fill="url(#b-fur-d)"/></g>' +
+
+      /* far legs sit behind the body */
+      '<g id="s-leg-rb"><rect x="56" y="116" width="16" height="58" rx="8" fill="url(#b-fur-d)"/>' +
+        '<ellipse cx="64" cy="172" rx="11.5" ry="7" fill="#e2c79b"/></g>' +
+      '<g id="s-leg-fb"><rect x="112" y="116" width="16" height="58" rx="8" fill="url(#b-fur-d)"/>' +
+        '<ellipse cx="120" cy="172" rx="11.5" ry="7" fill="#e2c79b"/></g>' +
+
+      /* body */
       '<g id="s-body">' +
-        '<path d="M56 110 c0 -24 20 -40 50 -40 c28 0 44 16 44 38 c0 22 -16 36 -44 36 c-30 0 -50 -12 -50 -34 z" fill="url(#b-fur)"/>' +
-        '<ellipse cx="112" cy="132" rx="30" ry="14" fill="url(#b-cream)"/>' +
+        '<path d="M44 120 c0 -22 16 -34 46 -34 c30 0 48 12 48 32 c0 22 -18 34 -48 34 c-30 0 -46 -12 -46 -32 z" ' +
+             'fill="url(#b-fur)"/>' +
+        '<path d="M70 148 c8 6 22 8 34 6 c14 -2 24 -9 28 -18 c2 14 -10 26 -30 28 c-18 2 -30 -6 -32 -16 z" ' +
+             'fill="url(#b-cream)" opacity=".9"/>' +
       '</g>' +
-      '<g id="s-leg-rf"><rect x="68" y="132" width="17" height="44" rx="8.5" fill="url(#b-fur)"/>' +
-        '<ellipse cx="76.5" cy="176" rx="12" ry="7.5" fill="url(#b-cream)"/></g>' +
-      '<g id="s-leg-ff"><rect x="130" y="132" width="17" height="44" rx="8.5" fill="url(#b-fur)"/>' +
-        '<ellipse cx="138.5" cy="176" rx="12" ry="7.5" fill="url(#b-cream)"/></g>' +
+
+      /* near legs, overlapping the body */
+      '<g id="s-leg-rf"><rect x="68" y="114" width="18" height="62" rx="9" fill="url(#b-fur)"/>' +
+        '<ellipse cx="77" cy="174" rx="12.5" ry="7.5" fill="url(#b-cream)"/></g>' +
+      '<g id="s-leg-ff"><rect x="118" y="114" width="18" height="62" rx="9" fill="url(#b-fur)"/>' +
+        '<ellipse cx="127" cy="174" rx="12.5" ry="7.5" fill="url(#b-cream)"/></g>' +
+
       '<g id="s-head">' +
-        '<g id="s-ear"><path d="M138 58 c-14 2 -20 16 -17 34 c2 14 10 22 18 20 c8 -2 10 -14 8 -28 c-2 -14 -2 -24 -9 -26 z" fill="url(#b-fur-d)"/></g>' +
-        '<circle cx="152" cy="80" r="34" fill="url(#b-fur)"/>' +
-        '<path d="M152 46 a34 34 0 0 1 0 68 z" fill="url(#b-steel)" opacity=".95"/>' +
-        '<path d="M152 46 v68" stroke="#4fc9ff" stroke-width="2.2" stroke-linecap="round" opacity=".9"/>' +
-        '<ellipse cx="176" cy="92" rx="19" ry="14" fill="url(#b-cream)"/>' +
-        '<path d="M186 84 q7 -5 13 0 q-2 7 -6.5 7 q-4.5 0 -6.5 -7 z" fill="#2e2118"/>' +
-        '<g id="s-jaw"><path d="M170 98 q10 9 19 0" stroke="#a9773c" stroke-width="2.2" fill="none" stroke-linecap="round"/>' +
-          '<path d="M176 101 q5 9 9 0 z" fill="#ef8ea0"/></g>' +
-        '<circle cx="164" cy="74" r="9" fill="#6d7d87"/>' +
-        '<circle cx="164" cy="74" r="7" fill="url(#b-optic)"/>' +
-        '<circle cx="164" cy="74" r="2" fill="#ffffff"/>' +
+        /* ear hangs behind the jaw */
+        '<g id="s-ear"><path d="M136 56 c-16 2 -24 18 -21 40 c2 16 12 25 21 22 c9 -3 11 -18 9 -34 c-2 -16 -1 -27 -9 -28 z" ' +
+             'fill="url(#b-fur-d)"/>' +
+          '<path d="M139 112 c8 3 14 -4 14 -13 l-19 4 z" fill="#aab6bd"/></g>' +
+
+        /* skull and snout */
+        '<circle cx="146" cy="84" r="37" fill="url(#b-fur)"/>' +
+        '<path d="M168 96 c10 -4 24 -2 28 4 c3 6 1 12 -4 14 c-8 3 -22 2 -28 -4 z" fill="url(#b-cream)"/>' +
+        '<ellipse cx="172" cy="98" rx="20" ry="15" fill="url(#b-cream)"/>' +
+        '<path d="M186 90 c4 -3 9 -3 12 1 c1 5 -2 8 -6 8 c-4 0 -7 -4 -6 -9 z" fill="#2e2118"/>' +
+        '<g id="s-jaw">' +
+          '<path d="M166 104 q10 9 20 1" stroke="#a9773c" stroke-width="2.4" fill="none" stroke-linecap="round"/>' +
+          '<path d="M172 107 q5 9 9 0 z" fill="#ef8ea0"/>' +
+        '</g>' +
+
+        /* the metal cheek plate, clipped to the skull */
+        '<g clip-path="url(#b-headclip)">' +
+          '<path d="M150 54 c14 4 22 16 22 30 c0 16 -10 28 -24 31 c-12 3 -22 -4 -25 -16 c-4 -16 0 -34 10 -42 c5 -4 11 -5 17 -3 z" ' +
+               'fill="url(#b-steel)"/>' +
+          '<path d="M133 62 q-7 20 -3 40" stroke="#8fa0aa" stroke-width="1.8" fill="none" opacity=".75"/>' +
+          '<circle cx="139" cy="66" r="1.9" fill="#8b99a3"/>' +
+          '<circle cx="136" cy="100" r="1.9" fill="#8b99a3"/>' +
+        '</g>' +
+        '<path d="M150 54 c-12 -1 -20 6 -24 18 c-5 14 -4 30 0 42" stroke="#4fc9ff" stroke-width="2.2" ' +
+             'fill="none" stroke-linecap="round" opacity=".85"/>' +
+
+        /* the optic sits where the eye would be */
+        '<circle cx="152" cy="80" r="12" fill="#6d7d87"/>' +
+        '<circle cx="152" cy="80" r="9.5" fill="url(#b-optic)"/>' +
+        '<circle cx="152" cy="80" r="5" fill="none" stroke="#d8f4ff" stroke-width="1.6" opacity=".8"/>' +
+        '<circle cx="152" cy="80" r="2.4" fill="#ffffff"/>' +
+
+        /* collar where the head meets the body */
+        '<path d="M120 92 c6 12 8 22 6 32 c-8 -2 -14 -10 -16 -22 z" fill="#1d6f78"/>' +
+        '<circle cx="118" cy="120" r="4" fill="#c9a227"/>' +
       '</g>' +
     '</g>' +
   '</svg>';
@@ -449,16 +490,18 @@
         lid.setAttribute('y', (60 + blink * 4).toFixed(2));
       }
     } else {
-      var swing = Math.sin(walkPhase) * 22;
-      T(sLegs[0], 'rotate(' + swing.toFixed(2) + ' 64 134)');
-      T(sLegs[3], 'rotate(' + swing.toFixed(2) + ' 138 134)');
-      T(sLegs[1], 'rotate(' + (-swing).toFixed(2) + ' 128 134)');
-      T(sLegs[2], 'rotate(' + (-swing).toFixed(2) + ' 76 134)');
-      var bob = Math.abs(Math.sin(walkPhase)) * 3;
+      /* diagonal pairs, pivoting where each leg meets the body */
+      var swing = Math.sin(walkPhase) * 20;
+      T(sLegs[0], 'rotate(' + swing.toFixed(2) + ' 64 122)');
+      T(sLegs[3], 'rotate(' + swing.toFixed(2) + ' 127 120)');
+      T(sLegs[1], 'rotate(' + (-swing).toFixed(2) + ' 120 122)');
+      T(sLegs[2], 'rotate(' + (-swing).toFixed(2) + ' 77 120)');
+      var bob = Math.abs(Math.sin(walkPhase)) * 2.5;
       T(el('s-body'), 'translate(0 ' + (-bob).toFixed(2) + ')');
-      T(sideHead, 'translate(0 ' + (-bob).toFixed(2) + ') rotate(' + (-barkT * 8).toFixed(2) + ' 152 80)');
+      T(sideHead, 'translate(0 ' + (-bob).toFixed(2) + ') rotate(' + (-barkT * 8).toFixed(2) + ' 130 100)');
       T(sideJaw, 'translate(0 ' + (barkT * 4).toFixed(2) + ')');
-      T(sideTail, 'rotate(' + (Math.sin(clock * 9) * 14).toFixed(2) + ' 46 118)');
+      T(el('s-ear'), 'rotate(' + (Math.sin(walkPhase * 2) * 9).toFixed(2) + ' 136 58)');
+      T(sideTail, 'rotate(' + (Math.sin(clock * 9) * 13).toFixed(2) + ' 52 108)');
     }
 
     /* the optic pulses in both poses */

@@ -3,15 +3,13 @@ import { brand, contactCta, navLinks } from '../data/site'
 import { ThemeToggle } from './ThemeToggle'
 import { MobileNav } from './MobileNav'
 import type { Theme } from '../hooks/useTheme'
-import type { Phase } from './HeroChamber'
 
 type Props = {
-  phase: Phase
   theme: Theme
   onToggleTheme: () => void
 }
 
-export function Navbar({ phase, theme, onToggleTheme }: Props) {
+export function Navbar({ theme, onToggleTheme }: Props) {
   const [open, setOpen] = useState(false)
   const [pastHero, setPastHero] = useState(false)
 
@@ -36,11 +34,6 @@ export function Navbar({ phase, theme, onToggleTheme }: Props) {
     }
   }, [open])
 
-  useEffect(() => {
-    if (phase === 'boot') setOpen(false)
-  }, [phase])
-
-  const booting = phase === 'boot'
   // White over the dark chamber, themed ink once the page proper is in view.
   const onDark = !pastHero
   const ink = onDark ? 'text-white' : 'text-ink'
@@ -76,8 +69,7 @@ export function Navbar({ phase, theme, onToggleTheme }: Props) {
           <nav
             aria-label="Primary"
             className={[
-              'hidden items-center gap-4 transition-opacity duration-700 md:flex lg:gap-6',
-              booting ? 'pointer-events-none opacity-0' : 'opacity-100',
+              'hidden items-center gap-4 md:flex lg:gap-6',
             ].join(' ')}
           >
             {navLinks.map((link) => (
@@ -93,8 +85,7 @@ export function Navbar({ phase, theme, onToggleTheme }: Props) {
 
           <div
             className={[
-              'flex items-center gap-3 transition-opacity duration-700 sm:gap-4',
-              booting ? 'pointer-events-none opacity-0' : 'opacity-100',
+              'flex items-center gap-3 sm:gap-4',
             ].join(' ')}
           >
             <ThemeToggle theme={theme} onToggle={onToggleTheme} onDark={onDark} />

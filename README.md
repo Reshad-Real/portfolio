@@ -26,61 +26,45 @@ the same source at a domain root.
 
 ## The 3D
 
-Both scenes run on a hand-written WebGL layer in `src/lib/gl.ts` — matrix maths, shader
-plumbing and mesh helpers, and nothing else. Everything drawn is generated at runtime from
-primitives in `src/lib/geometry.ts`, so there is not a single model, texture or binary asset
-to download.
+Everything is drawn by a hand-written WebGL layer in `src/lib/gl.ts` and a soft-clay
+renderer in `src/lib/clay.ts` — one matte material, two broad lights and a wrapped falloff,
+which is what gives the room its moulded look rather than a shiny CG one. Every object is
+generated at runtime from the primitives in `src/lib/geometry.ts`, so the site ships no
+model, texture or binary asset.
 
-**`src/lib/chamberScene.ts` — the startup chamber.** A 5 nm AlGaN/GaN asymmetric-spacer
-tri-gate assembles out of the dark: substrate, buffer, fin, AlGaN barrier, wrapped gate,
-unequal spacers, source and drain, each arriving on its own schedule. A lattice point cloud
-drifts above it, copper traces route away from the contacts with a travelling pulse, and
-carriers stream through the channel. Roughly fifteen draw calls, three shader programs. The
-camera answers to the cursor, to device orientation where it is reported, and to scroll.
+**`src/lib/models.ts` — the parts.** An armchair, a person in headphones with a laptop, a
+hexagonal wall panel, a plant, a side table, a cup, a desk lamp, a backpack, a stack of
+books, and BYTE. Each reports the radius it occupies so it can be framed on its own in the
+inspector, which is how all of them were checked before the room was assembled.
 
-The same context carries straight into the hero — the section is never unmounted — so the
-camera pulling back and panning aside is one continuous shot rather than a cut. On a
-portrait screen it lifts instead of panning, because the copy sits along the bottom there.
+**`src/lib/roomScene.ts` — the landing room.** The parts arrive on a stagger, the camera
+answers to the cursor, and the six wall panels are projected back into screen space every
+frame so real links can sit exactly on top of them. Those links carry the icon and the
+label, take keyboard focus, and lift their panel on hover. On a narrow screen the panels
+drop out of the scene and the same six links become a grid under the intro instead.
 
-**`src/lib/dogScene.ts` — BYTE.** A cartoon retriever posed by a small scene graph:
-spheres, boxes, cones, a torus collar. Half fur, half chrome, with a glowing optic set into
-the metal side. He trails the cursor along the bottom of the window, walks when the distance
-is worth walking, turns to face the way he is going, looks where you look, perks up over
-anything clickable, blinks on his own schedule, and says something short when a new section
-comes into view.
+**BYTE.** A golden retriever puppy with a chrome plate over the left side of his face and a
+lit optic where that eye used to be. He sits beside the chair in the landing room, then
+follows the reader down the page on his own small canvas: trailing the cursor along the
+bottom of the window, looking where you look, perking up over anything clickable, blinking
+on his own schedule, and saying something short when a new section arrives. Click or drag
+to pet him; Enter does the same from the keyboard. He steps aside over the arcade on a
+phone so he never covers the game controls, and the × hides him for good.
 
-Click or drag on him to pet him: his eyes close, his ears fold back, his tail speeds up and
-hearts come off him. Keyboard users get the same by focusing him and pressing Enter. The
-`pet me` hint disappears after the first one and does not come back. The × hides him for
-good, and the button that appears in his place brings him back.
+### Inspecting the parts
+
+`npm run dev`, then add `?inspect` to the URL. Every model is rendered on its own in a
+single context from six fixed angles, so holes, inverted faces and bad pivots show up
+before anything reaches the page. It sits behind a dynamic import and `import.meta.env.DEV`,
+so it never ships.
 
 ### Performance
 
-`detectQuality()` reads core count, memory, pointer type and pixel ratio, and scales point
-counts and the pixel-ratio cap accordingly. Both scenes park their animation loop entirely
-when scrolled off screen, BYTE stops while the tab is hidden, and `prefers-reduced-motion`
-cuts idle motion, drift and the typewriter. If WebGL is unavailable the chamber draws a
-static SVG cross-section of the same device instead of a dead canvas, and BYTE simply does
-not appear.
-
----
-
-## Interactive work
-
-**Device explorer** (`#labs`) — gate length, fin width, oxide EOT and drain bias against a
-live transfer characteristic, with subthreshold swing, DIBL, natural length and the
-Ion/Ioff ratio recomputed on every change. Switch between tri-gate and planar and watch the
-short-channel numbers come apart. The model is the standard analytic one; it is labelled as
-such, and it is not TCAD output.
-
-**Demand monitor** (`#energy`) — a rolling charging-demand trace with an exponentially
-weighted baseline and a residual detector on top, in the shape of the published EV-charging
-anomaly work. Synthetic signal, with a button to inject an excursion.
-
-**Signal lab** (`#bench`) — a bench oscilloscope with five traces: sine, square with edge
-overshoot, second-order step with an adjustable damping ratio, an X-Y Lissajous figure with
-an adjustable phase, and an eye diagram with the opening marked. Real graticule, real
-time/div and volts/div, live Vpp and frequency. Every pixel is computed from the waveform.
+`detectQuality()` reads core count, memory, pointer type and pixel ratio, and scales mesh
+detail and the pixel-ratio cap accordingly. Both scenes park their animation loop when
+scrolled off screen or while the tab is hidden, and `prefers-reduced-motion` cuts the
+assembly, the idle sway and the typewriter. If WebGL is unavailable the room is replaced by
+one line of text and the rest of the page is untouched.
 
 ---
 
@@ -106,23 +90,23 @@ synthesised through WebAudio, so there is still nothing to download.
 
 ## Themes
 
-Light is the default and the design is built for it: white, near-black type, thin grey
-rules, one restrained blue accent. Dark is a designed alternative on deep charcoal rather
-than an inversion. The choice is resolved before first paint by a small script in
-`index.html`, kept in `localStorage`, and only falls back to `prefers-color-scheme` while
-the visitor has not chosen. The startup chamber keeps its own cinematic dark styling in both
-themes, and hands over to the selected theme at the first section.
+The landing room keeps its indigo in both themes, because it is one designed space. Below
+it, light is the default: white, near-black type, thin grey rules, one indigo accent. Dark
+is a designed alternative on deep charcoal rather than an inversion. The choice is resolved
+before first paint by a small script in `index.html`, kept in `localStorage`, and only falls
+back to `prefers-color-scheme` while the visitor has not chosen.
 
 ---
 
 ## Accessibility
 
-Semantic landmarks and headings, a skip link, visible focus rings throughout. The startup
-sequence is enterable from the keyboard and can be skipped at any point. The mobile overlay
-traps focus and closes on Escape. The blurred intro line is mirrored for screen readers, the
-clipboard buttons announce their result through a live region and fall back gracefully where
-the Clipboard API is unavailable, and every game is playable without a pointer.
-`prefers-reduced-motion` is honoured by the CSS and by every hook that animates.
+Semantic landmarks and headings, a skip link, visible focus rings throughout. Nothing gates
+the page: the landing is an ordinary section that scrolls, so there is no overlay to escape
+from and no way to get stuck. The wall panels are real anchors with labels, reachable by
+keyboard. The mobile overlay traps focus and closes on Escape, dismissed overlays go inert
+rather than merely hidden, the clipboard buttons announce their result through a live region
+and fall back where the Clipboard API is missing, and every game is playable without a
+pointer. `prefers-reduced-motion` is honoured by the CSS and by every hook that animates.
 
 ---
 
@@ -130,27 +114,26 @@ the Clipboard API is unavailable, and every game is playable without a pointer.
 
 ```
 src/
-  components/     Navbar, MobileNav, ThemeToggle, HeroChamber, StartupOverlay, Hero,
-                  ChamberFallback, CyberDog, About, Research, DeviceExplorer, EnergyLab,
-                  Publications, SignalLab, Experience, Studio, ElectronicsArcade,
-                  Contact, Footer, ui
+  components/     Navbar, MobileNav, ThemeToggle, Landing, HexIcon, CyberDog, About,
+                  Research, EnergyLab, Publications, Experience, Studio,
+                  ElectronicsArcade, Contact, Footer, ui, ModelInspector (dev only)
     games/        CircuitRunner, VoltageDefender, LogicLab, arcadeUi
   hooks/          useTypewriter, useTheme, useInView, usePrefersReducedMotion
-  lib/            gl, geometry, chamberScene, dogScene, parts, quality, audio
+  lib/            gl, geometry, clay, palette, models, roomScene, dogCompanion,
+                  quality, audio
   data/           site, publications, projects, experience, skills
 ```
 
 All written content comes from the CV and the previous site. Nothing about the research, the
-publications, the posts or the grades is invented. The studio name, the A.R.I.A intro and the
-`hello@mainframe.co` address in the hero are brand copy and live in `src/data/site.ts`; the
-real contact details are in the contact section and the footer.
+publications, the posts or the grades is invented. The studio name, the A.R.I.A line and the
+`hello@mainframe.co` address on the landing are brand copy and live in `src/data/site.ts`;
+the real contact details are in the contact section and the footer.
 
 ---
 
 ## Deploying
 
 Pushed to `main`, the workflow in `.github/workflows/deploy.yml` type-checks, builds and
-publishes to GitHub Pages. `actions/configure-pages` switches the Pages source over to
-Actions on the first run, so nothing has to be changed in the repository settings.
+publishes to GitHub Pages.
 
 © 2026 Md. Reshad Al Muttaki

@@ -1,7 +1,6 @@
 import { interests } from '../data/skills'
 import { projects } from '../data/projects'
 import { Reveal, Section, SectionHeading, Tag } from './ui'
-import { DeviceExplorer } from './DeviceExplorer'
 
 const devices = projects.filter((p) => p.kind === 'device' || p.kind === 'optimisation')
 
@@ -17,14 +16,10 @@ export function Research() {
             <br className="hidden sm:block" /> the physics gives in.
           </>
         }
-        lede="Gallium nitride tri-gate devices, modelled in Silvaco Atlas and pushed to a 5 nm gate. Move the geometry below and watch the short-channel effects answer back."
+        lede="Gallium nitride tri-gate devices, modelled in Silvaco Atlas and pushed to a 5 nm gate, where wrapping the gate on three sides is the only thing holding the channel together."
       />
 
-      <Reveal>
-        <DeviceExplorer />
-      </Reveal>
-
-      <div className="mt-16 grid gap-px overflow-hidden rounded-sm border border-line bg-line md:grid-cols-3">
+      <div className="grid gap-px overflow-hidden rounded-sm border border-line bg-line md:grid-cols-3">
         {devices.map((p, i) => (
           <Reveal key={p.id} delay={i * 70} className="bg-bg">
             <article className="group h-full p-6 transition-colors duration-300 hover:bg-surface md:p-7">

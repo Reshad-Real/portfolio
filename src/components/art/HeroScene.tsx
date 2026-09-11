@@ -419,26 +419,32 @@ export function HeroScene({ className = '' }: { className?: string }) {
             strokeWidth="4"
             opacity="0.3"
           />
-          {/* hood bunched at the neck */}
-          <path
-            d="M288 392c13 16 71 16 84 0 12 12 17 25 16 36-39 14-116 14-117-1-1-10 5-23 17-35z"
-            fill="#32427a"
-            stroke="#141326"
-            strokeWidth="4"
-          />
-          
-
           {/* ---- neck. A neck is not a cylinder: it leaves the skull narrow,
                behind and below the jaw, and widens into the trapezius. The top
-               sits under the chin so the join is never a visible seam. */}
-          <path d="M307 342c1 24-1 40-6 60h58c-5-20-7-36-6-60z" fill="#f0c0a0" stroke="#141326" strokeWidth="4" />
+               sits under the chin so the join is never a visible seam.
+
+               It runs down to 420, well past where the collar crosses it, and
+               it is drawn BEFORE the collar so the neckline closes over it.
+               Painted after, it ended in front of the shirt instead of going
+               into it, and the two never read as joined. */}
+          <path d="M307 342c1 28-1 48-6 78h58c-5-30-7-50-6-78z" fill="#f0c0a0" stroke="#141326" strokeWidth="4" />
           {/* what the jaw casts onto it: the darkest thing on him, and directly
               under the form that blocks the light */}
           <path d="M307 342c15 11 31 11 46 0 1 11 0 20-2 27-14 7-29 7-42 0-2-7-3-16-2-27z" fill="#c9917a" opacity="0.8" filter="url(#hs-tiny)" />
           {/* the cord of the neck on the lit side */}
           <path d="M348 356c3 15 4 28 3 42" stroke="#e0ac8c" strokeWidth="4" fill="none" strokeLinecap="round" opacity="0.6" />
           {/* and the shaded side, away from the window */}
-          <path d="M307 342c1 22-1 38-6 60h13c-4-22-4-40-1-58z" fill="#d9a084" opacity="0.75" />
+          <path d="M307 342c1 26-1 46-6 78h13c-4-30-4-52-1-78z" fill="#d9a084" opacity="0.75" />
+          {/* where the collar shades the neck it swallows */}
+          <path d="M301 398h58v22h-58z" fill="#a8705c" opacity="0.5" filter="url(#hs-tiny)" />
+
+          {/* hood bunched at the neck, closing over the base of it */}
+          <path
+            d="M288 392c13 16 71 16 84 0 12 12 17 25 16 36-39 14-116 14-117-1-1-10 5-23 17-35z"
+            fill="#32427a"
+            stroke="#141326"
+            strokeWidth="4"
+          />
 
           <g id="head-tilt" style={{ transformBox: 'view-box' }}>
           {/* The head was 0.66 of the shoulder width, which is bobblehead

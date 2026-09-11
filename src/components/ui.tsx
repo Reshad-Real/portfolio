@@ -34,6 +34,16 @@ export function Reveal({
   )
 }
 
+/** The dust from the illustration, carried into the page behind each section. */
+const MOTES = [
+  { left: '8%', top: '22%', size: 4, dur: 15, delay: 0 },
+  { left: '23%', top: '68%', size: 3, dur: 19, delay: 3.5 },
+  { left: '46%', top: '14%', size: 3, dur: 13, delay: 1.8 },
+  { left: '61%', top: '78%', size: 5, dur: 21, delay: 6 },
+  { left: '79%', top: '32%', size: 3, dur: 17, delay: 2.6 },
+  { left: '92%', top: '58%', size: 4, dur: 23, delay: 8 },
+]
+
 export function Section({
   id,
   children,
@@ -49,12 +59,30 @@ export function Section({
     <section
       id={id}
       className={[
-        'relative border-t border-line',
+        'relative overflow-hidden border-t border-line',
         tone === 'alt' ? 'bg-bg2' : 'bg-bg',
         className,
       ].join(' ')}
     >
-      <div className="mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 md:px-10 md:py-28">
+      <span aria-hidden="true" className="pointer-events-none absolute inset-0">
+        {MOTES.map((m) => (
+          <span
+            key={m.left}
+            className="mf-mote"
+            style={
+              {
+                left: m.left,
+                top: m.top,
+                width: m.size,
+                height: m.size,
+                '--dur': `${m.dur}s`,
+                '--delay': `${m.delay}s`,
+              } as CSSProperties
+            }
+          />
+        ))}
+      </span>
+      <div className="relative mx-auto w-full max-w-[1440px] px-5 py-20 sm:px-8 md:px-10 md:py-28">
         {children}
       </div>
     </section>
@@ -94,7 +122,7 @@ export function SectionHeading({
       <Reveal>
         <div className="mb-6 flex items-center gap-4">
           <span
-            className="text-[11px] tracking-[0.2em] text-accent"
+            className="mf-index text-[11px] tracking-[0.2em] text-accent"
             style={{ fontFamily: 'var(--font-tech)' }}
           >
             {index}
@@ -105,7 +133,7 @@ export function SectionHeading({
           >
             {kicker}
           </span>
-          <span className="h-px flex-1 bg-line" />
+          <span className="mf-rule h-px flex-1 bg-line" />
         </div>
       </Reveal>
       <Reveal delay={60}>

@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { person } from '../data/site'
 import { Magnetic, Reveal, Section, SectionHeading } from './ui'
+import { SocialIcon } from './art/SocialIcon'
 
-const LINKS: [string, string, string][] = [
-  ['Google Scholar', 'Publication record', person.links.scholar],
-  ['LinkedIn', 'md-reshad-al-muttaki', person.links.linkedin],
-  ['GitHub', 'Reshad-Real', person.links.github],
-]
+const LINKS = [
+  { label: 'Google Scholar', value: 'Publication record', href: person.links.scholar, icon: 'scholar' },
+  { label: 'LinkedIn', value: 'md-reshad-al-muttaki', href: person.links.linkedin, icon: 'linkedin' },
+  { label: 'GitHub', value: 'Reshad-Real', href: person.links.github, icon: 'github' },
+] as const
 
 export function Contact({ base }: { base: string }) {
   const [copied, setCopied] = useState<'idle' | 'ok' | 'fail'>('idle')
@@ -103,17 +104,22 @@ export function Contact({ base }: { base: string }) {
         <div className="lg:col-span-5">
           <Reveal delay={100}>
             <ul className="border-t border-line">
-              {LINKS.map(([label, value, href]) => (
-                <li key={label}>
+              {LINKS.map((l) => (
+                <li key={l.label}>
                   <a
-                    href={href}
+                    href={l.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center justify-between gap-4 border-b border-line py-5 transition-colors hover:bg-bg2"
+                    className="group flex items-center justify-between gap-4 border-b border-line py-5 pl-1 pr-2 transition-colors hover:bg-bg2"
                   >
-                    <span>
-                      <span className="block text-[16px] text-ink">{label}</span>
-                      <span className="block text-[13px] text-muted">{value}</span>
+                    <span className="flex items-center gap-4">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line bg-surface text-ink transition-colors duration-300 group-hover:border-accent group-hover:text-accent">
+                        <SocialIcon id={l.icon} size={19} />
+                      </span>
+                      <span>
+                        <span className="block text-[16px] text-ink">{l.label}</span>
+                        <span className="block text-[13px] text-muted">{l.value}</span>
+                      </span>
                     </span>
                     <span
                       aria-hidden="true"

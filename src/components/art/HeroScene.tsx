@@ -1,6 +1,29 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion'
 import { WallPanels } from './WallPanels'
+
+/**
+ * What goes through his head while he works. Musings about the simulation in
+ * front of him, not claims about anything he has done.
+ */
+const THOUGHTS = [
+  'Subthreshold slope is off.',
+  'Mesh too coarse. Refine.',
+  'Self-heating? Or mobility?',
+  'Check the trap density.',
+  'That will be DIBL.',
+  'Convergence failed again.',
+  'Halve the timestep.',
+  'The 2DEG is depleting.',
+  'Finer grid at the gate.',
+  'Gate leakage? Or tunnel?',
+  'Add a quantum correction.',
+  'Rerun it with SRH on.',
+  'Is that contact ohmic yet?',
+  'Try a thinner barrier.',
+  'Where is that kink from?',
+  'Bias step is too big.',
+] as const
 
 /**
  * The hero illustration: cel-shaded anime over a lit room.
@@ -12,6 +35,37 @@ import { WallPanels } from './WallPanels'
 export function HeroScene({ className = '' }: { className?: string }) {
   const rootRef = useRef<SVGSVGElement | null>(null)
   const reduced = usePrefersReducedMotion()
+  const [thought, setThought] = useState('')
+  const [thinking, setThinking] = useState(false)
+
+  // A thought every so often, never the same one twice running.
+  useEffect(() => {
+    if (reduced) return
+    let alive = true
+    let last = -1
+    const timers: number[] = []
+    const wait = (ms: number, fn: () => void) => {
+      timers.push(window.setTimeout(() => alive && fn(), ms))
+    }
+    const cycle = () => {
+      wait(2600 + Math.random() * 7000, () => {
+        let i = last
+        while (i === last) i = Math.floor(Math.random() * THOUGHTS.length)
+        last = i
+        setThought(THOUGHTS[i])
+        setThinking(true)
+        wait(4200, () => {
+          setThinking(false)
+          cycle()
+        })
+      })
+    }
+    cycle()
+    return () => {
+      alive = false
+      for (const t of timers) window.clearTimeout(t)
+    }
+  }, [reduced])
 
   // Cursor parallax and eye tracking, written straight to the DOM.
   useEffect(() => {
@@ -20,7 +74,8 @@ export function HeroScene({ className = '' }: { className?: string }) {
     if (window.matchMedia?.('(pointer: coarse)').matches) return
 
     const layers = Array.from(svg.querySelectorAll<SVGGElement>('[data-depth]'))
-    const eyes = svg.querySelector<SVGGElement>('#eyes-look')
+    // Both pupils, not just the one that used to carry the id.
+    const eyes = Array.from(svg.querySelectorAll<SVGGElement>('.hs-look'))
     const head = svg.querySelector<SVGGElement>('#head-tilt')
     let raf = 0
     let tx = 0
@@ -41,12 +96,8 @@ export function HeroScene({ className = '' }: { className?: string }) {
         const d = Number(l.dataset.depth ?? 0)
         l.setAttribute('transform', `translate(${(cx * d).toFixed(2)} ${(cy * d * 0.6).toFixed(2)})`)
       }
-      if (eyes) {
-        eyes.setAttribute(
-          'transform',
-          `translate(${(cx * 7).toFixed(2)} ${(cy * 4).toFixed(2)})`,
-        )
-      }
+      const look = `translate(${(cx * 7).toFixed(2)} ${(cy * 4).toFixed(2)})`
+      for (const e of eyes) e.setAttribute('transform', look)
       if (head) {
         head.setAttribute(
           'transform',
@@ -73,7 +124,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
       viewBox="0 0 720 560"
       className={className}
       role="img"
-      aria-label="Illustration of Reshad at his desk at night, working on a laptop with headphones on, a window and a plant behind him."
+      aria-label="Illustration of Reshad at his desk, working on a laptop with headphones on, a window and framed prints behind him."
     >
       <defs>
         {/* ------------------------------------------------------ gradients */}
@@ -87,6 +138,22 @@ export function HeroScene({ className = '' }: { className?: string }) {
           <stop offset="45%" stopColor="#e57e83" />
           <stop offset="100%" stopColor="#7c5aa8" />
         </linearGradient>
+        {/* The daylight half of the room. Everything tagged .hs-day cross-fades
+            against its night twin when the theme changes. */}
+        <linearGradient id="hs-room-day" x1="0" y1="0" x2="0.8" y2="1">
+          <stop offset="0%" stopColor="#eceaf6" />
+          <stop offset="55%" stopColor="#dfdcee" />
+          <stop offset="100%" stopColor="#cdc8e0" />
+        </linearGradient>
+        <linearGradient id="hs-sky-day" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#5fb6ef" />
+          <stop offset="55%" stopColor="#a8dcf7" />
+          <stop offset="100%" stopColor="#e4f3fd" />
+        </linearGradient>
+        <radialGradient id="hs-sunglow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0%" stopColor="#fff6d8" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#fff6d8" stopOpacity="0" />
+        </radialGradient>
         <linearGradient id="hs-shaft" x1="0" y1="0" x2="0.6" y2="1">
           <stop offset="0%" stopColor="#ffd9a8" stopOpacity="0.5" />
           <stop offset="100%" stopColor="#ffd9a8" stopOpacity="0" />
@@ -135,7 +202,14 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
         {/* Face mask, so cel shadows never spill past the jaw. */}
         <clipPath id="hs-face-clip">
-          <path d="M330 168c52 0 84 38 84 92 0 60-34 112-84 112s-84-52-84-112c0-54 32-92 84-92z" />
+          <path d="M330 166c50 0 84 34 84 86 0 30-4 56-14 76-12 24-36 42-70 42s-58-18-70-42c-10-20-14-46-14-76 0-52 34-86 84-86z" />
+        </clipPath>
+        {/* One per lens, so the screen can reflect in the glass. */}
+        <clipPath id="hs-lens-l">
+          <rect x="255" y="244" width="66" height="48" rx="15" />
+        </clipPath>
+        <clipPath id="hs-lens-r">
+          <rect x="339" y="244" width="66" height="48" rx="15" />
         </clipPath>
         <clipPath id="hs-window-clip">
           <rect x="432" y="44" width="252" height="286" rx="10" />
@@ -144,20 +218,46 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
       {/* ============================================================ room */}
       <rect x="0" y="0" width="720" height="560" fill="url(#hs-room)" />
+      <rect x="0" y="0" width="720" height="560" fill="url(#hs-room-day)" className="hs-day" />
 
       {/* ---------------------------------------------------------- window */}
       <g data-depth="6">
         <rect x="424" y="36" width="268" height="302" rx="14" fill="#151427" />
         <g clipPath="url(#hs-window-clip)">
           <rect x="432" y="44" width="252" height="286" fill="url(#hs-sky)" />
+          <g className="hs-day">
+            <rect x="432" y="44" width="252" height="286" fill="url(#hs-sky-day)" />
+            {/* a few clouds, drifting */}
+            <g fill="#ffffff" opacity="0.8">
+              {[
+                { x: 470, y: 92, s: 1, d: 46 },
+                { x: 588, y: 140, s: 0.75, d: 34 },
+                { x: 520, y: 178, s: 0.55, d: 26 },
+              ].map((c) => (
+                <g key={c.x} transform={`translate(${c.x} ${c.y}) scale(${c.s})`}>
+                  <g style={{ animation: `hs-drift ${c.d}s linear infinite` }}>
+                    <ellipse cx="0" cy="0" rx="30" ry="13" />
+                    <ellipse cx="-16" cy="4" rx="20" ry="10" />
+                    <ellipse cx="14" cy="5" rx="22" ry="10" />
+                    <ellipse cx="2" cy="-9" rx="18" ry="11" />
+                  </g>
+                </g>
+              ))}
+            </g>
+          </g>
           {/* skyline */}
           <path
             d="M432 268h26v-42h18v42h22v-64h20v64h24v-30h22v30h26v-52h20v52h24v-38h20v38h30v62H432z"
             fill="#3a2b55"
             opacity="0.85"
           />
-          {/* lit windows in the skyline */}
-          <g fill="#ffd9a0" opacity="0.85">
+          <path
+            className="hs-day"
+            d="M432 268h26v-42h18v42h22v-64h20v64h24v-30h22v30h26v-52h20v52h24v-38h20v38h30v62H432z"
+            fill="#93a4c6"
+          />
+          {/* lit windows in the skyline, after dark */}
+          <g className="hs-night" fill="#ffd9a0">
             {[
               [468, 238], [468, 250], [504, 216], [504, 232], [504, 248],
               [548, 228], [548, 244], [592, 222], [592, 240], [636, 244],
@@ -173,8 +273,15 @@ export function HeroScene({ className = '' }: { className?: string }) {
             ))}
           </g>
           {/* a moon, low and hazy */}
-          <circle cx="630" cy="96" r="26" fill="#fff3d6" opacity="0.92" />
-          <circle cx="630" cy="96" r="44" fill="#fff3d6" opacity="0.16" filter="url(#hs-soft)" />
+          <g className="hs-night">
+            <circle cx="630" cy="96" r="26" fill="#fff3d6" opacity="0.92" />
+            <circle cx="630" cy="96" r="44" fill="#fff3d6" opacity="0.16" filter="url(#hs-soft)" />
+          </g>
+          {/* and the sun in its place by day */}
+          <g className="hs-day">
+            <circle cx="630" cy="96" r="72" fill="url(#hs-sunglow)" />
+            <circle cx="630" cy="96" r="25" fill="#fffaea" />
+          </g>
         </g>
         {/* frame */}
         <rect
@@ -203,6 +310,14 @@ export function HeroScene({ className = '' }: { className?: string }) {
         <path d="M600 60 L430 560 L560 560 Z" fill="url(#hs-shaft)" opacity="0.6">
           <animate attributeName="opacity" values="0.5;0.72;0.5" dur="9s" repeatCount="indefinite" />
         </path>
+      </g>
+      {/* daylight is stronger and cooler, and washes the whole room */}
+      <g className="hs-day" pointerEvents="none" style={{ mixBlendMode: 'screen' }}>
+        <g opacity="0.5">
+          <path d="M470 60 L230 560 L500 560 Z" fill="url(#hs-shaft)" />
+          <path d="M600 60 L420 560 L600 560 Z" fill="url(#hs-shaft)" />
+          <rect x="0" y="0" width="720" height="560" fill="#cfe6ff" opacity="0.22" />
+        </g>
       </g>
 
       {/* ----------------------------------------------------------- plant */}
@@ -294,9 +409,10 @@ export function HeroScene({ className = '' }: { className?: string }) {
               strokeWidth="4"
             />
 
-            {/* ---- face */}
+            {/* ---- face: wide at the cheekbones, tapering to a jaw and chin.
+                 The old shape was a plain egg, which is why it read as a ball. */}
             <path
-              d="M330 168c52 0 84 38 84 92 0 60-34 112-84 112s-84-52-84-112c0-54 32-92 84-92z"
+              d="M330 166c50 0 84 34 84 86 0 30-4 56-14 76-12 24-36 42-70 42s-58-18-70-42c-10-20-14-46-14-76 0-52 34-86 84-86z"
               fill="url(#hs-skin)"
               stroke="#141326"
               strokeWidth="4"
@@ -321,7 +437,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
                   {/* socket shadow */}
                   <ellipse cx="0" cy="2" rx="26" ry="17" fill="#e8b596" opacity="0.5" />
                   <ellipse cx="0" cy="0" rx="24" ry="15" fill="#fdfbff" />
-                  <g id={s === -1 ? 'eyes-look' : undefined}>
+                  <g className="hs-look">
                     <circle cx={s * 2} cy="1" r="12" fill="url(#hs-iris)" />
                     <circle cx={s * 2} cy="1" r="5" fill="#12203a" />
                     <circle cx={s * 2 - 4} cy="-4" r="4" fill="#ffffff" />
@@ -371,6 +487,27 @@ export function HeroScene({ className = '' }: { className?: string }) {
               {/* a temple to each ear */}
               <path d="M255 256l-14-4M405 256l14-4" />
             </g>
+            {/* The screen, reflected in the glass. He faces us, so this is the
+                only way to see that the laptop is actually on. */}
+            <g opacity="0.42">
+              {[
+                { clip: 'hs-lens-l', x: 259 },
+                { clip: 'hs-lens-r', x: 343 },
+              ].map(({ clip, x }) => (
+                <g key={clip} clipPath={`url(#${clip})`}>
+                  <rect x={x - 4} y="244" width="74" height="48" fill="#0d2b3f" opacity="0.2" />
+                  <g className="hs-code" fill="#7fe3ff">
+                    {[
+                      [0, 26], [10, 15], [20, 32], [30, 20],
+                      [40, 36], [50, 14], [60, 28],
+                    ].map(([dy, w]) => (
+                      <rect key={dy} x={x + 3} y={244 + dy} width={w} height="2.5" rx="1.25" />
+                    ))}
+                  </g>
+                </g>
+              ))}
+            </g>
+
             {/* lens glint, sweeping now and then */}
             <g clipPath="url(#hs-face-clip)">
               <rect
@@ -460,13 +597,51 @@ export function HeroScene({ className = '' }: { className?: string }) {
               him, and we get a dark mass rather than a dead grey screen. */}
           <path d="M64 502l40-62h186l40 62z" fill="#23223a" stroke="#100f1e" strokeWidth="4" />
           <path d="M104 440h186l20 48H84z" fill="#2e2d4c" />
-          <path d="M104 442h186" stroke="#8f86c4" strokeWidth="3" opacity="0.5" strokeLinecap="round" />
-          <path d="M290 442l30 58" stroke="#b9a8e6" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
-          <circle cx="197" cy="468" r="11" fill="none" stroke="#9fd7ff" strokeWidth="3" opacity="0.38" />
-          <circle cx="197" cy="468" r="3.5" fill="#9fd7ff" opacity="0.5" />
+          {/* Light leaking around the lid, so it plainly reads as running */}
+          <path d="M104 442h186" stroke="#cdf1ff" strokeWidth="4" opacity="0.8" strokeLinecap="round">
+            <animate attributeName="opacity" values="0.8;0.6;0.8" dur="4.5s" repeatCount="indefinite" />
+          </path>
+          <path d="M290 442l30 58" stroke="#bfe4ff" strokeWidth="3" opacity="0.55" strokeLinecap="round" />
+          <path d="M104 444l-20 44" stroke="#bfe4ff" strokeWidth="3" opacity="0.3" strokeLinecap="round" />
+          <circle cx="197" cy="468" r="11" fill="none" stroke="#9fd7ff" strokeWidth="3" opacity="0.5" />
+          <circle cx="197" cy="468" r="3.5" fill="#bfefff" opacity="0.85">
+            <animate attributeName="opacity" values="0.85;0.4;0.85" dur="3.2s" repeatCount="indefinite" />
+          </circle>
+          {/* the pool it throws forward onto the desk */}
+          <ellipse cx="197" cy="520" rx="160" ry="14" fill="#9fd7ff" opacity="0.22" filter="url(#hs-soft)" />
           <rect x="52" y="500" width="292" height="14" rx="7" fill="#4a4870" stroke="#100f1e" strokeWidth="4" />
         </g>
       </g>
+
+      {/* --------------------------------------------------- what he is thinking */}
+      {thought && (
+        <g className="hs-thought" data-show={thinking ? 'true' : 'false'} pointerEvents="none">
+          <circle cx="404" cy="106" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
+          <circle cx="415" cy="120" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
+          {/* The tech face is monospace, so the box can be sized from the
+              character count: 6.9 per glyph at 11.5px, plus the padding. */}
+          <rect
+            x={416 - (thought.length * 6.9 + 26)}
+            y="54"
+            width={thought.length * 6.9 + 26}
+            height="38"
+            rx="13"
+            fill="#fbf9ff"
+            stroke="#241f3a"
+            strokeWidth="3"
+          />
+          <text
+            x={416 - (thought.length * 6.9 + 26) / 2}
+            y="78"
+            textAnchor="middle"
+            fill="#241f3a"
+            fontSize="11.5"
+            style={{ fontFamily: 'var(--font-tech)' }}
+          >
+            {thought}
+          </text>
+        </g>
+      )}
 
       {/* ======================================================= foreground */}
       <g data-depth="16" pointerEvents="none">
@@ -488,8 +663,10 @@ export function HeroScene({ className = '' }: { className?: string }) {
           ))}
         </g>
 
-        {/* warm lamp haze in the corner */}
-        <ellipse cx="700" cy="380" rx="150" ry="150" fill="url(#hs-lampglow)" />
+        {/* warm lamp haze in the corner, only once it is dark */}
+        <g className="hs-night">
+          <ellipse cx="700" cy="380" rx="150" ry="150" fill="url(#hs-lampglow)" />
+        </g>
 
         {/* dust in the light */}
         <g fill="#ffe6bd">

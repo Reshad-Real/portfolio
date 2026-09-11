@@ -507,3 +507,121 @@ body[data-locked='true'] {
 .mf-dog-floor {
   background: linear-gradient(to top, color-mix(in srgb, var(--ink) 16%, transparent), transparent);
 }
+
+/* ----------------------------------------------- hero: day and night ----
+   The room has a night half and a day half drawn on top of each other. The
+   theme decides which is showing, and they cross-fade rather than cut. */
+.hs-day,
+.hs-night {
+  transition: opacity 700ms ease;
+}
+.hs-day { opacity: 1 }
+.hs-night { opacity: 0 }
+[data-theme='dark'] .hs-day { opacity: 0 }
+[data-theme='dark'] .hs-night { opacity: 1 }
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-day,
+  .hs-night { transition: none }
+}
+
+/* Code scrolling in the reflection on his glasses. */
+.hs-code {
+  transform-box: fill-box;
+  animation: hs-code 6.5s linear infinite;
+}
+@keyframes hs-code {
+  from { transform: translateY(0) }
+  to { transform: translateY(-70px) }
+}
+
+/* Clouds crossing the window by day. */
+@keyframes hs-drift {
+  from { transform: translateX(-70px) }
+  to { transform: translateX(210px) }
+}
+
+/* The thought that pops up over his head. */
+.hs-thought {
+  opacity: 0;
+  transform: translateY(7px) scale(0.95);
+  transform-box: fill-box;
+  transform-origin: bottom right;
+  transition:
+    opacity 300ms ease,
+    transform 300ms cubic-bezier(0.2, 0.9, 0.3, 1.35);
+}
+.hs-thought[data-show='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* --------------------------------------------- section motion ----------
+   Carries the hero's room into the rest of the page: a rule that draws
+   itself, dust in the light, and a highlight that sweeps a card on hover. */
+
+/* The hairline beside a section kicker draws in from the left. */
+.mf-rule {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 140ms;
+}
+.mf-reveal[data-shown='true'] .mf-rule {
+  transform: scaleX(1);
+}
+
+/* The section number breathes, very slightly. */
+.mf-index {
+  display: inline-block;
+  animation: mf-index 4.5s ease-in-out infinite;
+}
+@keyframes mf-index {
+  0%, 100% { opacity: 1 }
+  50% { opacity: 0.55 }
+}
+
+/* Dust drifting through each section, as it does in the illustration. */
+.mf-mote {
+  position: absolute;
+  border-radius: 9999px;
+  background: var(--accent);
+  opacity: 0;
+  animation: mf-mote var(--dur, 14s) ease-in-out var(--delay, 0s) infinite;
+}
+@keyframes mf-mote {
+  0% { opacity: 0; transform: translateY(14px) }
+  35% { opacity: 0.32 }
+  70% { opacity: 0.16 }
+  100% { opacity: 0; transform: translateY(-46px) }
+}
+
+/* A highlight that crosses a card when the pointer is over it. */
+.mf-card {
+  position: relative;
+  overflow: hidden;
+}
+.mf-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 38%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 50%,
+    transparent 62%
+  );
+  transform: translateX(-120%);
+  transition: transform 750ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mf-card:hover::after,
+.mf-card:focus-within::after {
+  transform: translateX(120%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mf-rule { transition: none; transform: none }
+  .mf-index { animation: none }
+  .mf-mote { animation: none; opacity: 0 }
+  .mf-card::after { transition: none }
+}

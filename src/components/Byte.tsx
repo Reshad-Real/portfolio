@@ -369,13 +369,15 @@ export function Byte() {
         </span>
       ))}
 
+      {/* The walk pose is drawn nose-left, so travelling right is the mirrored
+          one. scaleX carried the opposite sign, so he walked backwards both ways. */}
       <button
         type="button"
         onClick={onDogClick}
         aria-label={menuOpen ? 'BYTE the dog, menu open' : 'BYTE the dog, click to say hello'}
         aria-expanded={menuOpen}
         className="pointer-events-auto block h-full w-full cursor-pointer rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-        style={{ transform: `scaleX(${pose === 'walk' ? facing : 1})` }}
+        style={{ transform: `scaleX(${pose === 'walk' ? -facing : 1})` }}
       >
         <DogArt
           pose={pose}

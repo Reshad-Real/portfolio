@@ -286,7 +286,7 @@ export function DogArt({
             </g>
           ))}
 
-          {/* head, in profile facing right */}
+          {/* head, in profile facing left: nose at x=6, tail at x=174 */}
           <g style={{ transformOrigin: '46px 86px', animation: 'bd-headbob 0.88s ease-in-out infinite' }}>
             {/* ear */}
             <path

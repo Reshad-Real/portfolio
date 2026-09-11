@@ -137,13 +137,14 @@ export function RefAvatar({ kind, name, className = '' }: Props) {
             {/* neck */}
             <path d="M50 72h20v18c0 6-20 6-20 0z" fill={L.skinShade} />
 
-            {/* head */}
+            {/* head: cheekbones out, then a jaw in to the chin. It was a plain
+                egg before, the same fault the hero figure had. */}
             <path
-              d="M60 22c17 0 28 12 28 30 0 21-12 34-28 34s-28-13-28-34c0-18 11-30 28-30z"
+              d="M60 22c16 0 28 11 28 28 0 10-1 18-5 25-4 8-12 14-23 14s-19-6-23-14c-4-7-5-15-5-25 0-17 12-28 28-28z"
               fill={`url(#${gid}-skin)`}
             />
-            {/* cel shadow on the shaded side */}
-            <path d="M32 40h10c-6 18-5 34 3 46h-8c-6-12-8-30-5-46z" fill={L.skinShade} opacity="0.6" />
+            {/* cel shadow on the shaded side, following the cheek */}
+            <path d="M45 38c-6 16-6 33 0 47-8-6-12-17-12-28 0-8 4-15 12-19z" fill={L.skinShade} opacity="0.55" />
             {/* ears */}
             <ellipse cx="32" cy="56" rx="4.5" ry="7" fill={L.skinShade} />
             <ellipse cx="88" cy="56" rx="4.5" ry="7" fill={L.skinShade} />

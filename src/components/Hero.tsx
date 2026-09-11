@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { HeroScene } from './art/HeroScene'
+import { SocialIcon } from './art/SocialIcon'
 import { useTypedLines } from '../hooks/useTypedLines'
 import { intro, person, typedLines } from '../data/site'
 
 const SOCIALS = [
-  { label: 'Google Scholar', href: person.links.scholar, glyph: 'GS' },
-  { label: 'GitHub', href: person.links.github, glyph: 'GH' },
-  { label: 'LinkedIn', href: person.links.linkedin, glyph: 'in' },
+  { label: 'Google Scholar', href: person.links.scholar, icon: 'scholar' },
+  { label: 'GitHub', href: person.links.github, icon: 'github' },
+  { label: 'LinkedIn', href: person.links.linkedin, icon: 'linkedin' },
 ] as const
 
 /** Staggered entrance, expressed as a delay rather than a JavaScript timer. */
@@ -82,22 +83,30 @@ export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string })
             <EmailPill />
           </div>
 
-          <div className="mf-in mt-8 flex items-center gap-2.5" style={d(400)}>
+          <div className="mf-in mt-8 flex flex-wrap items-center gap-2.5" style={d(400)}>
             {SOCIALS.map((s) => (
               <a
                 key={s.label}
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={s.label}
-                title={s.label}
-                className="grid h-9 w-9 place-items-center rounded-full border border-line text-[11px] font-medium text-muted transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:text-accent"
+                title={`${s.label} (opens in a new tab)`}
+                className="group inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-2 text-[13px] font-medium text-ink shadow-[0_1px_0_var(--line)] transition-all duration-200 hover:-translate-y-0.5 hover:border-accent hover:text-accent hover:shadow-[0_8px_18px_-10px_var(--accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                {s.glyph}
+                <SocialIcon id={s.icon} />
+                {s.label}
+                <span
+                  aria-hidden="true"
+                  className="text-[13px] text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-accent"
+                >
+                  ↗
+                </span>
               </a>
             ))}
-            <span className="ml-1 text-[12.5px] text-muted">{person.location}</span>
           </div>
+          <p className="mf-in mt-4 text-[12.5px] text-muted" style={d(440)}>
+            {person.location}
+          </p>
         </div>
 
         {/* -------------------------------------------------- illustration */}

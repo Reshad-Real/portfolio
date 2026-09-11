@@ -144,7 +144,7 @@ export function Experience() {
               {courses.map((c) => (
                 <li
                   key={c.code}
-                  className="rounded-xl border border-line bg-bg p-5 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
+                  className="mf-card rounded-xl border border-line bg-bg p-5 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
                 >
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <span className="text-[12px] text-accent" style={{ fontFamily: 'var(--font-tech)' }}>
@@ -239,7 +239,7 @@ export function Experience() {
                 {references.map((r, i) => (
                   <li
                     key={r.email}
-                    className="flex items-center gap-4 rounded-xl border border-line bg-bg p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
+                    className="mf-card flex items-center gap-4 rounded-xl border border-line bg-bg p-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
                   >
                     <RefAvatar
                       kind={i === 0 ? 'senior' : 'junior'}

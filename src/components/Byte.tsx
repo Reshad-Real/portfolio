@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { DogArt, type Pose } from './art/DogArt'
 import { DogHouse } from './art/DogHouse'
 import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
-import { bark as barkSound, isSfxOn, setSfx } from '../lib/audio'
+import { bark as barkSound, isSfxOn, prefersSfx, setSfx } from '../lib/audio'
 
 const HIDE_KEY = 'mf-dog-hidden'
 const MET_KEY = 'mf-dog-met'
@@ -170,7 +170,7 @@ export function Byte() {
 
   /** The kennel is the whistle: it stops whatever he is doing and brings him in. */
   const callHome = useCallback(() => {
-    if (!isSfxOn()) setSfx(true)
+    if (!isSfxOn() && prefersSfx()) setSfx(true)
     setDigging(false)
     setFly(false)
     setJoy(0)
@@ -192,8 +192,9 @@ export function Byte() {
   }, [])
 
   const onDogClick = useCallback(() => {
-    // A real gesture, so the arcade and the bark may make noise from here on.
-    if (!isSfxOn()) setSfx(true)
+    // A real gesture, so he may make noise from here on -- unless sound was
+    // deliberately switched off, in which case leave it off.
+    if (!isSfxOn() && prefersSfx()) setSfx(true)
 
     const now = performance.now()
     clickTimes.current = [...clickTimes.current.filter((t) => now - t < 1300), now]

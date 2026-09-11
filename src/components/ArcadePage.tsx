@@ -1,5 +1,5 @@
-import { Suspense, lazy, useState } from 'react'
-import { setSfx } from '../lib/audio'
+import { Suspense, lazy, useEffect, useState } from 'react'
+import { armAudio, prefersSfx, rememberSfx, setSfx } from '../lib/audio'
 import { Navbar } from './Navbar'
 import { Byte } from './Byte'
 import { useTheme } from '../hooks/useTheme'
@@ -44,12 +44,17 @@ const CABINETS: {
 export function ArcadePage({ homeHref }: { homeHref: string }) {
   const { theme, toggle } = useTheme()
   const [active, setActive] = useState<Key>('runner')
-  const [sound, setSound] = useState(false)
+  const [sound, setSound] = useState(prefersSfx)
 
   const cab = CABINETS.find((c) => c.key === active)!
 
+  // On by default, but a browser needs a gesture before anything can sound.
+  useEffect(() => armAudio((started) => setSound(started.sfx)), [])
+
   const toggleSound = () => {
-    setSound(setSfx(!sound))
+    const next = !sound
+    rememberSfx(next)
+    setSound(setSfx(next))
   }
 
   return (

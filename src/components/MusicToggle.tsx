@@ -1,17 +1,26 @@
 import { useEffect, useState } from 'react'
-import { isMusicOn, setMusic } from '../lib/audio'
+import { armAudio, isMusicOn, prefersMusic, rememberMusic, setMusic } from '../lib/audio'
 
 /**
- * The lofi loop. It is synthesised in the browser rather than streamed, and it
- * never starts on its own: this button is the only way it plays.
+ * The lofi loop, synthesised in the browser rather than streamed. It is on by
+ * default, but no browser will let it sound before the visitor has touched the
+ * page, so it comes up at the first click, tap or keypress. Switching it off
+ * here is remembered, and it stays off on later visits.
  */
 export function MusicToggle() {
-  const [on, setOn] = useState(false)
+  const [on, setOn] = useState(prefersMusic)
 
-  // Never leave the loop running if this page goes away.
-  useEffect(() => () => void setMusic(false), [])
+  useEffect(() => {
+    armAudio((started) => setOn(started.music))
+    // Never leave the loop running if this page goes away.
+    return () => void setMusic(false)
+  }, [])
 
-  const toggle = () => setOn(setMusic(!isMusicOn()))
+  const toggle = () => {
+    const next = !isMusicOn()
+    rememberMusic(next)
+    setOn(setMusic(next))
+  }
 
   return (
     <button

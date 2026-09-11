@@ -175,6 +175,60 @@ export function isSfxOn() {
   return sfxOn
 }
 
+// ---------------------------------------------------- what the visitor wants
+
+/**
+ * Both channels are wanted on. A browser will not let anything make a sound
+ * until the visitor has interacted with the page, so "on by default" can only
+ * mean armed by default and brought up at the first real gesture.
+ *
+ * Anyone who switches one off is remembered, and arming leaves that one alone
+ * on every later visit.
+ */
+const SFX_KEY = 'mf-sfx'
+const MUSIC_KEY = 'mf-music'
+
+function wanted(key: string): boolean {
+  try {
+    return localStorage.getItem(key) !== '0'
+  } catch {
+    return true
+  }
+}
+
+function remember(key: string, on: boolean) {
+  try {
+    localStorage.setItem(key, on ? '1' : '0')
+  } catch {
+    /* private mode: the choice just will not outlive the tab */
+  }
+}
+
+export const prefersSfx = () => wanted(SFX_KEY)
+export const prefersMusic = () => wanted(MUSIC_KEY)
+export const rememberSfx = (on: boolean) => remember(SFX_KEY, on)
+export const rememberMusic = (on: boolean) => remember(MUSIC_KEY, on)
+
+let armed = false
+
+/**
+ * Starts whichever channels are wanted, at the first click, tap or keypress
+ * anywhere on the page. Runs once, then takes its own listeners off again.
+ */
+export function armAudio(onStart?: (started: { sfx: boolean; music: boolean }) => void) {
+  if (armed || typeof window === 'undefined') return
+  armed = true
+
+  const events = ['pointerdown', 'keydown', 'touchstart'] as const
+  const fire = () => {
+    for (const e of events) window.removeEventListener(e, fire)
+    const sfx = prefersSfx() ? setSfx(true) : false
+    const music = prefersMusic() ? setMusic(true) : false
+    onStart?.({ sfx, music })
+  }
+  for (const e of events) window.addEventListener(e, fire, { passive: true })
+}
+
 // ------------------------------------------------------------------ lofi
 
 /**

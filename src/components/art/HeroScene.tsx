@@ -367,9 +367,9 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
       {/* ============================================== desk and the figure */}
       <g data-depth="4" pointerEvents="none">
-        {/* He sits 34 higher than the desk was drawn for, so the hoodie clears
+        {/* He sits 54 higher than the desk was drawn for, so the hoodie clears
             the laptop and the head is attached to a body rather than a bare neck. */}
-        <g transform="translate(0 -34)">
+        <g transform="translate(0 -54)">
         {/* What he casts on the wall. It was a plain ellipse sitting behind
             his head like a halo; a shadow is the silhouette of the thing that
             blocked the light, thrown away from the source. The window is up
@@ -515,7 +515,10 @@ export function HeroScene({ className = '' }: { className?: string }) {
                 </g>
               ))}
               {/* brows */}
-              <path d="M292 232c10-8 30-8 40-2M368 230c10-6 30-6 40 2" stroke="#241f3a" strokeWidth="7" strokeLinecap="round" fill="none" />
+              {/* Centred over the pupils at 288 and 372. They used to sit at
+                  312 and 388, both pushed right and by different amounts, so
+                  one brow rode the bridge of his nose. */}
+              <path d="M266 238c9-10 35-10 44 0M350 238c9-10 35-10 44 0" stroke="#241f3a" strokeWidth="6.5" strokeLinecap="round" fill="none" />
             </g>
 
             {/* nose and mouth */}
@@ -633,56 +636,54 @@ export function HeroScene({ className = '' }: { className?: string }) {
             and the screen reflected in his glasses. */}
         <g id="hs-laptop">
           {/* what it throws up into the room */}
-          <ellipse cx="330" cy="450" rx="176" ry="80" fill="url(#hs-screenglow)">
+          <ellipse cx="330" cy="420" rx="184" ry="96" fill="url(#hs-screenglow)">
             <animate attributeName="opacity" values="0.95;0.72;0.95" dur="5s" repeatCount="indefinite" />
           </ellipse>
 
           {/* where it meets the desk */}
-          <ellipse cx="330" cy="508" rx="118" ry="12" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="502" rx="116" ry="11" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
 
-          {/* The lid, hinged at the far edge of the deck and leaning away from
-              us towards him, so its top is higher and a little narrower.
-              200 wide against a 310-wide torso, so a shoulder reads on each
-              side of it rather than the machine swallowing him. */}
-          <path d="M258 426h144l10 60H248z" fill="#2b2a44" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M268 434h124l7 44H261z" fill="#343252" />
+          {/* The lid, 200 wide by 100 tall. It was 200 by 60, a ratio of 0.3
+              against a real laptop's 0.6, which is why it read as a letter
+              tray. Top edge a little narrower, because it leans away from us
+              towards him. */}
+          <path d="M240 382h180l10 100H230z" fill="#2b2a44" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          <path d="M250 390h160l7 84H243z" fill="#343252" />
           {/* the window, catching the back of the lid */}
-          <path d="M372 426h30l-24 60h-30z" fill="#ffffff" opacity="0.055" />
+          <path d="M390 382h30l-24 100h-30z" fill="#ffffff" opacity="0.055" />
           {/* light escaping round the raised edge */}
-          <path d="M259 427h142" stroke="#cdf1ff" strokeWidth="4" opacity="0.7" strokeLinecap="round">
+          <path d="M241 383h178" stroke="#cdf1ff" strokeWidth="4" opacity="0.7" strokeLinecap="round">
             <animate attributeName="opacity" values="0.7;0.45;0.7" dur="5s" repeatCount="indefinite" />
           </path>
-          <path d="M402 427l9 57" stroke="#bfe4ff" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
-          <path d="M258 427l-9 57" stroke="#bfe4ff" strokeWidth="3" opacity="0.24" strokeLinecap="round" />
-          <circle cx="330" cy="456" r="10" fill="none" stroke="#9fd7ff" strokeWidth="2.8" opacity="0.4" />
-          <circle cx="330" cy="456" r="3.4" fill="#bfefff" opacity="0.8">
+          <path d="M420 383l9 97" stroke="#bfe4ff" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
+          <path d="M240 383l-9 97" stroke="#bfe4ff" strokeWidth="3" opacity="0.24" strokeLinecap="round" />
+          <circle cx="330" cy="432" r="11" fill="none" stroke="#9fd7ff" strokeWidth="2.8" opacity="0.4" />
+          <circle cx="330" cy="432" r="3.6" fill="#bfefff" opacity="0.8">
             <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3.4s" repeatCount="indefinite" />
           </circle>
 
-          {/* hinge, then the deck coming towards us */}
-          <path d="M248 486h164" stroke="#6f66a0" strokeWidth="5" strokeLinecap="round" />
-          <path d="M248 486h164l18 20H230z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M230 506h200v9H230z" fill="#191829" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          {/* keys, foreshortened across the deck */}
-          <g stroke="#8f86c4" strokeWidth="2.2" opacity="0.3" strokeLinecap="round">
-            <path d="M256 492h148M252 498h156M248 504h164" />
-          </g>
+          {/* The base, from behind. The keyboard is on his side of the hinge,
+              so from here there is nothing of it to see: only the back edge of
+              the slab the lid is hinged to. Drawing the deck and its keys
+              coming towards us put the machine the wrong way round. */}
+          <path d="M222 482h216v10a7 7 0 0 1-7 7H229a7 7 0 0 1-7-7z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          <path d="M228 486h204" stroke="#6f66a0" strokeWidth="3" opacity="0.6" strokeLinecap="round" />
 
-          {/* the pool it throws forward onto the desk */}
-          <ellipse cx="330" cy="516" rx="150" ry="11" fill="#9fd7ff" opacity="0.2" filter="url(#hs-soft)" />
+          {/* the light that gets past him, onto the desk */}
+          <ellipse cx="330" cy="508" rx="146" ry="10" fill="#9fd7ff" opacity="0.18" filter="url(#hs-soft)" />
         </g>
       </g>
 
       {/* --------------------------------------------------- what he is thinking */}
       {thought && (
         <g className="hs-thought" data-show={thinking ? 'true' : 'false'} pointerEvents="none">
-          <circle cx="404" cy="106" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
-          <circle cx="415" cy="120" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
+          <circle cx="404" cy="80" r="6" fill="#fbf9ff" stroke="#241f3a" strokeWidth="3" />
+          <circle cx="415" cy="94" r="4" fill="#fbf9ff" stroke="#241f3a" strokeWidth="2.5" />
           {/* The tech face is monospace, so the box can be sized from the
               character count: 6.9 per glyph at 11.5px, plus the padding. */}
           <rect
             x={416 - (thought.length * 6.9 + 26)}
-            y="54"
+            y="28"
             width={thought.length * 6.9 + 26}
             height="38"
             rx="13"
@@ -692,7 +693,7 @@ export function HeroScene({ className = '' }: { className?: string }) {
           />
           <text
             x={416 - (thought.length * 6.9 + 26) / 2}
-            y="78"
+            y="52"
             textAnchor="middle"
             fill="#241f3a"
             fontSize="11.5"

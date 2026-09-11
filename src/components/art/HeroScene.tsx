@@ -207,6 +207,11 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
       {/* ----------------------------------------------------------- plant */}
       <g data-depth="11" pointerEvents="none">
+        {/* The pot ends at y=367 and the desk does not start until 498, so
+            without this the plant hangs in the air. */}
+        <ellipse cx="106" cy="390" rx="72" ry="10" fill="#0d0c1a" opacity="0.45" filter="url(#hs-softer)" />
+        <rect x="42" y="366" width="128" height="15" rx="4" fill="#4c3c60" stroke="#16141f" strokeWidth="3" />
+        <rect x="46" y="368" width="120" height="5" rx="2.5" fill="#7a6592" opacity="0.75" />
         <g id="hs-plant">
           {[
             'M104 300c-26-44-22-96 8-136 14 44 10 96-8 136z',
@@ -240,38 +245,45 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
       {/* ============================================== desk and the figure */}
       <g data-depth="4" pointerEvents="none">
+        {/* He sits 34 higher than the desk was drawn for, so the hoodie clears
+            the laptop and the head is attached to a body rather than a bare neck. */}
+        <g transform="translate(0 -34)">
         {/* cast shadow on the wall behind him */}
         <ellipse cx="286" cy="330" rx="150" ry="176" fill="#0d0c1a" opacity="0.42" filter="url(#hs-softer)" />
 
         <g id="hs-body" style={{ animation: 'hs-breathe 5.5s ease-in-out infinite' }}>
           {/* ---- shoulders */}
+          {/* A trapezius slope out to the arms. A plain dome read as a balloon.
+              Drawn past the bottom of the viewBox so breathing never opens a gap. */}
           <path
-            d="M170 560c0-78 54-134 160-134s160 56 160 134z"
+            d="M150 600c4-90 30-150 86-180 28-9 56-13 94-13s66 4 94 13c56 30 82 90 86 180z"
             fill="url(#hs-hoodie)"
             stroke="#141326"
             strokeWidth="4"
           />
           {/* cel shadow on the far side */}
-          <path d="M170 560c0-64 36-114 110-130-30 34-44 78-44 130z" fill="#1d2748" opacity="0.75" />
-          {/* rim light down the window side */}
+          <path d="M150 600c4-90 30-150 86-180-22 44-34 106-36 180z" fill="#1d2748" opacity="0.7" />
+          {/* rim light: a stroke along the lit silhouette, so it stays a line */}
           <path
-            d="M462 560c-6-62-38-106-92-124 40 6 74 26 92 62z"
-            fill="#ffcf9a"
+            d="M330 407c38 0 66 4 94 13 56 30 82 90 86 180"
+            fill="none"
+            stroke="#ffcf9a"
+            strokeWidth="6"
             opacity="0.5"
           />
           {/* hood bunched at the neck */}
           <path
-            d="M252 452c22 26 134 26 156 0 18 16 24 34 22 48-64 22-136 22-200 0-2-14 4-32 22-48z"
+            d="M252 426c22 26 134 26 156 0 18 16 24 34 22 48-64 22-136 22-200 0-2-14 4-32 22-48z"
             fill="#32427a"
             stroke="#141326"
             strokeWidth="4"
           />
           {/* drawstrings */}
-          <path d="M300 486v52M364 486v44" stroke="#e8e3f5" strokeWidth="5" strokeLinecap="round" />
+          <path d="M306 466v46M358 466v38" stroke="#cdc7e6" strokeWidth="4" strokeLinecap="round" />
 
-          {/* ---- neck */}
-          <path d="M296 372h68v58c0 16-68 16-68 0z" fill="#f0c0a0" stroke="#141326" strokeWidth="4" />
-          <path d="M296 372h68v22c-22 14-46 14-68 0z" fill="#d9a084" />
+          {/* ---- neck, narrowed to the jaw so it is not a column */}
+          <path d="M302 372h56v58c0 16-56 16-56 0z" fill="#f0c0a0" stroke="#141326" strokeWidth="4" />
+          <path d="M302 372h56v22c-18 14-38 14-56 0z" fill="#d9a084" />
 
           <g id="head-tilt" style={{ transformBox: 'view-box' }}>
             {/* ---- hair, back mass */}
@@ -290,8 +302,9 @@ export function HeroScene({ className = '' }: { className?: string }) {
               strokeWidth="4"
             />
             <g clipPath="url(#hs-face-clip)">
-              {/* hard cel shadow away from the window */}
-              <path d="M246 160h58c-22 48-26 128 6 216h-64z" fill="#d9a084" opacity="0.75" />
+              {/* cel shadow away from the window: a crescent on the cheek, so it
+                  reads as a turning form rather than a seam down the middle */}
+              <path d="M292 172c-24 40-28 116-6 190-30-20-46-66-46-116 0-36 18-60 52-74z" fill="#d9a084" opacity="0.7" />
               {/* soft form shadow under the fringe */}
               <path d="M240 160h180v56c-60 22-120 22-180 0z" fill="#c9917a" opacity="0.55" filter="url(#hs-tiny)" />
               {/* bounce from the laptop, cool and from below */}
@@ -349,11 +362,14 @@ export function HeroScene({ className = '' }: { className?: string }) {
             <path d="M312 322c12 12 24 12 36 0" stroke="#a8604f" strokeWidth="5" fill="none" strokeLinecap="round" />
 
             {/* ---- glasses */}
-            <g fill="none" stroke="#241f3a" strokeWidth="6">
-              <rect x="288" y="246" width="84" height="48" rx="16" fill="#bfe4ff" fillOpacity="0.12" />
-              <rect x="378" y="246" width="84" height="48" rx="16" fill="#bfe4ff" fillOpacity="0.12" transform="translate(-90 0)" />
-              <path d="M372 268h6" />
-              <path d="M288 262l-42-8M462 262l0 0" />
+            <g fill="none" stroke="#241f3a" strokeWidth="5">
+              {/* one lens per eye, centred on the pupils at 288 and 372 */}
+              <rect x="255" y="244" width="66" height="48" rx="15" fill="#bfe4ff" fillOpacity="0.1" />
+              <rect x="339" y="244" width="66" height="48" rx="15" fill="#bfe4ff" fillOpacity="0.1" />
+              {/* bridge, arched over the nose */}
+              <path d="M321 258c6-5 12-5 18 0" />
+              {/* a temple to each ear */}
+              <path d="M255 256l-14-4M405 256l14-4" />
             </g>
             {/* lens glint, sweeping now and then */}
             <g clipPath="url(#hs-face-clip)">
@@ -419,6 +435,8 @@ export function HeroScene({ className = '' }: { className?: string }) {
             />
             <rect x="212" y="250" width="42" height="66" rx="18" fill="#3a3558" stroke="#100f1e" strokeWidth="4" />
             <rect x="406" y="250" width="42" height="66" rx="18" fill="#3a3558" stroke="#100f1e" strokeWidth="4" />
+            {/* the same inset on both cups, lit on the window side and dark on the other */}
+            <rect x="222" y="264" width="20" height="38" rx="10" fill="#2a2544" />
             <rect x="418" y="264" width="20" height="38" rx="10" fill="#6d5fa8" />
             {/* the little status light on the cup */}
             <circle cx="428" cy="326" r="5" fill="#68e8b0">
@@ -426,18 +444,26 @@ export function HeroScene({ className = '' }: { className?: string }) {
             </circle>
           </g>
         </g>
+        </g>
 
         {/* ---- desk and laptop, in front of him */}
         <rect x="0" y="498" width="720" height="62" fill="url(#hs-desk)" />
         <rect x="0" y="498" width="720" height="7" fill="#6a5674" />
 
-        <g id="hs-laptop">
+        {/* Centred under his head. Off to one side it hid half the torso and the
+            figure read as a head on a stick. */}
+        <g id="hs-laptop" transform="translate(134 0)">
           <ellipse cx="196" cy="470" rx="190" ry="90" fill="url(#hs-screenglow)">
             <animate attributeName="opacity" values="0.9;0.65;0.9" dur="4.5s" repeatCount="indefinite" />
           </ellipse>
-          <path d="M64 502l40-94h186l40 94z" fill="#2b2a44" stroke="#100f1e" strokeWidth="4" />
-          <path d="M104 408h186l30 72H74z" fill="#3b3a5c" />
-          <path d="M124 424h146l18 42H106z" fill="#9fd7ff" opacity="0.22" />
+          {/* He faces us, so this is the back of the lid: the glow spills up at
+              him, and we get a dark mass rather than a dead grey screen. */}
+          <path d="M64 502l40-62h186l40 62z" fill="#23223a" stroke="#100f1e" strokeWidth="4" />
+          <path d="M104 440h186l20 48H84z" fill="#2e2d4c" />
+          <path d="M104 442h186" stroke="#8f86c4" strokeWidth="3" opacity="0.5" strokeLinecap="round" />
+          <path d="M290 442l30 58" stroke="#b9a8e6" strokeWidth="3" opacity="0.45" strokeLinecap="round" />
+          <circle cx="197" cy="468" r="11" fill="none" stroke="#9fd7ff" strokeWidth="3" opacity="0.38" />
+          <circle cx="197" cy="468" r="3.5" fill="#9fd7ff" opacity="0.5" />
           <rect x="52" y="500" width="292" height="14" rx="7" fill="#4a4870" stroke="#100f1e" strokeWidth="4" />
         </g>
       </g>

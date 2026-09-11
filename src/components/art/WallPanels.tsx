@@ -101,11 +101,11 @@ export function WallPanels({ onHover }: { onHover?: (id: string | null) => void 
               <rect x={x + 4} y={y + 4} width={SIZE - 8} height={SIZE - 8} rx="8" fill="#1b1a38" />
               {/* lit edge on the window side, shadow on the other */}
               <path
-                d={`M${x + SIZE - 4} ${y + 8}v${SIZE - 16}`}
+                d={`M${x + SIZE - 9} ${y + 12}v${SIZE - 24}`}
                 stroke={p.hue}
-                strokeWidth="2.5"
+                strokeWidth="2"
                 strokeLinecap="round"
-                opacity="0.85"
+                opacity="0.45"
               />
               <path
                 d={`M${x + 5} ${y + 8}v${SIZE - 16}`}

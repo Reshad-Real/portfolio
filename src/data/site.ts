@@ -59,11 +59,13 @@ export const marqueeTerms = [
   'DEVSIM',
 ] as const
 
-export const stats = [
-  { value: 6, label: 'Q1 journal papers', suffix: '' },
-  { value: 1, label: 'manuscript under review', suffix: '' },
-  { value: 3.81, label: 'CGPA / 4.00', decimals: 2 },
-  { value: 5, label: 'nm smallest gate simulated', suffix: '' },
-  { value: 3, label: 'courses tutored', suffix: '' },
-  { value: 8, label: "VC's + Dean's list entries", suffix: '' },
-] as const
+export type Stat = { value: number; decimals: number; suffix: string; label: string }
+
+export const stats: Stat[] = [
+  { value: 6, decimals: 0, suffix: '', label: 'Q1 journal papers' },
+  { value: 1, decimals: 0, suffix: '', label: 'manuscript under review' },
+  { value: 3.81, decimals: 2, suffix: '', label: 'CGPA out of 4.00' },
+  { value: 5, decimals: 0, suffix: ' nm', label: 'smallest gate simulated' },
+  { value: 3, decimals: 0, suffix: '', label: 'courses tutored' },
+  { value: 8, decimals: 0, suffix: '', label: "VC's and Dean's list entries" },
+]

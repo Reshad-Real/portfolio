@@ -76,7 +76,7 @@ export function Navbar({ phase, theme, onToggleTheme }: Props) {
           <nav
             aria-label="Primary"
             className={[
-              'hidden items-center gap-6 transition-opacity duration-700 md:flex',
+              'hidden items-center gap-4 transition-opacity duration-700 md:flex lg:gap-6',
               booting ? 'pointer-events-none opacity-0' : 'opacity-100',
             ].join(' ')}
           >
@@ -101,7 +101,7 @@ export function Navbar({ phase, theme, onToggleTheme }: Props) {
 
             <a
               href={contactCta.href}
-              className={`hidden text-[23px] underline underline-offset-2 transition-opacity hover:opacity-60 md:inline ${ink}`}
+              className={`hidden whitespace-nowrap text-[23px] underline underline-offset-2 transition-opacity hover:opacity-60 md:inline ${ink}`}
             >
               {contactCta.label}
             </a>

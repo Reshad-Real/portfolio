@@ -92,10 +92,7 @@ export function About() {
               {stats.map((s) => (
                 <div key={s.label} className="bg-bg p-5 sm:p-6">
                   <div className="text-[clamp(30px,4.4vw,46px)] font-medium leading-none tracking-[-0.03em] text-ink">
-                    <Counter
-                      value={s.value}
-                      decimals={'decimals' in s ? (s.decimals as number) : 0}
-                    />
+                    <Counter value={s.value} decimals={s.decimals} suffix={s.suffix} />
                   </div>
                   <div
                     className="mt-3 text-[11px] uppercase leading-snug tracking-[0.16em] text-muted"

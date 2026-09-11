@@ -25,17 +25,20 @@ export function Hero({ phase }: { phase: Phase }) {
   return (
     <div
       className={[
-        'absolute inset-0 z-10 flex flex-col overflow-hidden px-5 pb-12 sm:px-8 md:justify-center md:px-10 md:pb-0',
+        // Portrait tablets keep the bottom-aligned composition, because the
+        // scene lifts the device out of the way rather than panning it aside.
+        'absolute inset-0 z-10 flex flex-col overflow-hidden px-5 pb-12 sm:px-8 md:px-10 lg:justify-center lg:pb-0',
         'justify-end transition-opacity duration-700 ease-out',
         revealed ? 'opacity-100' : 'pointer-events-none opacity-0',
       ].join(' ')}
     >
       <div className="relative z-10 max-w-xl">
         <p
-          className="mb-4 text-[11px] uppercase tracking-[0.3em] text-white/50"
+          className="mb-4 text-[10px] uppercase leading-[1.9] tracking-[0.26em] sm:text-[11px]"
           style={{ fontFamily: 'var(--font-tech)' }}
         >
-          {person.name} — {person.role}
+          <span className="block text-white/80">{person.name}</span>
+          <span className="block text-white/45">{person.role}</span>
         </p>
 
         <p

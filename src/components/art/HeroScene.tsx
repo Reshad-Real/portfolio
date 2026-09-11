@@ -382,26 +382,32 @@ export function HeroScene({ className = '' }: { className?: string }) {
 
         <g id="hs-body" style={{ animation: 'hs-breathe 5.5s ease-in-out infinite' }}>
           {/* ---- shoulders */}
-          {/* A trapezius slope out to the arms. A plain dome read as a balloon.
-              Drawn past the bottom of the viewBox so breathing never opens a gap. */}
+          {/* A flat-ish shoulder line, then arms that drop. The old silhouette
+              was one smooth curve from neck to hem with no shoulder point and
+              no arm in it, which is what made it read as a beanbag. */}
           <path
-            d="M150 600c4-90 30-150 86-180 28-9 56-13 94-13s66 4 94 13c56 30 82 90 86 180z"
+            d="M158 600c0-58 6-100 20-130 12-24 32-40 58-50 24-8 54-14 94-14s70 6 94 14c26 10 46 26 58 50 14 30 20 72 20 130z"
             fill="url(#hs-hoodie)"
             stroke="#141326"
             strokeWidth="4"
           />
           {/* Form shadow on the far side. Fabric has no hard terminator, so
               this is blurred where the face's core shadow is only softened. */}
-          <path d="M150 600c4-90 30-150 86-180-22 44-34 106-36 180z" fill="#1d2748" opacity="0.65" filter="url(#hs-soft)" />
+          <path d="M158 600c0-58 6-100 20-130 12-24 32-40 58-50-24 34-38 100-40 180z" fill="#1d2748" opacity="0.6" filter="url(#hs-soft)" />
           {/* the screen, throwing cool light up the near shoulder */}
-          <path d="M186 600c2-52 14-92 38-118-10 34-16 74-17 118z" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />
-          {/* rim light: a stroke along the lit silhouette, so it stays a line */}
+          <path d="M190 600c2-48 10-84 26-110-8 32-13 68-14 110z" fill="#9fd7ff" opacity="0.16" filter="url(#hs-soft)" />
+          {/* raglan seams, so the arm is a separate form from the chest */}
+          <g stroke="#222d55" strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.65">
+            <path d="M240 420c-16 26-25 62-27 108" />
+            <path d="M420 420c16 26 25 62 27 108" />
+          </g>
+          {/* rim light: a thin line on the lit silhouette, not a band of tan */}
           <path
-            d="M330 407c38 0 66 4 94 13 56 30 82 90 86 180"
+            d="M330 406c40 0 70 6 94 14 26 10 46 26 58 50 14 30 20 72 20 130"
             fill="none"
-            stroke="#ffcf9a"
-            strokeWidth="6"
-            opacity="0.5"
+            stroke="#ffe0b8"
+            strokeWidth="4.5"
+            opacity="0.32"
           />
           {/* hood bunched at the neck */}
           <path
@@ -425,10 +431,11 @@ export function HeroScene({ className = '' }: { className?: string }) {
           <path d="M301 342c1 22-1 38-8 60h15c-4-22-4-40-1-58z" fill="#d9a084" opacity="0.75" />
 
           <g id="head-tilt" style={{ transformBox: 'view-box' }}>
-            {/* ---- hair, back mass: sits on the skull instead of ballooning
-                 24 units clear of it on each side */}
+            {/* ---- hair, back mass. It used to hang in two lobes past the
+                 ears, which poked out under the headphone cups as a pair of
+                 tabs. It now stops above them. */}
             <path
-              d="M330 138c68 0 106 44 103 110-3 58 5 76-17 89 4-37-7-59-13-79-26 15-120 15-146 0-6 20-17 42-13 79-22-13-14-31-17-89-3-66 35-110 103-110z"
+              d="M330 138c66 0 102 44 100 110 1 20-1 32-5 42-5-30-11-48-17-60-27 14-129 14-156 0-6 12-12 30-17 60-4-10-6-22-5-42-2-66 34-110 100-110z"
               fill="url(#hs-hair)"
               stroke="#100f1e"
               strokeWidth="4"
@@ -573,22 +580,16 @@ export function HeroScene({ className = '' }: { className?: string }) {
               fill="#6a5f96"
               opacity="0.6"
             />
-            {/* a couple of strands that move */}
+            {/* One strand, over the forehead where it reads as hair. The two
+                that used to hang beside the ears came out under the headphone
+                cups looking like hardware. */}
             <path
-              d="M262 176c-14 22-18 48-12 74"
+              d="M306 156c-12 14-18 30-18 46"
               stroke="#2a2440"
-              strokeWidth="9"
+              strokeWidth="8"
               fill="none"
               strokeLinecap="round"
-              style={{ transformOrigin: '262px 176px', animation: 'hs-strand 6s ease-in-out infinite' }}
-            />
-            <path
-              d="M406 170c16 20 22 44 18 70"
-              stroke="#2a2440"
-              strokeWidth="9"
-              fill="none"
-              strokeLinecap="round"
-              style={{ transformOrigin: '406px 170px', animation: 'hs-strand 7.4s ease-in-out 0.6s infinite' }}
+              style={{ transformOrigin: '306px 156px', animation: 'hs-strand 6s ease-in-out infinite' }}
             />
 
             {/* ---- headphones */}
@@ -624,54 +625,70 @@ export function HeroScene({ className = '' }: { className?: string }) {
         <rect x="0" y="498" width="720" height="62" fill="url(#hs-desk)" />
         <rect x="0" y="498" width="720" height="7" fill="#6a5674" />
 
-        {/* Open, and turned on the desk. Square-on to him it can only ever show
-            us the back of the lid, because the screen has to face whoever is
-            using it; turned a quarter round, it faces him and rakes towards us,
-            so both his face and the screen are readable at once. */}
-        <g id="hs-laptop" transform="translate(0 8)">
-          {/* what it throws on the wall and the desk */}
-          <ellipse cx="256" cy="430" rx="180" ry="90" fill="url(#hs-screenglow)">
-            <animate attributeName="opacity" values="0.95;0.7;0.95" dur="5s" repeatCount="indefinite" />
+        {/* Open, square on the desk, screen facing him. That does mean we see
+            the back of the lid rather than the display, which is simply what a
+            laptop looks like from the far side of somebody using it: what says
+            it is on is the light around the lid, the wash it throws up at him,
+            and the screen reflected in his glasses. */}
+        <g id="hs-laptop">
+          {/* what it throws up into the room */}
+          <ellipse cx="330" cy="440" rx="200" ry="86" fill="url(#hs-screenglow)">
+            <animate attributeName="opacity" values="0.95;0.72;0.95" dur="5s" repeatCount="indefinite" />
           </ellipse>
 
-          {/* where it meets the desk, so it sits rather than hovers */}
-          <ellipse cx="300" cy="502" rx="98" ry="11" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
+          {/* where it meets the desk */}
+          <ellipse cx="330" cy="508" rx="140" ry="12" fill="#0d0c1a" opacity="0.5" filter="url(#hs-soft)" />
 
-          {/* deck, running away from us to the hinge, with its front edge */}
-          <path d="M232 500l140-8v9l-140 8z" fill="#191829" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M200 470l140-8 32 30-140 8z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          <path d="M232 500l140-8 4 10-140 8z" fill="#26253c" />
-          {/* keys, foreshortened along the deck */}
-          <g stroke="#8f86c4" strokeWidth="2.6" opacity="0.4" strokeLinecap="round">
-            <path d="M216 478l128-7M222 484l128-7M228 490l128-7" />
-          </g>
-          <path d="M262 492l44-2" stroke="#8f86c4" strokeWidth="4" opacity="0.3" strokeLinecap="round" />
-
-          {/* the lid, leaning back and to the left, screen towards him */}
-          <path d="M200 470l140-8-14-62-140 8z" fill="#2b2a44" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
-          {/* the display */}
-          <path d="M208 463l124-7-11-48-124 7z" fill="#0e2233" />
-          <g clipPath="url(#hs-screen-clip)">
-            <path d="M208 463l124-7-11-48-124 7z" fill="url(#hs-display)" />
-            <g className="hs-code" fill="#7fe3ff" opacity="0.85">
-              {[
-                [0, 62], [9, 38], [18, 80], [27, 48],
-                [36, 92], [45, 34], [54, 70], [63, 44],
-                [72, 86], [81, 40],
-              ].map(([dy, w]) => (
-                <rect key={dy} x={204 + dy * 0.22} y={416 + dy * 0.52} width={w} height="4" rx="2" transform="rotate(-3.2 260 440)" />
-              ))}
-            </g>
-          </g>
-          {/* bezel light, and the hinge */}
-          <path d="M208 463l124-7" stroke="#bfe4ff" strokeWidth="2.4" opacity="0.45" strokeLinecap="round" />
-          <path d="M200 470l140-8" stroke="#6f66a0" strokeWidth="4" strokeLinecap="round" />
-          <circle cx="262" cy="409" r="2.6" fill="#68e8b0">
-            <animate attributeName="opacity" values="1;0.3;1" dur="3.4s" repeatCount="indefinite" />
+          {/* The lid, hinged at the far edge of the deck and leaning away from
+              us towards him, so its top is higher and a little narrower. */}
+          <path d="M236 420h188l12 66H224z" fill="#2b2a44" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          <path d="M246 430h168l9 46H237z" fill="#343252" />
+          {/* light escaping round the raised edge */}
+          <path d="M236 421h188" stroke="#cdf1ff" strokeWidth="4" opacity="0.75" strokeLinecap="round">
+            <animate attributeName="opacity" values="0.75;0.5;0.75" dur="5s" repeatCount="indefinite" />
+          </path>
+          <path d="M424 421l12 62" stroke="#bfe4ff" strokeWidth="3" opacity="0.5" strokeLinecap="round" />
+          <path d="M236 421l-12 62" stroke="#bfe4ff" strokeWidth="3" opacity="0.28" strokeLinecap="round" />
+          <circle cx="330" cy="452" r="12" fill="none" stroke="#9fd7ff" strokeWidth="3" opacity="0.4" />
+          <circle cx="330" cy="452" r="4" fill="#bfefff" opacity="0.8">
+            <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3.4s" repeatCount="indefinite" />
           </circle>
 
+          {/* hinge, then the deck coming towards us */}
+          <path d="M224 486h212" stroke="#6f66a0" strokeWidth="5" strokeLinecap="round" />
+          <path d="M224 486h212l22 22H202z" fill="#3a3856" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          <path d="M202 508h256v8H202z" fill="#191829" stroke="#100f1e" strokeWidth="4" strokeLinejoin="round" />
+          {/* keys, foreshortened across the deck */}
+          <g stroke="#8f86c4" strokeWidth="2.4" opacity="0.32" strokeLinecap="round">
+            <path d="M234 493h192M230 499h200M226 505h208" />
+          </g>
+
           {/* the pool it throws forward onto the desk */}
-          <ellipse cx="286" cy="508" rx="150" ry="13" fill="#9fd7ff" opacity="0.24" filter="url(#hs-soft)" />
+          <ellipse cx="330" cy="516" rx="170" ry="12" fill="#9fd7ff" opacity="0.2" filter="url(#hs-soft)" />
+        </g>
+
+        {/* Forearms coming round the machine to the keys. Without them he was a
+            torso stopping at the desk with nothing reaching the laptop. */}
+        <g id="hs-arms">
+          {[
+            { d: 'M192 470c22 10 42 20 58 30', hand: [258, 504], tilt: 22 },
+            { d: 'M468 470c-22 10-42 20-58 30', hand: [402, 504], tilt: -22 },
+          ].map((a) => (
+            <g key={a.d}>
+              <path d={a.d} stroke="#141326" strokeWidth="33" fill="none" strokeLinecap="round" />
+              <path d={a.d} stroke="url(#hs-hoodie)" strokeWidth="26" fill="none" strokeLinecap="round" />
+              <ellipse
+                cx={a.hand[0]}
+                cy={a.hand[1]}
+                rx="15"
+                ry="10"
+                fill="#f0c0a0"
+                stroke="#141326"
+                strokeWidth="4"
+                transform={`rotate(${a.tilt} ${a.hand[0]} ${a.hand[1]})`}
+              />
+            </g>
+          ))}
         </g>
       </g>
 

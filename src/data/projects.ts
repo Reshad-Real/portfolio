@@ -27,20 +27,9 @@ export const projects: Project[] = [
     blurb:
       'A flexible skin-mounted sensor that harvests what it needs to run. No battery to change is the whole point of wearing it continuously.',
     detail:
-      'Part of Advancing Sustainable Biosensing: A Self-powered Biosensor for Real-time and Wireless Health Monitoring, funded by RSGI at BRAC University. The e-skin-type biosensor is developed in both simulation and hardware environments.',
+      'Part of Advancing Sustainable Biosensing: A Self-powered Biosensor for Real-time and Wireless Health Monitoring, funded by RSGI at BRAC University. The e-skin-type biosensor is developed in both simulation and hardware, so the modelled behaviour and the bench behaviour can be held against each other rather than taken on trust. The work runs across the whole chain: the harvesting stage that powers the device, the flexible substrate it has to sit on and bend with, conditioning the biosignal once it has been picked up, and getting that reading off the body wirelessly.',
     stack: ['energy harvesting', 'flexible substrates', 'biosignals', 'wireless'],
     context: 'BRAC University · RSGI',
-  },
-  {
-    id: 'digital-twins',
-    kind: 'systems',
-    title: 'Digital twins for storage & EV charging',
-    blurb:
-      'Models of battery packs and charging infrastructure that stay faithful enough to be worth trusting when the real thing is expensive to test.',
-    detail:
-      'The simulation backbone behind several of the published papers. State-of-charge-aware opportunity detection, demand-based anomaly detection and techno-economic analysis of wireless charging all run against digital-twin models rather than against the hardware.',
-    stack: ['Li-ion', 'thermal', 'converters', 'machine learning'],
-    context: 'Published research',
   },
 ]
 

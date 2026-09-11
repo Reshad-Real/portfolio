@@ -31,9 +31,12 @@ function Block({
   children: ReactNode
   delay?: number
 }) {
+  // The margin has to live on the Reveal, not inside it. Inside, the div was
+  // the only child of its wrapper, so first:mt-0 matched every time and
+  // cancelled the gap on all six blocks.
   return (
-    <Reveal delay={delay}>
-      <div className="mt-24 first:mt-0">
+    <Reveal delay={delay} className="mt-20 md:mt-28">
+      <div>
         <div className="mb-8 flex items-center gap-4">
           <h3
             className="shrink-0 text-[11px] uppercase tracking-[0.22em] text-muted"

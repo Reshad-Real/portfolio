@@ -41,7 +41,7 @@ export function Footer({ arcadeHref }: { arcadeHref: string }) {
 
         <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-[12.5px] text-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {person.name}. Hand-drawn, hand-written, no template.
+            © {year} {person.name}.
           </p>
           <p style={{ fontFamily: 'var(--font-tech)' }}>Dhaka, Bangladesh</p>
         </div>

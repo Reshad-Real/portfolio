@@ -21,10 +21,10 @@ export function Research() {
             <br className="hidden sm:block" /> the physics gives in.
           </>
         }
-        lede="Gallium nitride tri-gate devices in Silvaco Atlas, a self-powered skin sensor, and digital twins for storage and EV charging. Open a card for the detail."
+        lede="Gallium nitride tri-gate devices in Silvaco Atlas, and a self-powered skin sensor built in both simulation and hardware. Open a card for the detail."
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid items-start gap-4 md:grid-cols-2">
         {projects.map((p, i) => {
           const isOpen = open === p.id
           return (

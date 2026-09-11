@@ -114,9 +114,6 @@ export function Hero({ base, arcadeHref }: { base: string; arcadeHref: string })
           <div className="overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(20,18,40,0.55)]">
             <HeroScene className="block w-full" />
           </div>
-          <p className="mt-3 text-center text-[12px] text-muted">
-            The panels on the wall are the shortcuts. Give one a click.
-          </p>
         </div>
       </div>
     </section>

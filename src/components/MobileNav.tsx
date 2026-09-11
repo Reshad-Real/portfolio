@@ -4,15 +4,15 @@ import { contactCta, navLinks } from '../data/site'
 type Props = {
   open: boolean
   onClose: () => void
+  arcadeHref: string
 }
 
-export function MobileNav({ open, onClose }: Props) {
+export function MobileNav({ open, onClose, arcadeHref }: Props) {
   const panelRef = useRef<HTMLDivElement | null>(null)
   const firstRef = useRef<HTMLAnchorElement | null>(null)
 
   useEffect(() => {
     if (!open) {
-      // Do not leave focus behind inside a panel that is now inert.
       const active = document.activeElement
       if (active instanceof HTMLElement && panelRef.current?.contains(active)) active.blur()
       return
@@ -25,7 +25,6 @@ export function MobileNav({ open, onClose }: Props) {
         return
       }
       if (e.key !== 'Tab') return
-      // Keep focus inside the overlay while it is open.
       const items = panelRef.current?.querySelectorAll<HTMLElement>('a[href], button')
       if (!items || items.length === 0) return
       const first = items[0]
@@ -42,50 +41,42 @@ export function MobileNav({ open, onClose }: Props) {
     return () => document.removeEventListener('keydown', onKey)
   }, [open, onClose])
 
+  const items = [...navLinks, { label: 'Arcade', href: arcadeHref }, contactCta]
+
   return (
     <div
       id="mobile-nav"
       ref={panelRef}
       className={[
-        'fixed inset-0 z-[9] bg-black/90 backdrop-blur-md transition-opacity duration-300 md:hidden',
+        'fixed inset-0 z-[39] bg-[#15142a]/95 backdrop-blur-md transition-opacity duration-300 md:hidden',
         open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
       ].join(' ')}
-      inert={!open}
+      {...(open ? {} : { inert: true })}
     >
-      <nav
-        aria-label="Mobile"
-        className="flex h-full flex-col justify-center gap-8 px-8 text-left"
-      >
-        {navLinks.map((link, i) => (
+      <nav aria-label="Mobile" className="flex h-full flex-col justify-center gap-6 px-8">
+        {items.map((link, i) => (
           <a
             key={link.href}
             ref={i === 0 ? firstRef : undefined}
             href={link.href}
             onClick={onClose}
-            tabIndex={open ? 0 : -1}
-            className="text-[32px] font-medium text-white transition-opacity hover:opacity-60"
+            className="group flex items-center gap-4 text-[30px] font-medium text-white transition-colors hover:text-[#8e9bff]"
             style={{
-              transform: open ? 'translateY(0)' : 'translateY(12px)',
+              transform: open ? 'translateY(0)' : 'translateY(14px)',
               opacity: open ? 1 : 0,
               transition: `opacity 300ms ease ${60 + i * 45}ms, transform 300ms ease ${60 + i * 45}ms`,
             }}
           >
+            <span
+              aria-hidden="true"
+              className="text-[13px] text-white/35"
+              style={{ fontFamily: 'var(--font-tech)' }}
+            >
+              0{i + 1}
+            </span>
             {link.label}
           </a>
         ))}
-        <a
-          href={contactCta.href}
-          onClick={onClose}
-          tabIndex={open ? 0 : -1}
-          className="text-[32px] font-medium text-white underline underline-offset-4 transition-opacity hover:opacity-60"
-          style={{
-            transform: open ? 'translateY(0)' : 'translateY(12px)',
-            opacity: open ? 1 : 0,
-            transition: `opacity 300ms ease ${60 + navLinks.length * 45}ms, transform 300ms ease ${60 + navLinks.length * 45}ms`,
-          }}
-        >
-          {contactCta.label}
-        </a>
       </nav>
     </div>
   )

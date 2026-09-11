@@ -1,13 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App'
+import { ArcadePage } from './components/ArcadePage'
 
 const container = document.getElementById('root')
 if (container) {
   createRoot(container).render(
     <StrictMode>
-      <App />
+      <ArcadePage homeHref={import.meta.env.BASE_URL} />
     </StrictMode>,
   )
 }

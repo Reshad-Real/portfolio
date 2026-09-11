@@ -14,10 +14,10 @@ export function Publications() {
         title={
           <>
             Six Q1 papers,
-            <br className="hidden sm:block" /> one under review.
+            <br className="hidden sm:block" /> all peer reviewed.
           </>
         }
-        lede="Mostly energy storage, conversion and management, plus a device-optimisation framework currently in review. Every published one links to its DOI."
+        lede="Energy storage, conversion and management, and the smart-grid work around them. Every one links to its DOI."
       />
 
       <ol className="border-t border-line">
@@ -48,14 +48,9 @@ export function Publications() {
                       <span className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted">
                         <span className="italic">{p.venue}</span>
                         <span aria-hidden="true">·</span>
-                        <span>{p.year ?? 'in review'}</span>
+                        <span>{p.year}</span>
                         <span aria-hidden="true">·</span>
                         <span>{p.position}</span>
-                        {p.status === 'under-review' && (
-                          <span className="rounded-full border border-accent2 px-2 py-[1px] text-[11px] text-accent2">
-                            under review
-                          </span>
-                        )}
                       </span>
                     </span>
 

@@ -1,6 +1,6 @@
 export type Project = {
   id: string
-  kind: 'device' | 'sensing' | 'systems' | 'optimisation'
+  kind: 'device' | 'sensing' | 'systems'
   title: string
   blurb: string
   detail: string
@@ -52,17 +52,6 @@ export const projects: Project[] = [
       'The simulation backbone behind several of the published papers. State-of-charge-aware opportunity detection, demand-based anomaly detection and techno-economic analysis of wireless charging all run against digital-twin models rather than against the hardware.',
     stack: ['Li-ion', 'thermal', 'converters', 'machine learning'],
     context: 'Published research',
-  },
-  {
-    id: 'hera-framework',
-    kind: 'optimisation',
-    title: 'HERA optimisation framework',
-    blurb:
-      'A constrained multi-objective search for sub-3 nm gate-all-around FinFETs, warm-started by reinforcement learning over a calibrated TCAD twin.',
-    detail:
-      'A Gaussian-process ensemble surrogate, a constrained expected-hypervolume acquisition function and a reinforcement-learning-warm-started search explore the device design space. Representative designs are cross-verified in DEVSIM drift-diffusion TCAD. Currently under review.',
-    stack: ['Gaussian process', 'EHVI', 'reinforcement learning', 'DEVSIM'],
-    context: 'Under review',
   },
 ]
 

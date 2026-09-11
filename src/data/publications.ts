@@ -3,11 +3,10 @@ export type Publication = {
   title: string
   authors: string[]
   venue: string
-  status: 'published' | 'under-review'
-  year: number | null
-  doi?: string
+  year: number
+  doi: string
   position: string
-  metrics?: { quartile: string; percentile: string; impact: string; citeScore: string }
+  metrics: { quartile: string; percentile: string; impact: string; citeScore: string }
   tags: string[]
   note: string
 }
@@ -23,24 +22,11 @@ const ecmx = {
 
 export const publications: Publication[] = [
   {
-    id: 'hera',
-    title:
-      'HERA: A Hierarchical Expected-Hypervolume Reinforcement-Guided Acquisition Framework and Digital Twin for Multi-Objective Optimization of Sub-3 nm Gate-All-Around FinFETs',
-    authors: [ME, 'Tahmid Faiz Noor', 'SK Tahmed Salim Rafid'],
-    venue: 'Materials Today Electronics',
-    status: 'under-review',
-    year: null,
-    position: '1st author',
-    tags: ['gate-all-around', 'digital twin', 'multi-objective optimisation', 'DEVSIM'],
-    note: 'A constrained multi-objective VLSI device-optimisation framework for sub-3 nm gate-all-around FinFETs. It pairs a Gaussian-process ensemble surrogate with a constrained expected-hypervolume acquisition function and a reinforcement-learning-warm-started search over a calibrated TCAD digital twin, with representative designs cross-verified in DEVSIM drift-diffusion TCAD.',
-  },
-  {
     id: 'est-anomaly',
     title:
       'Demand-based anomaly detection algorithm in electric vehicle charging systems using machine learning and digital twin simulation',
     authors: [ME, 'Sadia Afrin', 'Alvi Ibn Amzad Anil', 'Shameem Hasan'],
     venue: 'Journal of Energy Storage',
-    status: 'published',
     year: 2026,
     doi: '10.1016/j.est.2026.122795',
     position: '1st author',
@@ -54,7 +40,6 @@ export const publications: Publication[] = [
       'State-of-charge-aware charging opportunity detection for electric vehicles using data-driven learning and digital twin simulation',
     authors: [ME, 'Sadia Afrin', 'Alvi Ibn Amzad Anil', 'Shameem Hasan'],
     venue: 'Energy Conversion and Management: X',
-    status: 'published',
     year: 2026,
     doi: '10.1016/j.ecmx.2026.101775',
     position: '1st author',
@@ -68,7 +53,6 @@ export const publications: Publication[] = [
       'Towards smarter grids: A systematic review of wide area monitoring enhancing stability, protection, and promoting environmental sustainability',
     authors: [ME, 'Alvi Ibn Amzad Anil', 'Sadia Afrin', 'Shameem Hasan'],
     venue: 'Energy Conversion and Management: X',
-    status: 'published',
     year: 2025,
     doi: '10.1016/j.ecmx.2025.101424',
     position: '1st author',
@@ -82,7 +66,6 @@ export const publications: Publication[] = [
       'AI-powered cybersecurity for smart grid communication: A systematic review of intrusion detection and threat mitigation systems',
     authors: ['Sadia Afrin', ME, 'Alvi Ibn Amzad Anil', 'Shameem Hasan'],
     venue: 'Energy Conversion and Management: X',
-    status: 'published',
     year: 2025,
     doi: '10.1016/j.ecmx.2025.101416',
     position: '2nd author',
@@ -96,7 +79,6 @@ export const publications: Publication[] = [
       'The next generation of energy storage for smart and sustainable power grids: A systematic review',
     authors: ['Alvi Ibn Amzad Anil', ME, 'Sadia Afrin', 'Shameem Hasan'],
     venue: 'Energy Conversion and Management: X',
-    status: 'published',
     year: 2026,
     doi: '10.1016/j.ecmx.2026.101771',
     position: '2nd author',
@@ -117,7 +99,6 @@ export const publications: Publication[] = [
       'Omar Farrok',
     ],
     venue: 'Energy Conversion and Management: X',
-    status: 'published',
     year: 2026,
     doi: '10.1016/j.ecmx.2026.102107',
     position: '4th author',

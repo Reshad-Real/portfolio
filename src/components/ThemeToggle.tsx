@@ -1,14 +1,6 @@
 import type { Theme } from '../hooks/useTheme'
 
-type Props = {
-  theme: Theme
-  onToggle: () => void
-  /** White treatment while the control sits over the dark hero. */
-  onDark: boolean
-  className?: string
-}
-
-export function ThemeToggle({ theme, onToggle, onDark, className = '' }: Props) {
+export function ThemeToggle({ theme, onToggle }: { theme: Theme; onToggle: () => void }) {
   const dark = theme === 'dark'
   return (
     <button
@@ -18,36 +10,38 @@ export function ThemeToggle({ theme, onToggle, onDark, className = '' }: Props) 
       aria-checked={dark}
       aria-label={`Switch to ${dark ? 'light' : 'dark'} theme`}
       title={`Switch to ${dark ? 'light' : 'dark'} theme`}
-      className={[
-        'relative inline-flex h-7 w-[52px] shrink-0 items-center rounded-full border transition-colors duration-500',
-        onDark ? 'border-white/35 bg-white/10' : 'border-line bg-bg2',
-        className,
-      ].join(' ')}
+      className="relative inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-line text-ink transition-colors hover:border-accent hover:text-accent"
     >
+      {/* The two glyphs slide past each other rather than swapping. */}
       <span
         aria-hidden="true"
-        className={[
-          'absolute left-[3px] grid h-[21px] w-[21px] place-items-center rounded-full transition-transform duration-500',
-          onDark ? 'bg-white text-black' : 'bg-ink text-bg',
-          dark ? 'translate-x-[24px]' : 'translate-x-0',
-        ].join(' ')}
-        style={{ transitionTimingFunction: 'cubic-bezier(0.5, 1.4, 0.4, 1)' }}
+        className="absolute grid place-items-center transition-all duration-400"
+        style={{
+          transform: dark ? 'translateY(0) rotate(0deg)' : 'translateY(-140%) rotate(-90deg)',
+          opacity: dark ? 1 : 0,
+        }}
       >
-        {dark ? (
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <path
-              d="M10.2 7.4A4.6 4.6 0 0 1 4.6 1.8 4.6 4.6 0 1 0 10.2 7.4Z"
-              fill="currentColor"
-            />
-          </svg>
-        ) : (
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-            <circle cx="6" cy="6" r="2.5" fill="currentColor" />
-            <g stroke="currentColor" strokeWidth="1.1" strokeLinecap="round">
-              <path d="M6 0.8v1.4M6 9.8v1.4M0.8 6h1.4M9.8 6h1.4M2.3 2.3l1 1M8.7 8.7l1 1M9.7 2.3l-1 1M3.3 8.7l-1 1" />
-            </g>
-          </svg>
-        )}
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M13.6 9.9A6.1 6.1 0 0 1 6.1 2.4 6.1 6.1 0 1 0 13.6 9.9Z"
+            fill="currentColor"
+          />
+        </svg>
+      </span>
+      <span
+        aria-hidden="true"
+        className="absolute grid place-items-center transition-all duration-400"
+        style={{
+          transform: dark ? 'translateY(140%) rotate(90deg)' : 'translateY(0) rotate(0deg)',
+          opacity: dark ? 0 : 1,
+        }}
+      >
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="3.2" fill="currentColor" />
+          <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7 13 13M13 3l-1.3 1.3M4.3 11.7 3 13" />
+          </g>
+        </svg>
       </span>
     </button>
   )

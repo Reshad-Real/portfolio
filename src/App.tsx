@@ -1,21 +1,20 @@
 import { useTheme } from './hooks/useTheme'
 import { Navbar } from './components/Navbar'
-import { Landing } from './components/Landing'
+import { Hero } from './components/Hero'
 import { About, Marquee } from './components/About'
 import { Research } from './components/Research'
-import { EnergyLab } from './components/EnergyLab'
 import { Publications } from './components/Publications'
 import { Experience } from './components/Experience'
-import { Studio } from './components/Studio'
-import { ElectronicsArcade } from './components/ElectronicsArcade'
+import { ArcadeTeaser } from './components/ArcadeTeaser'
 import { Contact } from './components/Contact'
 import { Footer } from './components/Footer'
-import { CyberDog } from './components/CyberDog'
+import { Byte } from './components/Byte'
 import { ScrollProgress } from './components/ui'
 
 export default function App() {
   const { theme, toggle } = useTheme()
   const base = import.meta.env.BASE_URL
+  const arcadeHref = `${base}arcade.html`
 
   return (
     <>
@@ -27,24 +26,22 @@ export default function App() {
       </a>
 
       <ScrollProgress />
-      <Navbar theme={theme} onToggleTheme={toggle} />
+      <Navbar theme={theme} onToggleTheme={toggle} arcadeHref={arcadeHref} />
 
-      <Landing base={base} />
+      <Hero base={base} arcadeHref={arcadeHref} />
 
       <main id="content">
         <Marquee />
         <About />
         <Research />
-        <EnergyLab />
         <Publications />
         <Experience />
-        <Studio />
-        <ElectronicsArcade />
+        <ArcadeTeaser href={arcadeHref} />
         <Contact base={base} />
       </main>
 
-      <Footer />
-      <CyberDog />
+      <Footer arcadeHref={arcadeHref} />
+      <Byte />
     </>
   )
 }

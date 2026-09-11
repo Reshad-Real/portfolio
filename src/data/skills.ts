@@ -81,7 +81,7 @@ export const capabilities: Capability[] = [
     id: 'write',
     n: '04',
     title: 'Then write it up',
-    body: 'Six Q1 papers so far, one under review. A result nobody can reproduce from your methods section is not a result yet.',
+    body: 'Six Q1 papers so far. A result nobody can reproduce from your methods section is not a result yet.',
     tags: ['LaTeX', 'peer review', 'reproducibility'],
   },
 ]

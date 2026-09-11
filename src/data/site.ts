@@ -1,20 +1,9 @@
-/**
- * Brand + identity strings live here so the studio name, agent name and
- * contact address can each be changed in exactly one place.
- */
-export const brand = {
-  name: 'Mainframe',
-  mark: '®',
-  asterisk: '✳︎',
-  /** Address used by the hero "Reach us" pill. */
-  studioEmail: 'hello@mainframe.co',
-  agent: 'A.R.I.A',
-  agentExpanded: 'Adaptive Response Interface Agent',
-} as const
-
 export const person = {
   name: 'Md. Reshad Al Muttaki',
   shortName: 'Reshad',
+  /** Wordmark: the site is his bench, not an agency. */
+  mark: 'reshad',
+  markSuffix: '.bench',
   role: 'VLSI & semiconductor device engineer',
   title: 'Research Fellow · BRAC University',
   location: 'Mirpur 11, Dhaka 1212, Bangladesh',
@@ -29,17 +18,21 @@ export const person = {
   },
 } as const
 
-export const heroCopy = {
-  intro: `Hey there, meet ${brand.agent},<br>${brand.name}'s ${brand.agentExpanded}`,
-  typewriter: 'Glad you stopped in. Good taste tends to find us. Now, what are we building?',
-} as const
+/** Lines the hero types out, one after another, in his own voice. */
+export const typedLines = [
+  'I design transistors about five nanometres wide.',
+  'I simulate them until the physics gives in.',
+  'Then I teach the people who will build the next ones.',
+] as const
 
-/** Nav labels are fixed by the brand; each one anchors to a real section. */
+export const intro =
+  'Electrical and Electronic Engineering graduate of BRAC University, and a Research Fellow there now. My work sits between device physics and simulation.'
+
 export const navLinks = [
-  { label: 'Labs', href: '#labs' },
-  { label: 'Studio', href: '#studio' },
-  { label: 'Openings', href: '#openings' },
-  { label: 'Shop', href: '#arcade' },
+  { label: 'About', href: '#about' },
+  { label: 'Research', href: '#research' },
+  { label: 'Papers', href: '#papers' },
+  { label: 'Teaching', href: '#teaching' },
 ] as const
 
 export const contactCta = { label: 'Get in touch', href: '#contact' } as const
@@ -63,9 +56,9 @@ export type Stat = { value: number; decimals: number; suffix: string; label: str
 
 export const stats: Stat[] = [
   { value: 6, decimals: 0, suffix: '', label: 'Q1 journal papers' },
-  { value: 1, decimals: 0, suffix: '', label: 'manuscript under review' },
   { value: 3.81, decimals: 2, suffix: '', label: 'CGPA out of 4.00' },
   { value: 5, decimals: 0, suffix: ' nm', label: 'smallest gate simulated' },
   { value: 3, decimals: 0, suffix: '', label: 'courses tutored' },
+  { value: 4, decimals: 0, suffix: '', label: 'semesters teaching' },
   { value: 8, decimals: 0, suffix: '', label: "VC's and Dean's list entries" },
 ]
